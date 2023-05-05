@@ -1,6 +1,5 @@
 namespace kazariobranco_backend.Models;
-
-public class User 
+public class UserModel 
 {  
     public int id { get; set; }
     
@@ -13,6 +12,8 @@ public class User
     public string  phone { get; set; }
     
     public string email { get; set; }
+    
+    public string password { get; set; }
     
     public DateTime birthday { get; set; }
     

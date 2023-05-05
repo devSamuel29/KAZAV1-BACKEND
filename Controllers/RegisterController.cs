@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace kazariobranco_backend.Controllers.Auth;
+namespace kazariobranco_backend.Controllers;
 
 [ApiController]
-[Route("api/auth/[controller]")]
+[Route("api/[controller]")]
 public class RegisterController : ControllerBase 
 { 
     

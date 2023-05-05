@@ -20,8 +20,9 @@ namespace kazariobranco_backend.Migrations
                     firstname = table.Column<string>(type: "varchar(20)", nullable: false),
                     lastname = table.Column<string>(type: "varchar(20)", nullable: false),
                     cpf = table.Column<byte[]>(type: "varbinary(32)", nullable: false),
-                    phone = table.Column<byte[]>(type: "varbinary(32)", nullable: false),
-                    email = table.Column<byte[]>(type: "varbinary(32)", nullable: false),
+                    phone = table.Column<string>(type: "varchar(32)", nullable: false),
+                    email = table.Column<string>(type: "varchar(40)", nullable: false),
+                    password = table.Column<string>(type: "varchar(32)", nullable: false),
                     birthday = table.Column<DateTime>(type: "date", nullable: false),
                     created_at = table.Column<DateTime>(type: "date", nullable: false),
                     updated_at = table.Column<DateTime>(type: "date", nullable: false)

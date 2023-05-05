@@ -22,7 +22,7 @@ namespace kazariobranco_backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("kazariobranco_backend.Models.User", b =>
+            modelBuilder.Entity("kazariobranco_backend.Models.UserModel", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -44,9 +44,9 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnType("date")
                         .HasColumnName("created_at");
 
-                    b.Property<byte[]>("email")
+                    b.Property<string>("email")
                         .IsRequired()
-                        .HasColumnType("varbinary(32)")
+                        .HasColumnType("varchar(40)")
                         .HasColumnName("email");
 
                     b.Property<string>("firstname")
@@ -59,9 +59,14 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("lastname");
 
-                    b.Property<byte[]>("phone")
+                    b.Property<string>("password")
                         .IsRequired()
-                        .HasColumnType("varbinary(32)")
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("password");
+
+                    b.Property<string>("phone")
+                        .IsRequired()
+                        .HasColumnType("varchar(32)")
                         .HasColumnName("phone");
 
                     b.Property<DateTime>("updated_at")

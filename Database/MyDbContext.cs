@@ -12,5 +12,5 @@ public class MyDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyDbContext).Assembly);
     }
 
-    DbSet<User> users {get; set;}
+    public DbSet<UserModel> users {get; set;}
 }
