@@ -22,6 +22,48 @@ namespace kazariobranco_backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("kazariobranco_backend.Models.ContactModel", b =>
+                {
+                    b.Property<string>("id")
+                        .HasColumnType("char(11)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("created_at")
+                        .HasColumnType("date")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("email");
+
+                    b.Property<bool?>("ended")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("reason")
+                        .IsRequired()
+                        .HasColumnType("char(11)")
+                        .HasColumnName("reason");
+
+                    b.HasKey("id")
+                        .HasName("pk_contact_id");
+
+                    b.ToTable("contacts", (string)null);
+                });
+
             modelBuilder.Entity("kazariobranco_backend.Models.UserModel", b =>
                 {
                     b.Property<int>("id")
@@ -30,10 +72,6 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<DateTime>("birthday")
-                        .HasColumnType("date")
-                        .HasColumnName("birthday");
 
                     b.Property<byte[]>("cpf")
                         .IsRequired()
@@ -73,7 +111,8 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnType("date")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("id");
+                    b.HasKey("id")
+                        .HasName("pk_user_id");
 
                     b.HasIndex("cpf")
                         .IsUnique();

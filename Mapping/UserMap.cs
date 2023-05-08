@@ -9,7 +9,7 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
     {
         builder.ToTable("users");
 
-        builder.HasKey(p => p.id);
+        builder.HasKey(p => p.id).HasName("pk_user_id");
         builder.Property(p => p.id)
             .HasColumnName("id")
             .HasColumnType("int")
@@ -28,12 +28,14 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
         builder.HasIndex(p => p.cpf).IsUnique();
         builder.Property(p => p.cpf)
             .HasColumnName("cpf")
-            .HasColumnType("varbinary(32)");
+            .HasColumnType("varbinary(32)")
+            .IsRequired();
 
         builder.HasIndex(p => p.phone).IsUnique();
         builder.Property(p => p.phone)
             .HasColumnName("phone")
-            .HasColumnType("varchar(32)");
+            .HasColumnType("varchar(32)")
+            .IsRequired();
 
         builder.HasIndex(p => p.email).IsUnique();
         builder.Property(p => p.email)
@@ -48,11 +50,6 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
 
         builder.Property(p => p.created_at)
             .HasColumnName("created_at")
-            .HasColumnType("date")
-            .IsRequired();
-
-        builder.Property(p => p.birthday)
-            .HasColumnName("birthday")
             .HasColumnType("date")
             .IsRequired();
 

@@ -5,12 +5,14 @@ namespace kazariobranco_backend.Database;
 
 public class MyDbContext : DbContext
 {
-    public MyDbContext(DbContextOptions options): base(options) { }
+    public MyDbContext(DbContextOptions options) : base(options) { }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyDbContext).Assembly);
     }
 
-    public DbSet<UserModel> users {get; set;}
+    public DbSet<UserModel> users { get; set; }
+
+    public DbSet<ContactModel> contacts { get; set; }
 }

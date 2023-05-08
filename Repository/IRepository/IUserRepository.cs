@@ -6,9 +6,9 @@ namespace kazariobranco_backend.Repository.IRepository;
 
 public interface IUserRepository 
 {   
-    Task<Response> authenticate([FromBody] LoginRequest request);
+    Task<IActionResult> authenticate([FromBody] LoginRequest request);
 
-    Task<Response> register([FromBody] RegisterRequest request);
+    Task<IActionResult> register([FromBody] RegisterRequest request);
 
     // Task<IActionResult> update();
 

@@ -1,4 +1,3 @@
-using Azure;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,6 @@ using System.IdentityModel.Tokens.Jwt;
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Database;
 using kazariobranco_backend.Repository.IRepository;
-using kazariobranco_backend.Models;
 
 namespace kazariobranco_backend.Repository;
 
@@ -38,7 +36,7 @@ public class UserRepository : IUserRepository
         return token;
     }
 
-    public async Task<Response> authenticate([FromBody] LoginRequest request)
+    public async Task<IActionResult> authenticate([FromBody] LoginRequest request)
     {
         // try
         // {
@@ -61,5 +59,5 @@ public class UserRepository : IUserRepository
         // }
     }
 
-    public Task<Response> register([FromBody] RegisterRequest request) { }
+    public Task<IActionResult> register([FromBody] RegisterRequest request) { }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 using kazariobranco_backend.Request;
+using kazariobranco_backend.Repository.IRepository;
 
 namespace kazariobranco_backend.Controllers;
 

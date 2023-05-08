@@ -6,11 +6,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace kazariobranco_backend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class FirstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "contacts",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "char(11)", nullable: false),
+                    name = table.Column<string>(type: "varchar(40)", nullable: false),
+                    email = table.Column<string>(type: "varchar(40)", nullable: false),
+                    phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    reason = table.Column<string>(type: "char(11)", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateTime>(type: "date", nullable: false),
+                    ended = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_contact_id", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
@@ -23,13 +41,12 @@ namespace kazariobranco_backend.Migrations
                     phone = table.Column<string>(type: "varchar(32)", nullable: false),
                     email = table.Column<string>(type: "varchar(40)", nullable: false),
                     password = table.Column<string>(type: "varchar(32)", nullable: false),
-                    birthday = table.Column<DateTime>(type: "date", nullable: false),
                     created_at = table.Column<DateTime>(type: "date", nullable: false),
                     updated_at = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.id);
+                    table.PrimaryKey("pk_user_id", x => x.id);
                 });
 
             migrationBuilder.CreateIndex(
@@ -54,6 +71,9 @@ namespace kazariobranco_backend.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "contacts");
+
             migrationBuilder.DropTable(
                 name: "users");
         }
