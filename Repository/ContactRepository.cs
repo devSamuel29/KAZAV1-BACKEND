@@ -1,6 +1,6 @@
 using kazariobranco_backend.Database;
+using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
-using kazariobranco_backend.Repository.IRepository;
 using kazariobranco_backend.Request;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -33,19 +33,26 @@ public class ContactRepository : IContactRepository
 
             var query = await _dbContext.contacts.AddAsync(newContact);
             var isSaved = await _dbContext.SaveChangesAsync();
-        
-            var test = JsonConvert.SerializeObject(newContact);
-            return test;
+
+            var json = new JsonModel
+            {
+                code = ,
+                message = ,
+            };
+
+            var response = JsonConvert.SerializeObject(json);
+            return response;
         }
         catch (Exception e)
         {
-            var test = new
+            var json = new JsonModel
             {
                 code = 400,
                 message = e.ToString()
             };
 
-            return test;
+            var response = JsonConvert.SerializeObject(json);
+            return response;
         }
     }
 }

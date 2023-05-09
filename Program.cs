@@ -5,7 +5,7 @@ using System.Text;
 
 using kazariobranco_backend.Database;
 using kazariobranco_backend.Repository;
-using kazariobranco_backend.Repository.IRepository;
+using kazariobranco_backend.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

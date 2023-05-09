@@ -1,8 +1,7 @@
-using Azure;
 using Microsoft.AspNetCore.Mvc;
 using kazariobranco_backend.Request;
 
-namespace kazariobranco_backend.Repository.IRepository;
+namespace kazariobranco_backend.Interfaces;
 
 public interface IUserRepository 
 {   
