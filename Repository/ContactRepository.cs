@@ -15,9 +15,11 @@ public class ContactRepository : IContactRepository
     {
         _dbContext = dbContext;
     }
-    
-    private string json(int code, string message) {
-        var json = new JsonModel() {
+
+    private string json(int code, string message)
+    {
+        var json = new JsonModel()
+        {
             code = code,
             message = message
         };
@@ -41,13 +43,17 @@ public class ContactRepository : IContactRepository
                 created_at = DateTime.Today
             };
 
+            var response = json(403, "not autorized");
             var query = await _dbContext.contacts.AddAsync(newContact);
             var isSaved = await _dbContext.SaveChangesAsync();
 
-            if(query.IsKeySet && isSaved > 0) {
-                var response = json(200, "sucess");
+            if (query.IsKeySet && isSaved > 0)
+            {
+                response = json(200, "sucess");
+                return response;
             }
-            return json(403, "not autorized");
+
+            return response;
         }
         catch (Exception e)
         {
