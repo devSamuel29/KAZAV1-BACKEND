@@ -5,5 +5,5 @@ namespace kazariobranco_backend.Repository.IRepository;
 
 public interface IContactRepository
 {
-    Task<IActionResult> createContactOrder([FromBody] ContactRequest request);
+    Task<string> createContactOrder([FromBody] ContactRequest request);
 }

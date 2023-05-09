@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Linq.Expressions;
+
 namespace kazariobranco_backend.Models;
 
 public class ContactModel

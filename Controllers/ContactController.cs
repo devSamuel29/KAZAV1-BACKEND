@@ -17,15 +17,15 @@ public class ContactController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> createContactOrder([FromBody] ContactRequest request)
+    public async Task<object> createContactOrder([FromBody] ContactRequest request)
     {
         try
         {
-            return (IActionResult) await _contactRepository.createContactOrder(request);
+            return await _contactRepository.createContactOrder(request);
         }
         catch (Exception e)
         {
-            return BadRequest(e);
+            return e.ToString();
         }
     }
 }
