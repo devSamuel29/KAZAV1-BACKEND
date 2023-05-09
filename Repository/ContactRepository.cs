@@ -10,9 +10,19 @@ namespace kazariobranco_backend.Repository;
 public class ContactRepository : IContactRepository
 {
     private readonly MyDbContext _dbContext;
+    
     public ContactRepository(MyDbContext dbContext)
     {
         _dbContext = dbContext;
+    }
+    
+    private string json(int code, string message) {
+        var json = new JsonModel() {
+            code = code,
+            message = message
+        };
+        var response = JsonConvert.SerializeObject(json);
+        return response;
     }
 
     public async Task<string> createContactOrder([FromBody] ContactRequest request)
@@ -34,24 +44,12 @@ public class ContactRepository : IContactRepository
             var query = await _dbContext.contacts.AddAsync(newContact);
             var isSaved = await _dbContext.SaveChangesAsync();
 
-            var json = new JsonModel
-            {
-                code = ,
-                message = ,
-            };
-
-            var response = JsonConvert.SerializeObject(json);
+            var response = json();
             return response;
         }
         catch (Exception e)
         {
-            var json = new JsonModel
-            {
-                code = 400,
-                message = e.ToString()
-            };
-
-            var response = JsonConvert.SerializeObject(json);
+            var response = json(400, e.ToString());
             return response;
         }
     }

@@ -1,4 +1,4 @@
-using kazariobranco_backend.Repository.IRepository;
+using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
