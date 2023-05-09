@@ -10,7 +10,7 @@ namespace kazariobranco_backend.Repository;
 public class ContactRepository : IContactRepository
 {
     private readonly MyDbContext _dbContext;
-    
+
     public ContactRepository(MyDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -44,8 +44,10 @@ public class ContactRepository : IContactRepository
             var query = await _dbContext.contacts.AddAsync(newContact);
             var isSaved = await _dbContext.SaveChangesAsync();
 
-            var response = json();
-            return response;
+            if(query.IsKeySet && isSaved > 0) {
+                var response = json(200, "sucess");
+            }
+            return json(403, "not autorized");
         }
         catch (Exception e)
         {
