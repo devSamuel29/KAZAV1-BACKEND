@@ -25,7 +25,7 @@ namespace kazariobranco_backend.Migrations
             modelBuilder.Entity("kazariobranco_backend.Models.ContactModel", b =>
                 {
                     b.Property<string>("id")
-                        .HasColumnType("char(11)")
+                        .HasColumnType("varchar(36)")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -66,12 +66,10 @@ namespace kazariobranco_backend.Migrations
 
             modelBuilder.Entity("kazariobranco_backend.Models.UserModel", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<string>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("char(32)")
                         .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<byte[]>("cpf")
                         .IsRequired()

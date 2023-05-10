@@ -15,7 +15,7 @@ public class ContactMap : IEntityTypeConfiguration<ContactModel>
         builder.HasKey(p => p.id).HasName("pk_contact_id");
         builder.Property(p => p.id)
             .HasColumnName("id")
-            .HasColumnType("char(11)")
+            .HasColumnType("varchar(36)")
             .IsRequired();
 
         builder.Property(p => p.name)

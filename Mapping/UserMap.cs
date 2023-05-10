@@ -12,7 +12,7 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
         builder.HasKey(p => p.id).HasName("pk_user_id");
         builder.Property(p => p.id)
             .HasColumnName("id")
-            .HasColumnType("int")
+            .HasColumnType("char(32)")
             .IsRequired();
 
         builder.Property(p => p.firstname)

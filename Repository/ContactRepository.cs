@@ -34,7 +34,7 @@ public class ContactRepository : IContactRepository
             var id = Guid.NewGuid();
             ContactModel newContact = new ContactModel
             {
-                id = id.ToString(),
+                id = id.ToString().ToUpper(),
                 name = request.name,
                 phone = request.phone,
                 email = request.email,
@@ -43,13 +43,13 @@ public class ContactRepository : IContactRepository
                 created_at = DateTime.Today
             };
 
-            var response = json(403, "not autorized");
             var query = await _dbContext.contacts.AddAsync(newContact);
             var isSaved = await _dbContext.SaveChangesAsync();
+            var response = json(200, "sucess");
 
-            if (query.IsKeySet && isSaved > 0)
+            if (!(query.IsKeySet && isSaved > 0))
             {
-                response = json(200, "sucess");
+                response = json(403, "not autorized");
                 return response;
             }
 
