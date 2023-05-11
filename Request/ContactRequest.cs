@@ -16,7 +16,7 @@ public class ContactRequest
 
     [Required(ErrorMessage = "O campo motivo é obrigatório!")]
     public string reason { get; set; }
-
+    
     [Required(ErrorMessage = "O campo descrição é obrigatório!")]
     public string description { get; set; }
 }

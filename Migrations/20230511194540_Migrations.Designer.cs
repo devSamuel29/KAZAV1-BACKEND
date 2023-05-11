@@ -12,7 +12,7 @@ using kazariobranco_backend.Database;
 namespace kazariobranco_backend.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230510171447_Migrations")]
+    [Migration("20230511194540_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />
@@ -27,9 +27,12 @@ namespace kazariobranco_backend.Migrations
 
             modelBuilder.Entity("kazariobranco_backend.Models.ContactModel", b =>
                 {
-                    b.Property<string>("id")
-                        .HasColumnType("varchar(36)")
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("created_at")
                         .HasColumnType("date")
@@ -54,7 +57,9 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnName("name");
 
                     b.Property<string>("phone")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("varchar(11)")
+                        .HasColumnName("phone");
 
                     b.Property<string>("reason")
                         .IsRequired()
@@ -69,10 +74,12 @@ namespace kazariobranco_backend.Migrations
 
             modelBuilder.Entity("kazariobranco_backend.Models.UserModel", b =>
                 {
-                    b.Property<string>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(32)")
+                        .HasColumnType("int")
                         .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<byte[]>("cpf")
                         .IsRequired()

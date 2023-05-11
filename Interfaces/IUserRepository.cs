@@ -5,11 +5,11 @@ namespace kazariobranco_backend.Interfaces;
 
 public interface IUserRepository 
 {   
-    Task<IActionResult> authenticate([FromBody] LoginRequest request);
+    // Task<string> authenticate([FromBody] LoginRequest request);
 
-    Task<IActionResult> register([FromBody] RegisterRequest request);
+    Task<string> register([FromBody] RegisterRequest request);
 
-    // Task<IActionResult> update();
+    // Task<string> update();
 
-    // Task<IActionResult> delete();
+    // Task<string> delete();
 }

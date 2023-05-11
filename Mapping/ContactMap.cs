@@ -15,7 +15,8 @@ public class ContactMap : IEntityTypeConfiguration<ContactModel>
         builder.HasKey(p => p.id).HasName("pk_contact_id");
         builder.Property(p => p.id)
             .HasColumnName("id")
-            .HasColumnType("varchar(36)")
+            .HasColumnType("int")
+            .UseIdentityColumn()
             .IsRequired();
 
         builder.Property(p => p.name)
@@ -26,6 +27,11 @@ public class ContactMap : IEntityTypeConfiguration<ContactModel>
         builder.Property(p => p.email)
             .HasColumnName("email")
             .HasColumnType("varchar(40)")
+            .IsRequired();
+        
+        builder.Property(p => p.phone)
+            .HasColumnName("phone")
+            .HasColumnType("varchar(11)")
             .IsRequired();
 
         builder.Property(p => p.reason)

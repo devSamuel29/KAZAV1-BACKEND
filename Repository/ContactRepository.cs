@@ -31,10 +31,8 @@ public class ContactRepository : IContactRepository
     {
         try
         {
-            var id = Guid.NewGuid();
             ContactModel newContact = new ContactModel
             {
-                id = id.ToString().ToUpper(),
                 name = request.name,
                 phone = request.phone,
                 email = request.email,

@@ -15,10 +15,11 @@ namespace kazariobranco_backend.Migrations
                 name: "contacts",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "varchar(36)", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "varchar(40)", nullable: false),
                     email = table.Column<string>(type: "varchar(40)", nullable: false),
-                    phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    phone = table.Column<string>(type: "varchar(11)", nullable: false),
                     reason = table.Column<string>(type: "char(11)", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "date", nullable: false),
@@ -33,7 +34,8 @@ namespace kazariobranco_backend.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "char(32)", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     firstname = table.Column<string>(type: "varchar(20)", nullable: false),
                     lastname = table.Column<string>(type: "varchar(20)", nullable: false),
                     cpf = table.Column<byte[]>(type: "varbinary(32)", nullable: false),

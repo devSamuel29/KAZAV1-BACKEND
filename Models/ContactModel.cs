@@ -1,12 +1,13 @@
 using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
 namespace kazariobranco_backend.Models;
 
 public class ContactModel
 {
-    public string id { get; set; }
-
+    public int id { get; set; }
+   
     public string name { get; set; }
 
     public string email { get; set; }
