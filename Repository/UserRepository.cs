@@ -90,14 +90,14 @@ public class UserRepository : IUserRepository
                 updated_at = DateTime.Now
             };
 
-            var response = json(403, "error");
-
             var query = await _dbContext.AddAsync(newUser);
             var isSaved = await _dbContext.SaveChangesAsync();
 
-            if (query.IsKeySet && isSaved > 0)
+            var response = json(200, "sucess");
+
+            if (!(query.IsKeySet && isSaved > 0))
             {
-                response = json(200, "sucess");
+                response = json(403, "not autorized");
                 return response;
             }
 

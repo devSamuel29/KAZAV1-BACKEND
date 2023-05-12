@@ -9,19 +9,13 @@ using kazariobranco_backend.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-builder.Services.AddControllers();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IContactRepository, ContactRepository>();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<MyDbContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
-);
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(x =>
+        {
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }
+    )
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -36,7 +30,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Jwt:Key"))
             )
         };
-    });
+    }
+);
+
+builder.Services.AddDbContext<MyDbContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
+);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IContactRepository, ContactRepository>();
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -47,6 +54,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseRouting();
 

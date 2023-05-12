@@ -20,5 +20,5 @@ public class ContactModel
 
     public DateTime created_at { get; set; }
 
-    public bool? ended { get; set; }
+    public bool ended { get; set; }
 }
