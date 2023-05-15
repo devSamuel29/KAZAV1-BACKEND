@@ -1,9 +1,8 @@
 using kazariobranco_backend.Interfaces;
-using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+
 
 namespace kazariobranco_backend.Controllers;
 [ApiController]
@@ -23,16 +22,17 @@ public class ContactController : ControllerBase
     {
         try
         {
-            var response = JsonConvert.DeserializeObject<JsonModel>(
-                    await _contactRepository.createContactOrder(request)
-                );
+            var response = await _contactRepository.createContactOrder(request);
 
-            if (response.code == 403)
+            switch (response.code)
             {
-                return NotFound(response);
+                case 400:
+                    return BadRequest(response.message);
+                case 406:
+                    return BadRequest(response.message);
+                default:
+                    return Ok(response.message);
             }
-
-            return Ok(response);
         }
         catch (Exception e)
         {
@@ -95,7 +95,7 @@ public class ContactController : ControllerBase
     //         return BadRequest(e.ToString());
     //     }
     // }
-    
+
     // [Authorize]
     // [HttpDelete]
     // public async Task<IActionResult> deleteContactById()

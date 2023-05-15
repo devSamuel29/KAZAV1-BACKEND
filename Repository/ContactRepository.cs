@@ -3,31 +3,19 @@ using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace kazariobranco_backend.Repository;
 
 public class ContactRepository : IContactRepository
 {
     private readonly MyDbContext _dbContext;
-
+    
     public ContactRepository(MyDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    private string json(int code, string message)
-    {
-        var json = new JsonModel()
-        {
-            code = code,
-            message = message
-        };
-        var response = JsonConvert.SerializeObject(json);
-        return response;
-    }
-
-    public async Task<string> createContactOrder([FromBody] ContactRequest request)
+    public async Task<Response> createContactOrder([FromBody] ContactRequest request)
     {
         try
         {
@@ -43,20 +31,18 @@ public class ContactRepository : IContactRepository
 
             var query = await _dbContext.contacts.AddAsync(newContact);
             var isSaved = await _dbContext.SaveChangesAsync();
-            var response = json(200, "sucess");
 
-            if (!(query.IsKeySet && isSaved > 0))
+            if (query.IsKeySet && isSaved > 0)
             {
-                response = json(403, "not autorized");
-                return response;
+                return new Response(200, "sucess");
             }
 
-            return response;
+            return new Response(406, "nao me lembro");
         }
+
         catch (Exception e)
         {
-            var response = json(400, e.ToString());
-            return response;
+            return new Response(400, e.ToString());
         }
     }
 }

@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 using kazariobranco_backend.Interfaces;
-using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
 
 namespace kazariobranco_backend.Controllers;
@@ -25,20 +23,21 @@ public class UserController : ControllerBase
     {
         try
         {
-            var response = JsonConvert.DeserializeObject<JsonModel>(
-                await _userRepository.register(request)
-            );
+            var response = await _userRepository.register(request);
 
-            if (response.code == 403)
+            switch (response.code)
             {
-                return NotFound(response);
+                case 400:
+                    return BadRequest(response.message);
+                case 406:
+                    return BadRequest(response.message);
+                default:
+                    return Ok(response.message);
             }
-
-            return Ok(response);
         }
         catch (Exception e)
         {
-            return BadRequest(e);
+            return BadRequest(e.ToString());
         }
     }
 

@@ -1,7 +1,3 @@
-using System.Collections;
-using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
-
 namespace kazariobranco_backend.Models;
 
 public class ContactModel

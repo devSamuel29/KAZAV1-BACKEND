@@ -7,8 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
-using Newtonsoft.Json;
 using kazariobranco_backend.Models;
+using kazariobranco_backend.Validator;
 
 namespace kazariobranco_backend.Repository;
 
@@ -21,18 +21,6 @@ public class UserRepository : IUserRepository
     {
         _dbContext = dbContext;
         _config = config;
-    }
-
-    private string json(int code, string message)
-    {
-        var json = new JsonModel()
-        {
-            code = code,
-            message = message
-        };
-
-        var response = JsonConvert.SerializeObject(json);
-        return response;
     }
 
     private JwtSecurityToken getToken(List<Claim> authClaim)
@@ -74,39 +62,41 @@ public class UserRepository : IUserRepository
     //     return "OI";
     // }
 
-    public async Task<string> register([FromBody] RegisterRequest request)
+    public async Task<Response> register([FromBody] RegisterRequest request)
     {
         try
         {
-            var newUser = new UserModel()
+            var validator = new RegisterValidate();
+            var validation = validator.Validate(request);
+
+            if (validation.IsValid)
             {
-                firstname = request.firstname,
-                lastname = request.lastname,
-                cpf = request.cpf,
-                phone = request.phone,
-                email = request.email,
-                password = request.password,
-                created_at = DateTime.Now,
-                updated_at = DateTime.Now
-            };
+                var newUser = new UserModel()
+                {
+                    firstname = request.firstname,
+                    lastname = request.lastname,
+                    cpf = request.cpf,
+                    phone = request.phone,
+                    email = request.email,
+                    password = request.password,
+                    created_at = DateTime.Now,
+                    updated_at = DateTime.Now
+                };
 
-            var query = await _dbContext.AddAsync(newUser);
-            var isSaved = await _dbContext.SaveChangesAsync();
+                var query = await _dbContext.AddAsync(newUser);
+                var isSaved = await _dbContext.SaveChangesAsync();
 
-            var response = json(200, "sucess");
-
-            if (!(query.IsKeySet && isSaved > 0))
-            {
-                response = json(403, "not autorized");
-                return response;
+                if (query.IsKeySet && isSaved > 0)
+                {
+                    return new Response(200, "sucess");
+                }
             }
 
-            return response;
+            return new Response(406, validation.ToString());
         }
         catch (Exception e)
         {
-            var response = json(400, e.ToString());
-            return response;
+            return new Response(400, e.ToString());
         }
     }
 }
