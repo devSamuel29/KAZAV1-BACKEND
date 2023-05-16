@@ -9,6 +9,7 @@ using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Validator;
+using Microsoft.AspNetCore.Identity;
 
 namespace kazariobranco_backend.Repository;
 
@@ -38,29 +39,31 @@ public class UserRepository : IUserRepository
         return token;
     }
 
-    // public async Task<string> authenticate([FromBody] LoginRequest request)
-    // {
-    //     // try
-    //     // {
-    //     //     var response = new Response();
-    //     //     var passwordHasher = new PasswordHasher<UserRequest>();
-    //     //     request.password = passwordHasher.HashPassword(request, request.password);
+    public async Task<Response> authenticate([FromBody] LoginRequest request)
+    {
 
-    //     //     var dbUser = _dbContext.users
-    //     //         .Where(u => u.email == request.email && u.password == request.password)
-    //     //         .FirstOrDefault();
+        try
+        {
+            var validator = new LoginValidator();
+            var validation = validator.Validate(request);
+            if (validation.IsValid)
+            {
+                var passwordHasher = new PasswordHasher<LoginRequest>();
+                request.password = passwordHasher.HashPassword(request, request.password);
 
-    //     //     if (dbUser == null) return null;
+                var dbUser = _dbContext.users
+                    .Where(u => u.email == request.email && u.password == request.password)
+                    .FirstOrDefault();
 
-
-
-    //     // }
-    //     // catch (Exception e)
-    //     // {
-    //     //     return(e.StackTrace.ToString());
-    //     // }
-    //     return "OI";
-    // }
+                if (dbUser == null) return null;
+            }
+            return new Response(406, validation.ToString());
+        }
+        catch (Exception e)
+        {
+            return new Response(400, e.ToString());
+        }
+    }
 
     public async Task<Response> register([FromBody] RegisterRequest request)
     {
@@ -91,7 +94,6 @@ public class UserRepository : IUserRepository
                     return new Response(200, "sucess");
                 }
             }
-
             return new Response(406, validation.ToString());
         }
         catch (Exception e)

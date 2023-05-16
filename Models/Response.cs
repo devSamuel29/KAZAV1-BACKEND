@@ -7,7 +7,7 @@ public class Response
     private string _message;
 
     public int code { get { return _code; } }
-    
+
     public string message { get { return _message; } }
 
     public Response(int code, string message)

@@ -7,7 +7,6 @@ using kazariobranco_backend.Request;
 namespace kazariobranco_backend.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
@@ -19,6 +18,7 @@ public class UserController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost]
+    [Route("/register")]
     public async Task<IActionResult> register(RegisterRequest request)
     {
         try
@@ -41,15 +41,18 @@ public class UserController : ControllerBase
         }
     }
 
-    // public async Task<IActionResult> authenticate([FromBody] LoginRequest request)
-    // {
-    //     try
-    //     {
-    //         return Ok();
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e);
-    //     }
-    // }
+    [AllowAnonymous]
+    [HttpPost]
+    [Route("/authenticate")]
+    public async Task<IActionResult> authenticate([FromBody] LoginRequest request)
+    {
+        try
+        {
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e);
+        }
+    }
 }

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace kazariobranco_backend.Controllers;
 [ApiController]
-[Route("api/[controller]")]
 public class ContactController : ControllerBase
 {
     private readonly IContactRepository _contactRepository;
@@ -18,6 +17,7 @@ public class ContactController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost]
+    [Route("create-contact-order")]
     public async Task<IActionResult> createContactOrder([FromBody] ContactRequest request)
     {
         try
