@@ -10,6 +10,7 @@ using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Validator;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace kazariobranco_backend.Repository;
 
@@ -41,7 +42,6 @@ public class UserRepository : IUserRepository
 
     public async Task<Response> authenticate([FromBody] LoginRequest request)
     {
-
         try
         {
             var validator = new LoginValidator();
@@ -51,11 +51,16 @@ public class UserRepository : IUserRepository
                 var passwordHasher = new PasswordHasher<LoginRequest>();
                 request.password = passwordHasher.HashPassword(request, request.password);
 
-                var dbUser = _dbContext.users
+                var dbUser = await _dbContext.users
                     .Where(u => u.email == request.email && u.password == request.password)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
-                if (dbUser == null) return null;
+                if (dbUser == null)
+                {
+                    return new Response(401, "unauthorized");
+                }
+
+                return new Response(200, "codigo jwt");
             }
             return new Response(406, validation.ToString());
         }

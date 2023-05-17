@@ -48,7 +48,8 @@ public class UserController : ControllerBase
     {
         try
         {
-            return Ok();
+            var response = await _userRepository.authenticate(request);
+            return Ok(response.code);
         }
         catch (Exception e)
         {
