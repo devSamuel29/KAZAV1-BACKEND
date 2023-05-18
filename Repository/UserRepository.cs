@@ -17,6 +17,7 @@ namespace kazariobranco_backend.Repository;
 public class UserRepository : IUserRepository
 {
     private readonly MyDbContext _dbContext;
+
     private readonly IConfiguration _config;
 
     public UserRepository(IConfiguration config, MyDbContext dbContext)
@@ -49,18 +50,27 @@ public class UserRepository : IUserRepository
             if (validation.IsValid)
             {
                 var passwordHasher = new PasswordHasher<LoginRequest>();
-                request.password = passwordHasher.HashPassword(request, request.password);
 
                 var dbUser = await _dbContext.users
-                    .Where(u => u.email == request.email && u.password == request.password)
+                    .Where(u => u.email == request.email)
                     .FirstOrDefaultAsync();
 
                 if (dbUser == null)
                 {
-                    return new Response(401, "unauthorized");
+                    return new Response(401, $"unauthorized");
                 }
 
-                return new Response(200, "codigo jwt");
+                var isValidHash = passwordHasher.VerifyHashedPassword(request, dbUser.password, request.password);
+
+                switch (isValidHash)
+                {
+                    case PasswordVerificationResult.Failed:
+                        return new Response(401, $"unauthorized");
+                    case PasswordVerificationResult.Success:
+                        return new Response(200, $"sucess");
+                    case PasswordVerificationResult.SuccessRehashNeeded:
+                        break;
+                }
             }
             return new Response(406, validation.ToString());
         }
@@ -79,6 +89,10 @@ public class UserRepository : IUserRepository
 
             if (validation.IsValid)
             {
+                var passwordHasher = new PasswordHasher<RegisterRequest>();
+                request.password = passwordHasher.HashPassword(request, request.password);
+                request.cpf = passwordHasher.HashPassword(request, request.cpf);
+
                 var newUser = new UserModel()
                 {
                     firstname = request.firstname,

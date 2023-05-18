@@ -29,7 +29,7 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
         builder.HasIndex(p => p.cpf).IsUnique();
         builder.Property(p => p.cpf)
             .HasColumnName("cpf")
-            .HasColumnType("varbinary(32)")
+            .HasColumnType("varchar(84)")
             .IsRequired();
 
         builder.HasIndex(p => p.phone).IsUnique();
@@ -46,7 +46,7 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
 
         builder.Property(p => p.password)
             .HasColumnName("password")
-            .HasColumnType("varchar(32)")
+            .HasColumnType("varchar(85)")
             .IsRequired();
 
         builder.Property(p => p.created_at)

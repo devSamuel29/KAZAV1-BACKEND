@@ -6,6 +6,7 @@ using kazariobranco_backend.Request;
 
 namespace kazariobranco_backend.Controllers;
 
+[Route("api/[controller]")]
 [ApiController]
 public class UserController : ControllerBase
 {
@@ -49,7 +50,18 @@ public class UserController : ControllerBase
         try
         {
             var response = await _userRepository.authenticate(request);
-            return Ok(response.code);
+
+            switch (response.code)
+            {
+                case 400:
+                    return BadRequest(response.message);
+                case 401:
+                    return BadRequest(response.message);
+                case 406:
+                    return BadRequest(response.message);
+                default:
+                    return Ok(response.message);
+            }
         }
         catch (Exception e)
         {

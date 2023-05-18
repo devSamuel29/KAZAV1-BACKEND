@@ -12,7 +12,7 @@ using kazariobranco_backend.Database;
 namespace kazariobranco_backend.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230511194540_Migrations")]
+    [Migration("20230518170914_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />
@@ -48,7 +48,7 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnType("varchar(40)")
                         .HasColumnName("email");
 
-                    b.Property<bool?>("ended")
+                    b.Property<bool>("ended")
                         .HasColumnType("bit");
 
                     b.Property<string>("name")
@@ -81,9 +81,9 @@ namespace kazariobranco_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<byte[]>("cpf")
+                    b.Property<string>("cpf")
                         .IsRequired()
-                        .HasColumnType("varbinary(32)")
+                        .HasColumnType("varchar(84)")
                         .HasColumnName("cpf");
 
                     b.Property<DateTime>("created_at")
@@ -107,7 +107,7 @@ namespace kazariobranco_backend.Migrations
 
                     b.Property<string>("password")
                         .IsRequired()
-                        .HasColumnType("varchar(32)")
+                        .HasColumnType("varchar(85)")
                         .HasColumnName("password");
 
                     b.Property<string>("phone")
