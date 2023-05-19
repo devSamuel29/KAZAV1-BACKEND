@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FluentValidation;
+using kazariobranco_backend.Request;
 
 namespace kazariobranco_backend.Validator;
 
-public class ContactValidator
+public class ContactValidator : AbstractValidator<ContactRequest>
 {
-
+    public ContactValidator()
+    {
+        
+    }
 }

@@ -2,22 +2,25 @@ using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
-using Microsoft.AspNetCore.Mvc;
+using kazariobranco_backend.Validator;
 
 namespace kazariobranco_backend.Repository;
 
 public class ContactRepository : IContactRepository
 {
     private readonly MyDbContext _dbContext;
-    
+
     public ContactRepository(MyDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<Response> createContactOrder([FromBody] ContactRequest request)
+    public async Task<Response> createContactOrder(ContactRequest request)
     {
-        try
+        var validator = new ContactValidator();
+        var validation = validator.Validate(request);
+
+        if (validation.IsValid)
         {
             ContactModel newContact = new ContactModel
             {
@@ -36,13 +39,8 @@ public class ContactRepository : IContactRepository
             {
                 return new Response(200, "sucess");
             }
-
-            return new Response(406, "nao me lembro");
         }
 
-        catch (Exception e)
-        {
-            return new Response(400, e.ToString());
-        }
+        throw new FormatException(validation.ToString());
     }
 }

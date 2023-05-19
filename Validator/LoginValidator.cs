@@ -7,13 +7,16 @@ public class LoginValidator : AbstractValidator<LoginRequest>
 {
     public LoginValidator()
     {
-        RuleFor(p => p.email)
-            .NotEmpty()
-            .EmailAddress();
+        RuleFor(p => p.email).EmailAddress().WithMessage("Formato de email inválido");
 
         RuleFor(p => p.password)
-            .NotEmpty()
             .MinimumLength(8)
-            .MaximumLength(16);
+            .WithMessage("Senha muito curta")
+            .MaximumLength(16)
+            .WithMessage("Senha muito grande")
+            .Matches(@"\d")
+            .WithMessage("A senha deve conter pelo menos um número")
+            .Matches(@"[A-Z]")
+            .WithMessage("A senha deve conter uma letra maiúscula");
     }
 }

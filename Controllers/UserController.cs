@@ -25,20 +25,11 @@ public class UserController : ControllerBase
         try
         {
             var response = await _userRepository.register(request);
-
-            switch (response.code)
-            {
-                case 400:
-                    return BadRequest(response.message);
-                case 406:
-                    return BadRequest(response.message);
-                default:
-                    return Ok(response.message);
-            }
+            return Ok(response);
         }
         catch (Exception e)
         {
-            return BadRequest(e.ToString());
+            return BadRequest(e.Message);
         }
     }
 
@@ -50,22 +41,11 @@ public class UserController : ControllerBase
         try
         {
             var response = await _userRepository.authenticate(request);
-
-            switch (response.code)
-            {
-                case 400:
-                    return BadRequest(response.message);
-                case 401:
-                    return BadRequest(response.message);
-                case 406:
-                    return BadRequest(response.message);
-                default:
-                    return Ok(response.message);
-            }
+            return Ok(response);
         }
         catch (Exception e)
         {
-            return BadRequest(e);
+            return BadRequest(e.Message);
         }
     }
 }

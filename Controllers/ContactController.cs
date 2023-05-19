@@ -15,7 +15,6 @@ public class ContactController : ControllerBase
         _contactRepository = contactRepository;
     }
 
-    [AllowAnonymous]
     [HttpPost]
     [Route("create-contact-order")]
     public async Task<IActionResult> createContactOrder([FromBody] ContactRequest request)
@@ -23,16 +22,8 @@ public class ContactController : ControllerBase
         try
         {
             var response = await _contactRepository.createContactOrder(request);
-
-            switch (response.code)
-            {
-                case 400:
-                    return BadRequest(response.message);
-                case 406:
-                    return BadRequest(response.message);
-                default:
-                    return Ok(response.message);
-            }
+            return Ok(response.message);
+            
         }
         catch (Exception e)
         {

@@ -1,6 +1,5 @@
 using System.Text;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -41,83 +40,82 @@ public class UserRepository : IUserRepository
         return token;
     }
 
-    public async Task<Response> authenticate([FromBody] LoginRequest request)
+    public async Task<Response> authenticate(LoginRequest request)
     {
-        try
+        var validator = new LoginValidator();
+        var validation = validator.Validate(request);
+        if (validation.IsValid)
         {
-            var validator = new LoginValidator();
-            var validation = validator.Validate(request);
-            if (validation.IsValid)
+            var passwordHasher = new PasswordHasher<LoginRequest>();
+
+            var dbUser = await _dbContext.users
+                .Where(u => u.email == request.email)
+                .FirstOrDefaultAsync();
+
+            if (dbUser == null)
             {
-                var passwordHasher = new PasswordHasher<LoginRequest>();
-
-                var dbUser = await _dbContext.users
-                    .Where(u => u.email == request.email)
-                    .FirstOrDefaultAsync();
-
-                if (dbUser == null)
-                {
-                    return new Response(401, $"unauthorized");
-                }
-
-                var isValidHash = passwordHasher.VerifyHashedPassword(request, dbUser.password, request.password);
-
-                switch (isValidHash)
-                {
-                    case PasswordVerificationResult.Failed:
-                        return new Response(401, $"unauthorized");
-                    case PasswordVerificationResult.Success:
-                        return new Response(200, $"sucess");
-                    case PasswordVerificationResult.SuccessRehashNeeded:
-                        break;
-                }
+                throw new ArgumentNullException("not found");
             }
-            return new Response(406, validation.ToString());
+
+            var isValidHash = passwordHasher.VerifyHashedPassword(
+                request,
+                dbUser.password,
+                request.password
+            );
+
+            // if (isValidHash == PasswordVerificationResult.Failed) { }
+            // else
+            // {
+            //     // pode ser 1 ou 2 (ambos sucess)
+            // }
+
+            switch (isValidHash)
+            {
+                case PasswordVerificationResult.Failed:
+                    throw new InvalidOperationException("unauthorized");
+                case PasswordVerificationResult.Success:
+                    return new Response(200, "a");
+                case PasswordVerificationResult.SuccessRehashNeeded:
+                    // colocar um metodo pra verificar se o cpf ou a senha
+                    // precisam de um rehash
+                    // colocar um if no lugar do switch
+                    break;
+            }
         }
-        catch (Exception e)
-        {
-            return new Response(400, e.ToString());
-        }
+        throw new FormatException(validation.ToString());
     }
 
-    public async Task<Response> register([FromBody] RegisterRequest request)
+    public async Task<Response> register(RegisterRequest request)
     {
-        try
-        {
-            var validator = new RegisterValidate();
-            var validation = validator.Validate(request);
+        var validator = new RegisterValidate();
+        var validation = validator.Validate(request);
 
-            if (validation.IsValid)
+        if (validation.IsValid)
+        {
+            var passwordHasher = new PasswordHasher<RegisterRequest>();
+            request.password = passwordHasher.HashPassword(request, request.password);
+            request.cpf = passwordHasher.HashPassword(request, request.cpf);
+
+            var newUser = new UserModel()
             {
-                var passwordHasher = new PasswordHasher<RegisterRequest>();
-                request.password = passwordHasher.HashPassword(request, request.password);
-                request.cpf = passwordHasher.HashPassword(request, request.cpf);
+                firstname = request.firstname,
+                lastname = request.lastname,
+                cpf = request.cpf,
+                phone = request.phone,
+                email = request.email,
+                password = request.password,
+                created_at = DateTime.Now,
+                updated_at = DateTime.Now
+            };
 
-                var newUser = new UserModel()
-                {
-                    firstname = request.firstname,
-                    lastname = request.lastname,
-                    cpf = request.cpf,
-                    phone = request.phone,
-                    email = request.email,
-                    password = request.password,
-                    created_at = DateTime.Now,
-                    updated_at = DateTime.Now
-                };
+            var query = await _dbContext.AddAsync(newUser);
+            var isSaved = await _dbContext.SaveChangesAsync();
 
-                var query = await _dbContext.AddAsync(newUser);
-                var isSaved = await _dbContext.SaveChangesAsync();
-
-                if (query.IsKeySet && isSaved > 0)
-                {
-                    return new Response(200, "sucess");
-                }
+            if (query.IsKeySet && isSaved > 0)
+            {
+                return new Response(200, "sucess");
             }
-            return new Response(406, validation.ToString());
         }
-        catch (Exception e)
-        {
-            return new Response(400, e.ToString());
-        }
+        throw new FormatException(validation.ToString());
     }
 }
