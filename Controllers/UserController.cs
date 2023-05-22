@@ -6,8 +6,8 @@ using kazariobranco_backend.Request;
 
 namespace kazariobranco_backend.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("v1/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
@@ -17,13 +17,12 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [HttpGet]
-    [Route("/get-users")]
-    public async Task<IActionResult> GetAllUsersAsync()
+    [HttpGet("/get-users/{skip}/{take}")]
+    public async Task<IActionResult> GetAllUsersAsync(int skip, int take)
     {
         try
         {
-            return Ok(await _userRepository.GetAllUsersAsync());
+            return Ok(await _userRepository.GetAllUsersAsync(skip, take));
         }
         catch (Exception e)
         {
@@ -31,8 +30,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet]
-    [Route("/get-user/{id}")]
+    [HttpGet("get-user/{id}")]
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
         try
@@ -46,8 +44,7 @@ public class UserController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost]
-    [Route("/register-user")]
+    [HttpPost("register-user")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         try
@@ -62,8 +59,7 @@ public class UserController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost]
-    [Route("/authenticate-user")]
+    [HttpPost("authenticate-user")]
     public async Task<IActionResult> Authenticate(LoginRequest request)
     {
         try
@@ -77,8 +73,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPatch]
-    [Route("/update-user-password/{id}")]
+    [HttpPatch("update-user-password/{id}")]
     public async Task<IActionResult> UpdatePasswordUser(int id, ForgottenPasswordRequest request)
     {
         try
@@ -91,13 +86,12 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete]
-    [Route("/remove-users")]
-    public async Task<IActionResult> DeleteAllUsersAsync()
+    [HttpDelete("remove-users/{skip}/{take}")]
+    public async Task<IActionResult> DeleteAllUsersAsync(int skip, int take)
     {
         try
         {
-            return Ok(await _userRepository.DeleteAllUsersAsync());
+            return Ok(await _userRepository.DeleteAllUsersAsync(skip, take));
         }
         catch (Exception e)
         {
@@ -105,8 +99,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete]
-    [Route("/remove-user/{id}")]
+    [HttpDelete("remove-user/{id}")]
     public async Task<IActionResult> DeleteUserByIdAsync(int id)
     {
         try

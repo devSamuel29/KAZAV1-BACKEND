@@ -25,7 +25,7 @@ public class UserRepository : IUserRepository
         _config = config;
     }
 
-    public async Task<List<UserModel>> GetAllUsersAsync()
+    public async Task<List<UserModel>> GetAllUsersAsync(int skip, int take)
     {
         return await _dbContext.Users.ToListAsync();
     }
@@ -131,7 +131,7 @@ public class UserRepository : IUserRepository
 
     public async Task<Response> UpdatePasswordUser(int id, ForgottenPasswordRequest request)
     {
-        var dbUser = await _dbContext.Users.FindAsync(id);
+        var dbUser = await GetUserByIdAsync(id);
 
         if (dbUser == null)
         {
@@ -143,13 +143,13 @@ public class UserRepository : IUserRepository
 
         dbUser.Password = request.NewPassword;
         await _dbContext.SaveChangesAsync();
-        
+
         return new Response(200, "sucess");
     }
 
-    public async Task<List<UserModel>> DeleteAllUsersAsync()
+    public async Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take)
     {
-        var dbUsers = await _dbContext.Users.ToListAsync();
+        var dbUsers = await GetAllUsersAsync(skip, take);
 
         _dbContext.Users.RemoveRange(dbUsers);
         await _dbContext.SaveChangesAsync();
@@ -159,7 +159,7 @@ public class UserRepository : IUserRepository
 
     public async Task<UserModel> DeleteUserByIdAsync(int id)
     {
-        var dbUser = await _dbContext.Users.FindAsync(id);
+        var dbUser = await GetUserByIdAsync(id);
 
         if (dbUser == null)
         {

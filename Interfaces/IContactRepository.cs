@@ -6,5 +6,23 @@ namespace kazariobranco_backend.Interfaces;
 
 public interface IContactRepository
 {
-    Task<Response> CreateContactAsync([FromBody] ContactRequest request);
+    Task<List<ContactModel>> GetAllContactsAsync(int skip, int take);
+
+    Task<ContactModel> GetContactByIdAsync(int id);
+    
+    // Task<List<ContactModel>> GetContactsByNameAsync(string name);
+
+    // Task<ContactModel> GetContactByNameAsync(string name);
+    
+    // Task<ContactModel> GetContactByPhoneAsync(string phone);
+    
+    // Task<ContactModel> GetContactByEmailAsync(string email);
+
+    Task<Response> CreateContactAsync(ContactRequest request);
+
+    Task<Response> UpdateStatusContactAsync(int id);
+
+    Task<List<ContactModel>> DeleteAllContactsAsync(int skip, int take);
+
+    Task<ContactModel> DeleteContactById(int id);
 }

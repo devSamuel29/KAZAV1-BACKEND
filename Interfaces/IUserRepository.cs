@@ -7,17 +7,18 @@ namespace kazariobranco_backend.Interfaces;
 
 public interface IUserRepository
 {
+    
+    Task<List<UserModel>> GetAllUsersAsync(int skip, int take);
+
+    Task<UserModel> GetUserByIdAsync(int id);
+
     Task<Response> Authenticate(LoginRequest request);
 
     Task<Response> Register(RegisterRequest request);
 
-    Task<List<UserModel>> GetAllUsersAsync();
-
-    Task<UserModel> GetUserByIdAsync(int id);
-
     Task<Response> UpdatePasswordUser(int id, ForgottenPasswordRequest request);
 
-    Task<List<UserModel>> DeleteAllUsersAsync();
+    Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take);
 
     Task<UserModel> DeleteUserByIdAsync(int id);
 }
