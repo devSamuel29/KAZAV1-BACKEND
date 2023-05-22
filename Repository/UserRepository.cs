@@ -25,22 +25,17 @@ public class UserRepository : IUserRepository
         _config = config;
     }
 
-    private JwtSecurityToken getToken(List<Claim> authClaim)
+    public async Task<List<UserModel>> GetAllUsersAsync()
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            expires: DateTime.Now.AddMinutes(30),
-            claims: authClaim,
-            signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
-        );
-
-        return token;
+        return await _dbContext.Users.ToListAsync();
     }
 
-    public async Task<Response> authenticate(LoginRequest request)
+    public async Task<UserModel> GetUserByIdAsync(int id)
+    {
+        return await _dbContext.Users.FindAsync(id);
+    }
+
+    public async Task<Response> Authenticate(LoginRequest request)
     {
         var validator = new LoginValidator();
         var validation = validator.Validate(request);
@@ -48,8 +43,8 @@ public class UserRepository : IUserRepository
         {
             var passwordHasher = new PasswordHasher<LoginRequest>();
 
-            var dbUser = await _dbContext.users
-                .Where(u => u.email == request.email)
+            var dbUser = await _dbContext.Users
+                .Where(u => u.Email == request.Email)
                 .FirstOrDefaultAsync();
 
             if (dbUser == null)
@@ -59,8 +54,8 @@ public class UserRepository : IUserRepository
 
             var isValidHash = passwordHasher.VerifyHashedPassword(
                 request,
-                dbUser.password,
-                request.password
+                dbUser.Password,
+                request.Password
             );
 
             // if (isValidHash == PasswordVerificationResult.Failed) { }
@@ -85,7 +80,22 @@ public class UserRepository : IUserRepository
         throw new FormatException(validation.ToString());
     }
 
-    public async Task<Response> register(RegisterRequest request)
+    private JwtSecurityToken GetToken(List<Claim> authClaim)
+    {
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+
+        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            expires: DateTime.Now.AddMinutes(30),
+            claims: authClaim,
+            signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
+        );
+
+        return token;
+    }
+
+    public async Task<Response> Register(RegisterRequest request)
     {
         var validator = new RegisterValidate();
         var validation = validator.Validate(request);
@@ -93,19 +103,19 @@ public class UserRepository : IUserRepository
         if (validation.IsValid)
         {
             var passwordHasher = new PasswordHasher<RegisterRequest>();
-            request.password = passwordHasher.HashPassword(request, request.password);
-            request.cpf = passwordHasher.HashPassword(request, request.cpf);
+            request.Password = passwordHasher.HashPassword(request, request.Password);
+            request.Cpf = passwordHasher.HashPassword(request, request.Cpf);
 
             var newUser = new UserModel()
             {
-                firstname = request.firstname,
-                lastname = request.lastname,
-                cpf = request.cpf,
-                phone = request.phone,
-                email = request.email,
-                password = request.password,
-                created_at = DateTime.Now,
-                updated_at = DateTime.Now
+                Firstname = request.Firstname,
+                Lastname = request.Lastname,
+                Cpf = request.Cpf,
+                Phone = request.Phone,
+                Email = request.Email,
+                Password = request.Password,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
             };
 
             var query = await _dbContext.AddAsync(newUser);
@@ -117,5 +127,48 @@ public class UserRepository : IUserRepository
             }
         }
         throw new FormatException(validation.ToString());
+    }
+
+    public async Task<Response> UpdatePasswordUser(int id, ForgottenPasswordRequest request)
+    {
+        var dbUser = await _dbContext.Users.FindAsync(id);
+
+        if (dbUser == null)
+        {
+            throw new ArgumentNullException("not found");
+        }
+
+        var passwordHasher = new PasswordHasher<ForgottenPasswordRequest>();
+        request.NewPassword = passwordHasher.HashPassword(request, request.NewPassword);
+
+        dbUser.Password = request.NewPassword;
+        await _dbContext.SaveChangesAsync();
+        
+        return new Response(200, "sucess");
+    }
+
+    public async Task<List<UserModel>> DeleteAllUsersAsync()
+    {
+        var dbUsers = await _dbContext.Users.ToListAsync();
+
+        _dbContext.Users.RemoveRange(dbUsers);
+        await _dbContext.SaveChangesAsync();
+
+        return dbUsers;
+    }
+
+    public async Task<UserModel> DeleteUserByIdAsync(int id)
+    {
+        var dbUser = await _dbContext.Users.FindAsync(id);
+
+        if (dbUser == null)
+        {
+            throw new ArgumentNullException("usuário não encontrado");
+        }
+
+        _dbContext.Users.Remove(dbUser);
+        await _dbContext.SaveChangesAsync();
+
+        return dbUser;
     }
 }

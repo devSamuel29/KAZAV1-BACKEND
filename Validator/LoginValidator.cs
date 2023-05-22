@@ -7,9 +7,9 @@ public class LoginValidator : AbstractValidator<LoginRequest>
 {
     public LoginValidator()
     {
-        RuleFor(p => p.email).EmailAddress().WithMessage("Formato de email inválido");
+        RuleFor(p => p.Email).EmailAddress().WithMessage("Formato de email inválido");
 
-        RuleFor(p => p.password)
+        RuleFor(p => p.Password)
             .MinimumLength(8)
             .WithMessage("Senha muito curta")
             .MaximumLength(16)

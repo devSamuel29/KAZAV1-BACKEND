@@ -2,19 +2,19 @@ namespace kazariobranco_backend.Models;
 
 public class ContactModel
 {
-    public int id { get; set; }
+    public int Id { get; set; }
    
-    public string name { get; set; }
+    public string Name { get; set; }
 
-    public string email { get; set; }
+    public string Email { get; set; }
 
-    public string phone { get; set; }
+    public string Phone { get; set; }
 
-    public string reason { get; set; }
+    public string Reason { get; set; }
 
-    public string description { get; set; }
+    public string Description { get; set; }
 
-    public DateTime created_at { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-    public bool ended { get; set; }
+    public bool Ended { get; set; }
 }

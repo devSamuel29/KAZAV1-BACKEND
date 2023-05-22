@@ -15,7 +15,7 @@ public class ContactRepository : IContactRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Response> createContactOrder(ContactRequest request)
+    public async Task<Response> CreateContactAsync(ContactRequest request)
     {
         var validator = new ContactValidator();
         var validation = validator.Validate(request);
@@ -24,15 +24,15 @@ public class ContactRepository : IContactRepository
         {
             ContactModel newContact = new ContactModel
             {
-                name = request.name,
-                phone = request.phone,
-                email = request.email,
-                reason = request.reason,
-                description = request.description,
-                created_at = DateTime.Today
+                Name = request.name,
+                Phone = request.phone,
+                Email = request.email,
+                Reason = request.reason,
+                Description = request.description,
+                CreatedAt = DateTime.Today
             };
 
-            var query = await _dbContext.contacts.AddAsync(newContact);
+            var query = await _dbContext.Contacts.AddAsync(newContact);
             var isSaved = await _dbContext.SaveChangesAsync();
 
             if (query.IsKeySet && isSaved > 0)

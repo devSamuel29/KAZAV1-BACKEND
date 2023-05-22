@@ -12,7 +12,7 @@ public class MyDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyDbContext).Assembly);
     }
 
-    public DbSet<UserModel> users { get; set; }
+    public DbSet<UserModel> Users { get; set; }
 
-    public DbSet<ContactModel> contacts { get; set; }
+    public DbSet<ContactModel> Contacts { get; set; }
 }

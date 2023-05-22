@@ -6,5 +6,5 @@ namespace kazariobranco_backend.Interfaces;
 
 public interface IContactRepository
 {
-    Task<Response> createContactOrder([FromBody] ContactRequest request);
+    Task<Response> CreateContactAsync([FromBody] ContactRequest request);
 }

@@ -21,13 +21,13 @@ public class ContactController : ControllerBase
     {
         try
         {
-            var response = await _contactRepository.createContactOrder(request);
-            return Ok(response.message);
+            var response = await _contactRepository.CreateContactAsync(request);
+            return Ok(response.Message);
             
         }
         catch (Exception e)
         {
-            return BadRequest(e.ToString());
+            return BadRequest(e.Message);
         }
     }
 
