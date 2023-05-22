@@ -20,7 +20,7 @@ public interface IContactRepository
 
     Task<Response> CreateContactAsync(ContactRequest request);
 
-    Task<Response> UpdateStatusContactAsync(int id);
+    Task<ContactModel> UpdateStatusContactByIdAsync(int id);
 
     Task<List<ContactModel>> DeleteAllContactsAsync(int skip, int take);
 

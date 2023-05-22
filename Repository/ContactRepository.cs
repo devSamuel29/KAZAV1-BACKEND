@@ -70,7 +70,7 @@ public class ContactRepository : IContactRepository
                 Email = request.email,
                 Reason = request.reason,
                 Description = request.description,
-                CreatedAt = DateTime.Today
+                CreatedAt = DateTime.Now
             };
 
             var query = await _dbContext.Contacts.AddAsync(newContact);
@@ -85,9 +85,14 @@ public class ContactRepository : IContactRepository
         throw new FormatException(validation.ToString());
     }
 
-    public Task<Response> UpdateStatusContactAsync(int id)
+    public async Task<ContactModel> UpdateStatusContactByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var dbContact = await GetContactByIdAsync(id);
+
+        dbContact.Ended = true;
+        await _dbContext.SaveChangesAsync();
+
+        return dbContact;
     }
 
     public async Task<List<ContactModel>> DeleteAllContactsAsync(int skip, int take)

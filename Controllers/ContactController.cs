@@ -53,7 +53,7 @@ public class ContactController : ControllerBase
     //         return BadRequest(e.Message);
     //     }
     // }
-    
+
     // [HttpGet("/get-contact/names/{name}")]
     // public async Task<IActionResult> GetContactByNameAsync(string name)
     // {
@@ -87,6 +87,19 @@ public class ContactController : ControllerBase
         {
             var response = await _contactRepository.CreateContactAsync(request);
             return Ok(response.Message);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPatch("update-status/{id}")]
+    public async Task<IActionResult> UpdateStatusContactByIdAsync(int id)
+    {
+        try
+        {
+            return Ok(await _contactRepository.UpdateStatusContactByIdAsync(id));
         }
         catch (Exception e)
         {

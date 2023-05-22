@@ -27,7 +27,7 @@ public class UserRepository : IUserRepository
 
     public async Task<List<UserModel>> GetAllUsersAsync(int skip, int take)
     {
-        return await _dbContext.Users.ToListAsync();
+        return await _dbContext.Users.Skip(skip).Take(take).ToListAsync();
     }
 
     public async Task<UserModel> GetUserByIdAsync(int id)
@@ -150,6 +150,11 @@ public class UserRepository : IUserRepository
     public async Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take)
     {
         var dbUsers = await GetAllUsersAsync(skip, take);
+
+        if (dbUsers == null)
+        {
+            throw new ArgumentNullException("usuário não encontrado");
+        }
 
         _dbContext.Users.RemoveRange(dbUsers);
         await _dbContext.SaveChangesAsync();

@@ -17,7 +17,7 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [HttpGet("/get-users/{skip}/{take}")]
+    [HttpGet("get-users/{skip}/{take}")]
     public async Task<IActionResult> GetAllUsersAsync(int skip, int take)
     {
         try
