@@ -18,7 +18,7 @@ public interface IUserRepository
 
     Task<Response> UpdatePasswordUser(int id, ForgottenPasswordRequest request);
 
-    Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take);
+    Task<Response> DeleteAllUsersAsync(int skip, int take);
 
-    Task<UserModel> DeleteUserByIdAsync(int id);
+    Task<Response> DeleteUserByIdAsync(int id);
 }
