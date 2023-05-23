@@ -14,7 +14,13 @@ public class ContactModel
 
     public string Description { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    private DateTime _createdAt;
+
+    public DateTime CreatedAt
+    {
+        get { return _createdAt.Date; }
+        set { _createdAt = value; }
+    }
 
     public DateTime EndedAt { get; set; }
 }

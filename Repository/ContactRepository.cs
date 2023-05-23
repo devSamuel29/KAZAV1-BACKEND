@@ -22,9 +22,9 @@ public class ContactRepository : IContactRepository
 
         if (dbContacts.Count == 0)
         {
-            throw new NullReferenceException("");
+            throw new NullReferenceException("Usuários não encontrados");
         }
-
+        
         return dbContacts;
     }
 
@@ -34,7 +34,7 @@ public class ContactRepository : IContactRepository
 
         if (dbContact == null)
         {
-            throw new NullReferenceException("");
+            throw new NullReferenceException("Usuário não encontrado");
         }
 
         return dbContact;
@@ -51,7 +51,7 @@ public class ContactRepository : IContactRepository
 
         if (dbContacts.Count == 0)
         {
-            throw new NullReferenceException("");
+            throw new NullReferenceException("Usuários não encontrados");
         }
 
         return dbContacts;
@@ -66,9 +66,9 @@ public class ContactRepository : IContactRepository
     {
         var dbContact = await _dbContext.Contacts.Where(u => u.Phone == phone).ToListAsync();
 
-        if (dbContact == null)
+        if (dbContact.Count == 0)
         {
-            throw new NullReferenceException("");
+            throw new NullReferenceException("Usuários não encontrados");
         }
 
         return dbContact;
@@ -83,9 +83,9 @@ public class ContactRepository : IContactRepository
     {
         var dbContact = await _dbContext.Contacts.Where(u => u.Email == email).ToListAsync();
 
-        if (dbContact == null)
+        if (dbContact.Count == 0)
         {
-            throw new NullReferenceException("");
+            throw new NullReferenceException("Usuários não encontrados");
         }
 
         return dbContact;
@@ -111,11 +111,9 @@ public class ContactRepository : IContactRepository
             var query = await _dbContext.Contacts.AddAsync(newContact);
             var isSaved = await _dbContext.SaveChangesAsync();
 
-            if (query.IsKeySet && isSaved > 0)
-            {
-                return new Response(200, "sucess");
-            }
+            return new Response(200, "sucess");
         }
+
         throw new FormatException(validation.ToString());
     }
 
@@ -130,7 +128,8 @@ public class ContactRepository : IContactRepository
 
             return dbContact;
         }
-        throw new Exception("NAO SEI AINDA");
+
+        throw new InvalidOperationException("Status já alterado");
     }
 
     public async Task<List<ContactModel>> DeleteAllContactsAsync(int skip, int take)
@@ -139,7 +138,7 @@ public class ContactRepository : IContactRepository
 
         if (dbContacts == null)
         {
-            throw new NullReferenceException("");
+            throw new NullReferenceException("Usuários não encontrados");
         }
 
         _dbContext.Contacts.RemoveRange(dbContacts);
@@ -154,7 +153,7 @@ public class ContactRepository : IContactRepository
 
         if (dbContact == null)
         {
-            throw new NullReferenceException("");
+            throw new NullReferenceException("Usuário não encontrado");
         }
 
         _dbContext.Contacts.Remove(dbContact);

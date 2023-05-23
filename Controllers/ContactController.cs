@@ -50,45 +50,6 @@ public class ContactController : ControllerBase
         }
     }
 
-    // [HttpGet("/get-contact/name/{name}")]
-    // public async Task<IActionResult> GetContactsByNameAsync(string name)
-    // {
-    //     try
-    //     {
-    //         return Ok(await _contactRepository.GetContactByNameAsync(name));
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
-
-    // [HttpGet("/get-contact/names/{name}")]
-    // public async Task<IActionResult> GetContactByNameAsync(string name)
-    // {
-    //     try
-    //     {
-    //         return Ok(await _contactRepository.GetContactsByNameAsync(name));
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
-
-    // [HttpGet("/get-contact/email/{email}")]
-    // public async Task<IActionResult> GetContactByEmailAsync(string email)
-    // {
-    //     try
-    //     {
-    //         return Ok(await _contactRepository.GetContactByEmailAsync(email));
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
-
     [HttpPost("create-contact")]
     public async Task<IActionResult> CreateContact(ContactRequest request)
     {
@@ -101,8 +62,8 @@ public class ContactController : ControllerBase
         {
             return NotFound(e.Message);
         }
-        catch (FormatException e) 
-        { 
+        catch (FormatException e)
+        {
             return BadRequest(e.Message);
         }
         catch (SqlException e)
@@ -121,6 +82,10 @@ public class ContactController : ControllerBase
         catch (NullReferenceException e)
         {
             return NotFound(e.Message);
+        }
+        catch (InvalidOperationException)
+        {
+            return NoContent();
         }
         catch (SqlException e)
         {
