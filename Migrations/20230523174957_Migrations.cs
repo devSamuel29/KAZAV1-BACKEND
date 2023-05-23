@@ -23,7 +23,7 @@ namespace kazariobranco_backend.Migrations
                     reason = table.Column<string>(type: "char(11)", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "date", nullable: false),
-                    ended = table.Column<bool>(type: "bit", nullable: false)
+                    EndedAt = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,8 +42,8 @@ namespace kazariobranco_backend.Migrations
                     phone = table.Column<string>(type: "varchar(32)", nullable: false),
                     email = table.Column<string>(type: "varchar(40)", nullable: false),
                     password = table.Column<string>(type: "varchar(85)", nullable: false),
-                    created_at = table.Column<DateTime>(type: "date", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "date", nullable: false)
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

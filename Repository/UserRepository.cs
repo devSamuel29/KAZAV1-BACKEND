@@ -29,9 +29,9 @@ public class UserRepository : IUserRepository
     {
         var dbUsers = await _dbContext.Users.Skip(skip).Take(take).ToListAsync();
 
-        if (dbUsers == null)
+        if (dbUsers.Count == 0)
         {
-            throw new ArgumentNullException("Usuários não encontrados");
+            throw new NullReferenceException("Usuários não encontrados");
         }
 
         return dbUsers;
@@ -43,7 +43,7 @@ public class UserRepository : IUserRepository
 
         if (dbUser == null)
         {
-            throw new ArgumentNullException("Usuário não encontrado");
+            throw new NullReferenceException("Usuário não encontrado");
         }
 
         return dbUser;
@@ -63,7 +63,7 @@ public class UserRepository : IUserRepository
 
             if (dbUser == null)
             {
-                throw new ArgumentNullException("Usuário não encontrado");
+                throw new NullReferenceException("Usuário não encontrado");
             }
 
             var isValidHash = passwordHasher.VerifyHashedPassword(
@@ -135,10 +135,7 @@ public class UserRepository : IUserRepository
             var query = await _dbContext.AddAsync(newUser);
             var isSaved = await _dbContext.SaveChangesAsync();
 
-            if (query.IsKeySet && isSaved > 0)
-            {
-                return new Response(200, "sucess");
-            }
+            return new Response(200, "sucess");
         }
         throw new FormatException(validation.ToString());
     }
@@ -147,15 +144,11 @@ public class UserRepository : IUserRepository
     {
         var dbUser = await GetUserByIdAsync(id);
 
-        if (dbUser == null)
-        {
-            throw new ArgumentNullException("not found");
-        }
-
         var passwordHasher = new PasswordHasher<ForgottenPasswordRequest>();
         request.NewPassword = passwordHasher.HashPassword(request, request.NewPassword);
 
         dbUser.Password = request.NewPassword;
+        dbUser.UpdatedAt = DateTime.Now;
         await _dbContext.SaveChangesAsync();
 
         return new Response(200, "sucess");
@@ -164,11 +157,6 @@ public class UserRepository : IUserRepository
     public async Task<Response> DeleteAllUsersAsync(int skip, int take)
     {
         var dbUsers = await GetAllUsersAsync(skip, take);
-
-        if (dbUsers == null)
-        {
-            throw new ArgumentNullException("usuário não encontrado");
-        }
 
         _dbContext.Users.RemoveRange(dbUsers);
         var isSaved = await _dbContext.SaveChangesAsync();
@@ -184,11 +172,6 @@ public class UserRepository : IUserRepository
     public async Task<Response> DeleteUserByIdAsync(int id)
     {
         var dbUser = await GetUserByIdAsync(id);
-
-        if (dbUser == null)
-        {
-            throw new ArgumentNullException("usuário não encontrado");
-        }
 
         _dbContext.Users.Remove(dbUser);
         await _dbContext.SaveChangesAsync();

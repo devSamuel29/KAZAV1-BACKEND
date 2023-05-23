@@ -49,7 +49,7 @@ public class ContactMap : IEntityTypeConfiguration<ContactModel>
             .HasColumnType("date")
             .IsRequired();
 
-        builder.Property(p => p.Ended)
-            .HasColumnType("bit");
+        builder.Property(p => p.EndedAt)
+            .HasColumnType("date");
     }
 }

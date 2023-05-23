@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Request;
+using Microsoft.Data.SqlClient;
 
 namespace kazariobranco_backend.Controllers;
 
@@ -24,7 +25,11 @@ public class UserController : ControllerBase
         {
             return Ok(await _userRepository.GetAllUsersAsync(skip, take));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
@@ -37,12 +42,17 @@ public class UserController : ControllerBase
         {
             return Ok(await _userRepository.GetUserByIdAsync(id));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
     }
 
+    // *********
     [AllowAnonymous]
     [HttpPost("register-user")]
     public async Task<IActionResult> Register(RegisterRequest request)
@@ -58,6 +68,7 @@ public class UserController : ControllerBase
         }
     }
 
+    // *********
     [AllowAnonymous]
     [HttpPost("authenticate-user")]
     public async Task<IActionResult> Authenticate(LoginRequest request)
@@ -80,33 +91,45 @@ public class UserController : ControllerBase
         {
             return Ok(await _userRepository.UpdatePasswordUser(id, request));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
     }
 
-    [HttpDelete("remove-users/{skip}/{take}")]
+    [HttpDelete("delete-users/{skip}/{take}")]
     public async Task<IActionResult> DeleteAllUsersAsync(int skip, int take)
     {
         try
         {
             return Ok(await _userRepository.DeleteAllUsersAsync(skip, take));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
     }
 
-    [HttpDelete("remove-user/{id}")]
+    [HttpDelete("delete-user/{id}")]
     public async Task<IActionResult> DeleteUserByIdAsync(int id)
     {
         try
         {
             return Ok(await _userRepository.DeleteUserByIdAsync(id));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }

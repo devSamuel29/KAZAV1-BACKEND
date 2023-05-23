@@ -4,13 +4,13 @@ namespace kazariobranco_backend.Request;
 
 public class ContactRequest
 {
-    public string name { get; set; }
+    public string Name { get; set; }
 
-    public string email { get; set; }
+    public string Email { get; set; }
 
-    public string phone { get; set; }
+    public string Phone { get; set; }
 
-    public string reason { get; set; }
+    public string Reason { get; set; }
     
-    public string description { get; set; }
+    public string Description { get; set; }
 }

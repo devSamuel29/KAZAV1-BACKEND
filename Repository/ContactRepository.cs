@@ -18,12 +18,26 @@ public class ContactRepository : IContactRepository
 
     public async Task<List<ContactModel>> GetAllContactsAsync(int skip, int take)
     {
-        return await _dbContext.Contacts.Skip(skip).Take(take).ToListAsync();
+        var dbContacts = await _dbContext.Contacts.Skip(skip).Take(take).ToListAsync();
+
+        if (dbContacts.Count == 0)
+        {
+            throw new NullReferenceException("");
+        }
+
+        return dbContacts;
     }
 
     public async Task<ContactModel> GetContactByIdAsync(int id)
     {
-        return await _dbContext.Contacts.FindAsync(id);
+        var dbContact = await _dbContext.Contacts.FindAsync(id);
+
+        if (dbContact == null)
+        {
+            throw new NullReferenceException("");
+        }
+
+        return dbContact;
     }
 
     // public async Task<ContactModel> GetContactByNameAsync(string name)
@@ -33,7 +47,14 @@ public class ContactRepository : IContactRepository
 
     public async Task<List<ContactModel>> GetContactsByNameAsync(string name)
     {
-        return await _dbContext.Contacts.Where(u => u.Name == name).ToListAsync();
+        var dbContacts = await _dbContext.Contacts.Where(u => u.Name == name).ToListAsync();
+
+        if (dbContacts.Count == 0)
+        {
+            throw new NullReferenceException("");
+        }
+
+        return dbContacts;
     }
 
     // public async Task<ContactModel> GetContactByPhoneAsync(string phone)
@@ -43,7 +64,14 @@ public class ContactRepository : IContactRepository
 
     public async Task<List<ContactModel>> GetContactsByPhoneAsync(string phone)
     {
-        return await _dbContext.Contacts.Where(u => u.Phone == phone).ToListAsync();
+        var dbContact = await _dbContext.Contacts.Where(u => u.Phone == phone).ToListAsync();
+
+        if (dbContact == null)
+        {
+            throw new NullReferenceException("");
+        }
+
+        return dbContact;
     }
 
     // public async Task<ContactModel> GetContactByEmailAsync(string email)
@@ -53,7 +81,14 @@ public class ContactRepository : IContactRepository
 
     public async Task<List<ContactModel>> GetContactsByEmailAsync(string email)
     {
-        return await _dbContext.Contacts.Where(u => u.Email == email).ToListAsync();
+        var dbContact = await _dbContext.Contacts.Where(u => u.Email == email).ToListAsync();
+
+        if (dbContact == null)
+        {
+            throw new NullReferenceException("");
+        }
+
+        return dbContact;
     }
 
     public async Task<Response> CreateContactAsync(ContactRequest request)
@@ -65,12 +100,12 @@ public class ContactRepository : IContactRepository
         {
             ContactModel newContact = new ContactModel
             {
-                Name = request.name,
-                Phone = request.phone,
-                Email = request.email,
-                Reason = request.reason,
-                Description = request.description,
-                CreatedAt = DateTime.Now
+                Name = request.Name,
+                Phone = request.Phone,
+                Email = request.Email,
+                Reason = request.Reason,
+                Description = request.Description,
+                CreatedAt = DateTime.Today,
             };
 
             var query = await _dbContext.Contacts.AddAsync(newContact);
@@ -81,7 +116,6 @@ public class ContactRepository : IContactRepository
                 return new Response(200, "sucess");
             }
         }
-
         throw new FormatException(validation.ToString());
     }
 
@@ -89,15 +123,24 @@ public class ContactRepository : IContactRepository
     {
         var dbContact = await GetContactByIdAsync(id);
 
-        dbContact.Ended = true;
-        await _dbContext.SaveChangesAsync();
+        if (dbContact.EndedAt == DateTime.MinValue)
+        {
+            dbContact.EndedAt = DateTime.Today;
+            await _dbContext.SaveChangesAsync();
 
-        return dbContact;
+            return dbContact;
+        }
+        throw new Exception("NAO SEI AINDA");
     }
 
     public async Task<List<ContactModel>> DeleteAllContactsAsync(int skip, int take)
     {
         var dbContacts = await GetAllContactsAsync(skip, take);
+
+        if (dbContacts == null)
+        {
+            throw new NullReferenceException("");
+        }
 
         _dbContext.Contacts.RemoveRange(dbContacts);
         await _dbContext.SaveChangesAsync();
@@ -108,6 +151,11 @@ public class ContactRepository : IContactRepository
     public async Task<ContactModel> DeleteContactById(int id)
     {
         var dbContact = await GetContactByIdAsync(id);
+
+        if (dbContact == null)
+        {
+            throw new NullReferenceException("");
+        }
 
         _dbContext.Contacts.Remove(dbContact);
         await _dbContext.SaveChangesAsync();

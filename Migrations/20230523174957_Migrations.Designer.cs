@@ -12,7 +12,7 @@ using kazariobranco_backend.Database;
 namespace kazariobranco_backend.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230518170914_Migrations")]
+    [Migration("20230523174957_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />
@@ -27,46 +27,46 @@ namespace kazariobranco_backend.Migrations
 
             modelBuilder.Entity("kazariobranco_backend.Models.ContactModel", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("created_at")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("date")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("description")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<string>("email")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(40)")
                         .HasColumnName("email");
 
-                    b.Property<bool>("ended")
-                        .HasColumnType("bit");
+                    b.Property<DateTime>("EndedAt")
+                        .HasColumnType("date");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(40)")
                         .HasColumnName("name");
 
-                    b.Property<string>("phone")
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("varchar(11)")
                         .HasColumnName("phone");
 
-                    b.Property<string>("reason")
+                    b.Property<string>("Reason")
                         .IsRequired()
                         .HasColumnType("char(11)")
                         .HasColumnName("reason");
 
-                    b.HasKey("id")
+                    b.HasKey("Id")
                         .HasName("pk_contact_id");
 
                     b.ToTable("contacts", (string)null);
@@ -74,61 +74,61 @@ namespace kazariobranco_backend.Migrations
 
             modelBuilder.Entity("kazariobranco_backend.Models.UserModel", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("cpf")
+                    b.Property<string>("Cpf")
                         .IsRequired()
                         .HasColumnType("varchar(84)")
                         .HasColumnName("cpf");
 
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("email")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(40)")
                         .HasColumnName("email");
 
-                    b.Property<string>("firstname")
+                    b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("varchar(20)")
                         .HasColumnName("firstname");
 
-                    b.Property<string>("lastname")
+                    b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("varchar(20)")
                         .HasColumnName("lastname");
 
-                    b.Property<string>("password")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("varchar(85)")
                         .HasColumnName("password");
 
-                    b.Property<string>("phone")
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("varchar(32)")
                         .HasColumnName("phone");
 
-                    b.Property<DateTime>("updated_at")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("id")
+                    b.HasKey("Id")
                         .HasName("pk_user_id");
 
-                    b.HasIndex("cpf")
+                    b.HasIndex("Cpf")
                         .IsUnique();
 
-                    b.HasIndex("email")
+                    b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("phone")
+                    b.HasIndex("Phone")
                         .IsUnique();
 
                     b.ToTable("users", (string)null);

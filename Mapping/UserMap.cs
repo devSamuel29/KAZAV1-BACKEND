@@ -51,12 +51,12 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
 
         builder.Property(p => p.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("date")
+            .HasColumnType("datetime2")
             .IsRequired();
 
         builder.Property(p => p.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("date")
+            .HasColumnType("datetime2")
             .IsRequired();
     }
 }

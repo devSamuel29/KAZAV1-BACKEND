@@ -16,5 +16,5 @@ public class ContactModel
 
     public DateTime CreatedAt { get; set; }
 
-    public bool Ended { get; set; }
+    public DateTime EndedAt { get; set; }
 }

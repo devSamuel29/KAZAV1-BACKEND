@@ -1,6 +1,7 @@
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Request;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace kazariobranco_backend.Controllers;
 
@@ -22,7 +23,11 @@ public class ContactController : ControllerBase
         {
             return Ok(await _contactRepository.GetAllContactsAsync(skip, take));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
@@ -35,7 +40,11 @@ public class ContactController : ControllerBase
         {
             return Ok(await _contactRepository.GetContactByIdAsync(id));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
@@ -81,14 +90,22 @@ public class ContactController : ControllerBase
     // }
 
     [HttpPost("create-contact")]
-    public async Task<IActionResult> CreateContactOrder(ContactRequest request)
+    public async Task<IActionResult> CreateContact(ContactRequest request)
     {
         try
         {
             var response = await _contactRepository.CreateContactAsync(request);
             return Ok(response.Message);
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (FormatException e) 
+        { 
+            return BadRequest(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
@@ -101,7 +118,11 @@ public class ContactController : ControllerBase
         {
             return Ok(await _contactRepository.UpdateStatusContactByIdAsync(id));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
@@ -114,7 +135,11 @@ public class ContactController : ControllerBase
         {
             return Ok(await _contactRepository.DeleteAllContactsAsync(skip, take));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
@@ -127,7 +152,11 @@ public class ContactController : ControllerBase
         {
             return Ok(await _contactRepository.DeleteContactById(id));
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
         {
             return BadRequest(e.Message);
         }
