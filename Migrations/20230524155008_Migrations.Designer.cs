@@ -12,7 +12,7 @@ using kazariobranco_backend.Database;
 namespace kazariobranco_backend.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230523174957_Migrations")]
+    [Migration("20230524155008_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />
@@ -35,7 +35,7 @@ namespace kazariobranco_backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
@@ -49,7 +49,7 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnName("email");
 
                     b.Property<DateTime>("EndedAt")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()

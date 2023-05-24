@@ -22,8 +22,8 @@ namespace kazariobranco_backend.Migrations
                     phone = table.Column<string>(type: "varchar(11)", nullable: false),
                     reason = table.Column<string>(type: "char(11)", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "date", nullable: false),
-                    EndedAt = table.Column<DateTime>(type: "date", nullable: false)
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -6,16 +6,17 @@ using System.Text;
 using kazariobranco_backend.Database;
 using kazariobranco_backend.Repository;
 using kazariobranco_backend.Interfaces;
+using kazariobranco_backend.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(x =>
-        {
-            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }
-    )
+builder.Services
+    .AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -30,8 +31,7 @@ builder.Services.AddAuthentication(x =>
                 Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Jwt:Key"))
             )
         };
-    }
-);
+    });
 
 builder.Services.AddDbContext<MyDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
@@ -43,7 +43,21 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        IdentityData.UserPolicyName,
+        p => p.RequireClaim(IdentityData.UserClaimName, "true")
+    );
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        IdentityData.AdminUserPolicyName,
+        p => p.RequireClaim(IdentityData.AdminUserClaimName, "true")
+    );
+});
 
 var app = builder.Build();
 

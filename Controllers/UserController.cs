@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Request;
 using Microsoft.Data.SqlClient;
+using kazariobranco_backend.Identity;
 
 namespace kazariobranco_backend.Controllers;
 
@@ -85,6 +86,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPatch("update-user-password/{id}")]
+    [Authorize(Policy = IdentityData.UserPolicyName)]
     public async Task<IActionResult> UpdatePasswordUser(int id, ForgottenPasswordRequest request)
     {
         try

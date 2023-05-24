@@ -49,6 +49,21 @@ public class UserRepository : IUserRepository
         return dbUser;
     }
 
+    private JwtSecurityToken GetToken(List<Claim> authClaim)
+    {
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+
+        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            expires: DateTime.Now.AddMinutes(30),
+            claims: authClaim,
+            signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
+        );
+
+        return token;
+    }
+
     public async Task<Response> Authenticate(LoginRequest request)
     {
         var validator = new LoginValidator();
@@ -56,7 +71,6 @@ public class UserRepository : IUserRepository
         if (validation.IsValid)
         {
             var passwordHasher = new PasswordHasher<LoginRequest>();
-
             var dbUser = await _dbContext.Users
                 .Where(u => u.Email == request.Email)
                 .FirstOrDefaultAsync();
@@ -72,41 +86,25 @@ public class UserRepository : IUserRepository
                 request.Password
             );
 
-            // if (isValidHash == PasswordVerificationResult.Failed) { }
-            // else
-            // {
-            //     // pode ser 1 ou 2 (ambos sucess)
-            // }
-
             switch (isValidHash)
             {
                 case PasswordVerificationResult.Failed:
                     throw new InvalidOperationException("unauthorized");
+
                 case PasswordVerificationResult.Success:
-                    return new Response(200, "a");
+                    var claims = new List<Claim>() 
+                    {
+                        new(JwtRegisteredClaimNames.Sub, dbUser.Id.ToString()),
+                        new(JwtRegisteredClaimNames.Email, dbUser.Email.ToString()),
+                    };
+                    string token = new JwtSecurityTokenHandler().WriteToken(GetToken(claims));
+                    return new Response(200, token);
+
                 case PasswordVerificationResult.SuccessRehashNeeded:
-                    // colocar um metodo pra verificar se o cpf ou a senha
-                    // precisam de um rehash
-                    // colocar um if no lugar do switch
                     break;
             }
         }
         throw new FormatException(validation.ToString());
-    }
-
-    private JwtSecurityToken GetToken(List<Claim> authClaim)
-    {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            expires: DateTime.Now.AddMinutes(30),
-            claims: authClaim,
-            signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
-        );
-
-        return token;
     }
 
     public async Task<Response> Register(RegisterRequest request)
@@ -132,8 +130,8 @@ public class UserRepository : IUserRepository
                 UpdatedAt = DateTime.Now
             };
 
-            var query = await _dbContext.AddAsync(newUser);
-            var isSaved = await _dbContext.SaveChangesAsync();
+            await _dbContext.AddAsync(newUser);
+            await _dbContext.SaveChangesAsync();
 
             return new Response(200, "sucess");
         }

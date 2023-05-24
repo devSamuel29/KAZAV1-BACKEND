@@ -48,7 +48,7 @@ public class ContactRepository : IContactRepository
     public async Task<List<ContactModel>> GetContactsByNameAsync(string name)
     {
         var dbContacts = await _dbContext.Contacts.Where(u => u.Name == name).ToListAsync();
-
+        
         if (dbContacts.Count == 0)
         {
             throw new NullReferenceException("Usuários não encontrados");
@@ -105,7 +105,7 @@ public class ContactRepository : IContactRepository
                 Email = request.Email,
                 Reason = request.Reason,
                 Description = request.Description,
-                CreatedAt = DateTime.Today,
+                CreatedAt = DateTime.Now,
             };
 
             var query = await _dbContext.Contacts.AddAsync(newContact);
@@ -123,7 +123,7 @@ public class ContactRepository : IContactRepository
 
         if (dbContact.EndedAt == DateTime.MinValue)
         {
-            dbContact.EndedAt = DateTime.Today;
+            dbContact.EndedAt = DateTime.Now;
             await _dbContext.SaveChangesAsync();
 
             return dbContact;

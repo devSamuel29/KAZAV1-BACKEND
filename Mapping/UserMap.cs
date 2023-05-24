@@ -7,7 +7,7 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
 {
     public void Configure(EntityTypeBuilder<UserModel> builder)
     {
-        builder.ToTable("users");
+        builder.ToTable("Users");
 
         builder.HasKey(p => p.Id).HasName("pk_user_id");
         builder.Property(p => p.Id)
