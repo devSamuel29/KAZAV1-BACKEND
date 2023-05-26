@@ -17,7 +17,7 @@ public class RequiresClaimAttribute : Attribute, IAuthorizationFilter
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        if(context.HttpContext.User.HasClaim(_claimName, _claimValue))
+        if(!context.HttpContext.User.HasClaim(_claimName, _claimValue))
         {
             context.Result = new ForbidResult();
         }

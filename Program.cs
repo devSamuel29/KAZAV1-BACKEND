@@ -40,12 +40,13 @@ builder.Services.AddDbContext<MyDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
 );
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        IdentityData.AdminUserPolicyName,
+        p => p.RequireClaim(IdentityData.AdminUserClaimName, "true")
+    );
+});
 
 builder.Services.AddAuthorization(options =>
 {
@@ -55,13 +56,12 @@ builder.Services.AddAuthorization(options =>
     );
 });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(
-        IdentityData.AdminUserPolicyName,
-        p => p.RequireClaim(IdentityData.AdminUserClaimName, "true")
-    );
-});
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IContactRepository, ContactRepository>();
 
 var app = builder.Build();
 

@@ -86,7 +86,7 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
-    [RequiresClaim(IdentityData.AdminUserClaimName, IdentityData.AdminUserPolicyName)]
+    [RequiresClaim(IdentityData.AdminUserClaimName, "true")]
     [HttpPatch("update-user-password/{id}")]
     public async Task<IActionResult> UpdatePasswordUser(int id, ForgottenPasswordRequest request)
     {
