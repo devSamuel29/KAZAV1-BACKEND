@@ -8,55 +8,59 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
     public void Configure(EntityTypeBuilder<UserModel> builder)
     {
         builder.ToTable("Users");
-
-        builder.HasKey(p => p.Id).HasName("pk_user_id");
+        builder.HasKey(p => p.Id).HasName("PkUserId");
         builder.Property(p => p.Id)
-            .HasColumnName("id")
+            .HasColumnName("Id")
             .HasColumnType("int")
             .UseIdentityColumn()
             .IsRequired();
 
+        builder.Property(p => p.Role)
+            .HasColumnName("Role")
+            .HasColumnType("varchar(5)")
+            .HasDefaultValue("user");
+
         builder.Property(p => p.Firstname)
-            .HasColumnName("firstname")
+            .HasColumnName("Firstname")
             .HasColumnType("varchar(20)")
             .IsRequired();
 
         builder.Property(p => p.Lastname)
-            .HasColumnName("lastname")
+            .HasColumnName("Lastname")
             .HasColumnType("varchar(20)")
             .IsRequired();
 
         builder.HasIndex(p => p.Cpf).IsUnique();
         builder.Property(p => p.Cpf)
-            .HasColumnName("cpf")
+            .HasColumnName("Cpf")
             .HasColumnType("varchar(84)")
             .IsRequired();
 
         builder.HasIndex(p => p.Phone).IsUnique();
         builder.Property(p => p.Phone)
-            .HasColumnName("phone")
+            .HasColumnName("Phone")
             .HasColumnType("varchar(32)")
             .IsRequired();
 
         builder.HasIndex(p => p.Email).IsUnique();
         builder.Property(p => p.Email)
-            .HasColumnName("email")
+            .HasColumnName("Email")
             .HasColumnType("varchar(40)")
             .IsRequired();
 
         builder.Property(p => p.Password)
-            .HasColumnName("password")
+            .HasColumnName("Password")
             .HasColumnType("varchar(85)")
             .IsRequired();
 
         builder.Property(p => p.CreatedAt)
-            .HasColumnName("created_at")
-            .HasColumnType("datetime2")
+            .HasColumnName("CreatedAt")
+            .HasColumnType("date")
             .IsRequired();
 
         builder.Property(p => p.UpdatedAt)
-            .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
+            .HasColumnName("UpdatedAt")
+            .HasColumnType("date")
             .IsRequired();
     }
 }

@@ -4,9 +4,9 @@ namespace kazariobranco_backend.Identity;
     {
         public const string AdminUserClaimName = "admin";
 
-        public const string AdminUserPolicyName = "admin";
+        public const string AdminUserPolicyName = "Admin";
 
         public const string UserClaimName = "user";
         
-        public const string UserPolicyName = "user";
+        public const string UserPolicyName = "User";
     }

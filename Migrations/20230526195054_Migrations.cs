@@ -12,7 +12,7 @@ namespace kazariobranco_backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "contacts",
+                name: "Contacts",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
@@ -23,7 +23,7 @@ namespace kazariobranco_backend.Migrations
                     reason = table.Column<string>(type: "char(11)", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ended_at = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,41 +31,42 @@ namespace kazariobranco_backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "users",
+                name: "Users",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    firstname = table.Column<string>(type: "varchar(20)", nullable: false),
-                    lastname = table.Column<string>(type: "varchar(20)", nullable: false),
-                    cpf = table.Column<string>(type: "varchar(84)", nullable: false),
-                    phone = table.Column<string>(type: "varchar(32)", nullable: false),
-                    email = table.Column<string>(type: "varchar(40)", nullable: false),
-                    password = table.Column<string>(type: "varchar(85)", nullable: false),
-                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Role = table.Column<string>(type: "varchar(5)", nullable: true, defaultValue: "user"),
+                    Firstname = table.Column<string>(type: "varchar(20)", nullable: false),
+                    Lastname = table.Column<string>(type: "varchar(20)", nullable: false),
+                    Cpf = table.Column<string>(type: "varchar(84)", nullable: false),
+                    Phone = table.Column<string>(type: "varchar(32)", nullable: false),
+                    Email = table.Column<string>(type: "varchar(40)", nullable: false),
+                    Password = table.Column<string>(type: "varchar(85)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "date", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_user_id", x => x.id);
+                    table.PrimaryKey("PkUserId", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_cpf",
-                table: "users",
-                column: "cpf",
+                name: "IX_Users_Cpf",
+                table: "Users",
+                column: "Cpf",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_email",
-                table: "users",
-                column: "email",
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_phone",
-                table: "users",
-                column: "phone",
+                name: "IX_Users_Phone",
+                table: "Users",
+                column: "Phone",
                 unique: true);
         }
 
@@ -73,10 +74,10 @@ namespace kazariobranco_backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "contacts");
+                name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "Users");
         }
     }
 }

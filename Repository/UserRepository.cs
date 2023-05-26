@@ -96,6 +96,7 @@ public class UserRepository : IUserRepository
                     {
                         new(JwtRegisteredClaimNames.Sub, dbUser.Id.ToString()),
                         new(JwtRegisteredClaimNames.Email, dbUser.Email.ToString()),
+                        new("type_user", dbUser.Role)
                     };
                     string token = new JwtSecurityTokenHandler().WriteToken(GetToken(claims));
                     return new Response(200, token);
@@ -117,7 +118,8 @@ public class UserRepository : IUserRepository
             var passwordHasher = new PasswordHasher<RegisterRequest>();
             request.Password = passwordHasher.HashPassword(request, request.Password);
             request.Cpf = passwordHasher.HashPassword(request, request.Cpf);
-
+            var date = DateTime.Now;
+            
             var newUser = new UserModel()
             {
                 Firstname = request.Firstname,
@@ -126,8 +128,8 @@ public class UserRepository : IUserRepository
                 Phone = request.Phone,
                 Email = request.Email,
                 Password = request.Password,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                CreatedAt = DateTime.Today,
+                UpdatedAt = DateTime.Today
             };
 
             await _dbContext.AddAsync(newUser);
@@ -146,7 +148,7 @@ public class UserRepository : IUserRepository
         request.NewPassword = passwordHasher.HashPassword(request, request.NewPassword);
 
         dbUser.Password = request.NewPassword;
-        dbUser.UpdatedAt = DateTime.Now;
+        dbUser.UpdatedAt = DateTime.Today;
         await _dbContext.SaveChangesAsync();
 
         return new Response(200, "sucess");
@@ -157,14 +159,9 @@ public class UserRepository : IUserRepository
         var dbUsers = await GetAllUsersAsync(skip, take);
 
         _dbContext.Users.RemoveRange(dbUsers);
-        var isSaved = await _dbContext.SaveChangesAsync();
-
-        if (isSaved > 0)
-        {
-            return new Response(200, "sucess");
-        }
-
-        throw new InvalidDataException("sei la");
+        await _dbContext.SaveChangesAsync();
+        
+        return new Response(200, "sucess");
     }
 
     public async Task<Response> DeleteUserByIdAsync(int id)
@@ -174,6 +171,6 @@ public class UserRepository : IUserRepository
         _dbContext.Users.Remove(dbUser);
         await _dbContext.SaveChangesAsync();
 
-        throw new InvalidDataException("sei la");
+        return new Response(200, "sucess");
     }
 }

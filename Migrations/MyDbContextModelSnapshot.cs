@@ -46,7 +46,8 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnName("email");
 
                     b.Property<DateTime>("EndedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ended_at");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -66,7 +67,7 @@ namespace kazariobranco_backend.Migrations
                     b.HasKey("Id")
                         .HasName("pk_contact_id");
 
-                    b.ToTable("contacts", (string)null);
+                    b.ToTable("Contacts", (string)null);
                 });
 
             modelBuilder.Entity("kazariobranco_backend.Models.UserModel", b =>
@@ -74,50 +75,56 @@ namespace kazariobranco_backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Cpf")
                         .IsRequired()
                         .HasColumnType("varchar(84)")
-                        .HasColumnName("cpf");
+                        .HasColumnName("Cpf");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnType("date")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(40)")
-                        .HasColumnName("email");
+                        .HasColumnName("Email");
 
                     b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("varchar(20)")
-                        .HasColumnName("firstname");
+                        .HasColumnName("Firstname");
 
                     b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("varchar(20)")
-                        .HasColumnName("lastname");
+                        .HasColumnName("Lastname");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("varchar(85)")
-                        .HasColumnName("password");
+                        .HasColumnName("Password");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("varchar(32)")
-                        .HasColumnName("phone");
+                        .HasColumnName("Phone");
+
+                    b.Property<string>("Role")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(5)")
+                        .HasDefaultValue("user")
+                        .HasColumnName("Role");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
+                        .HasColumnType("date")
+                        .HasColumnName("UpdatedAt");
 
                     b.HasKey("Id")
-                        .HasName("pk_user_id");
+                        .HasName("PkUserId");
 
                     b.HasIndex("Cpf")
                         .IsUnique();
@@ -128,7 +135,7 @@ namespace kazariobranco_backend.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618
         }
