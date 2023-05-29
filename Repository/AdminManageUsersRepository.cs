@@ -8,11 +8,11 @@ using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
 
-public class AdminToUserRepository : IAdminToUserRepository
+public class AdminManageUsersRepository : IAdminManageUsersRepository
 {
     private readonly MyDbContext _dbContext;
 
-    public AdminToUserRepository(MyDbContext dbContext)
+    public AdminManageUsersRepository(MyDbContext dbContext)
     {
         _dbContext = dbContext; 
     }

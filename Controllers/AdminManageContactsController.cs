@@ -10,13 +10,15 @@ namespace kazariobranco_backend.Controllers;
 [Authorize(Policy = IdentityData.AdminUserPolicyName)]
 [ApiController]
 [Route("v1/api/[controller]")]
-public class AdminToContactController : ControllerBase
+public class AdminManageContactsController : ControllerBase
 {
-    private readonly IAdminToContactRepository _adminToContactRepository;
+    private readonly IAdminManageContactsRepository _adminManageContactsRepository;
 
-    public AdminToContactController(IAdminToContactRepository adminToContactRepository)
+    public AdminManageContactsController(
+        IAdminManageContactsRepository adminManageContactsRepository
+    )
     {
-        _adminToContactRepository = adminToContactRepository;
+        _adminManageContactsRepository = adminManageContactsRepository;
     }
 
     [HttpGet("get-all-contacts/{skip}/{take}")]
@@ -24,7 +26,7 @@ public class AdminToContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _adminToContactRepository.GetAllContactsAsync(skip, take);
+            var _dbContacts = await _adminManageContactsRepository.GetAllContactsAsync(skip, take);
             return Ok(_dbContacts);
         }
         catch (NullReferenceException e)
@@ -42,7 +44,7 @@ public class AdminToContactController : ControllerBase
     {
         try
         {
-            var _dbContact = await _adminToContactRepository.GetContactByIdAsync(id);
+            var _dbContact = await _adminManageContactsRepository.GetContactByIdAsync(id);
             return Ok(_dbContact);
         }
         catch (NullReferenceException e)
@@ -60,7 +62,7 @@ public class AdminToContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _adminToContactRepository.UpdateAllStatusAsync(skip, take);
+            var _dbContacts = await _adminManageContactsRepository.UpdateAllStatusAsync(skip, take);
             return Ok(_dbContacts);
         }
         catch (NullReferenceException e)
@@ -78,7 +80,7 @@ public class AdminToContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _adminToContactRepository.UpdateStatusByIdAsync(id);
+            var _dbContacts = await _adminManageContactsRepository.UpdateStatusByIdAsync(id);
             return Ok(_dbContacts);
         }
         catch (NullReferenceException e)
@@ -96,7 +98,7 @@ public class AdminToContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _adminToContactRepository.DeleteAllContactsAsync(skip, take);
+            var _dbContacts = await _adminManageContactsRepository.DeleteAllContactsAsync(skip, take);
             return Ok(_dbContacts);
         }
         catch (NullReferenceException e)
@@ -114,7 +116,7 @@ public class AdminToContactController : ControllerBase
     {
         try
         {
-            var _dbContact = await _adminToContactRepository.DeleteContactByIdAsync(id);
+            var _dbContact = await _adminManageContactsRepository.DeleteContactByIdAsync(id);
             return Ok(_dbContact);
         }
         catch (NullReferenceException e)

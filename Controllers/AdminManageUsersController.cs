@@ -11,11 +11,11 @@ namespace kazariobranco_backend.Controllers;
 [Route("v1/api/[controller]")]
 public class AdminToUserController : ControllerBase
 {
-    private readonly IAdminToUserRepository _adminToUserRepository;
+    private readonly IAdminManageUsersRepository _adminMangeUsersRepository;
 
-    public AdminToUserController(IAdminToUserRepository adminToUserRepository)
+    public AdminToUserController(IAdminManageUsersRepository adminMangeUsersRepository)
     {
-        _adminToUserRepository = adminToUserRepository;
+        _adminMangeUsersRepository = adminMangeUsersRepository;
     }
 
     [HttpGet("get-all-users-async/{skip}/{take}")]
@@ -23,7 +23,7 @@ public class AdminToUserController : ControllerBase
     {
         try
         {
-            var _dbUsers = await _adminToUserRepository.GetAllUsersAsync(skip, take);
+            var _dbUsers = await _adminMangeUsersRepository.GetAllUsersAsync(skip, take);
             return Ok(_dbUsers);
         }
         catch (Exception e)
@@ -37,7 +37,7 @@ public class AdminToUserController : ControllerBase
     {
         try
         {
-            var _dbUser = await _adminToUserRepository.GetUserByIdAsync(id);
+            var _dbUser = await _adminMangeUsersRepository.GetUserByIdAsync(id);
             return Ok(_dbUser);
         }
         catch (Exception e)
@@ -51,7 +51,7 @@ public class AdminToUserController : ControllerBase
     {
         try
         {
-            var _dbUsers = await _adminToUserRepository.DeleteAllUsersAsync(skip, take);
+            var _dbUsers = await _adminMangeUsersRepository.DeleteAllUsersAsync(skip, take);
             return Ok(_dbUsers);
         }
         catch (Exception e)
@@ -65,7 +65,7 @@ public class AdminToUserController : ControllerBase
     {
         try
         {
-            var _dbUser = await _adminToUserRepository.DeleteUserByIdAsync(id);
+            var _dbUser = await _adminMangeUsersRepository.DeleteUserByIdAsync(id);
             return Ok(_dbUser);
         }
         catch (Exception e)

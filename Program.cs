@@ -61,8 +61,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-builder.Services.AddScoped<IAdminToUserRepository, AdminToUserRepository>();
-builder.Services.AddScoped<IAdminToContactRepository, AdminToContactRepository>();
+builder.Services.AddScoped<IAdminManageUsersRepository, AdminManageUsersRepository>();
+builder.Services.AddScoped<IAdminManageContactsRepository, AdminManageContactsRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 

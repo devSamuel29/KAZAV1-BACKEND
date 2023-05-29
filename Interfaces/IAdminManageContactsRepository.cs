@@ -2,7 +2,7 @@ using kazariobranco_backend.Models;
 
 namespace kazariobranco_backend.Interfaces;
 
-public interface IAdminToContactRepository 
+public interface IAdminManageContactsRepository 
 { 
     Task<List<ContactModel>> GetAllContactsAsync(int skip, int take);
 

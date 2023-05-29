@@ -6,11 +6,11 @@ using kazariobranco_backend.Models;
 
 namespace kazariobranco_backend.Repository;
 
-public class AdminToContactRepository : IAdminToContactRepository
+public class AdminManageContactsRepository : IAdminManageContactsRepository
 {
     private readonly MyDbContext _dbContext;
 
-    public AdminToContactRepository(MyDbContext dbContext)
+    public AdminManageContactsRepository(MyDbContext dbContext)
     {
         _dbContext = dbContext;
     }

@@ -2,7 +2,7 @@ using kazariobranco_backend.Models;
 
 namespace kazariobranco_backend.Interfaces;
 
-public interface IAdminToUserRepository
+public interface IAdminManageUsersRepository
 {
     Task<List<UserModel>> GetAllUsersAsync(int skip, int take);
 
