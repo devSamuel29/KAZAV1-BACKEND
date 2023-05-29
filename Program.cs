@@ -36,15 +36,11 @@ builder.Services
         };
     });
 
-builder.Services.AddDbContext<MyDbContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
-);
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(
         IdentityData.AdminUserPolicyName,
-        p => p.RequireClaim(IdentityData.AdminUserClaimName, "true")
+        p => p.RequireClaim(IdentityData.AdminUserClaimName, IdentityData.AdminUserPolicyName)
     );
 });
 
@@ -52,14 +48,21 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(
         IdentityData.UserPolicyName,
-        p => p.RequireClaim(IdentityData.UserClaimName, "true")
+        p => p.RequireClaim(IdentityData.UserClaimName, IdentityData.UserPolicyName)
     );
 });
+
+builder.Services.AddDbContext<MyDbContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
+);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddScoped<IAdminToUserRepository, AdminToUserRepository>();
+builder.Services.AddScoped<IAdminToContactRepository, AdminToContactRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 

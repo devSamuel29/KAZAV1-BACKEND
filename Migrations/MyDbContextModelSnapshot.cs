@@ -27,42 +27,42 @@ namespace kazariobranco_backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnType("date")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("description");
+                        .HasColumnName("Description");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(40)")
-                        .HasColumnName("email");
+                        .HasColumnName("Email");
 
                     b.Property<DateTime>("EndedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("ended_at");
+                        .HasColumnType("date")
+                        .HasColumnName("EndedAt");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(40)")
-                        .HasColumnName("name");
+                        .HasColumnName("Name");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("varchar(11)")
-                        .HasColumnName("phone");
+                        .HasColumnName("Phone");
 
                     b.Property<string>("Reason")
                         .IsRequired()
-                        .HasColumnType("char(11)")
-                        .HasColumnName("reason");
+                        .HasColumnType("varchar(11)")
+                        .HasColumnName("Reason");
 
                     b.HasKey("Id")
                         .HasName("pk_contact_id");
@@ -112,12 +112,6 @@ namespace kazariobranco_backend.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(32)")
                         .HasColumnName("Phone");
-
-                    b.Property<string>("Role")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(5)")
-                        .HasDefaultValue("user")
-                        .HasColumnName("Role");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("date")

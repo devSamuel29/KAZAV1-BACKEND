@@ -10,6 +10,7 @@ using kazariobranco_backend.Models;
 using kazariobranco_backend.Validator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using kazariobranco_backend.Identity;
 
 namespace kazariobranco_backend.Repository;
 
@@ -23,30 +24,6 @@ public class UserRepository : IUserRepository
     {
         _dbContext = dbContext;
         _config = config;
-    }
-
-    public async Task<List<UserModel>> GetAllUsersAsync(int skip, int take)
-    {
-        var dbUsers = await _dbContext.Users.Skip(skip).Take(take).ToListAsync();
-
-        if (dbUsers.Count == 0)
-        {
-            throw new NullReferenceException("Usuários não encontrados");
-        }
-
-        return dbUsers;
-    }
-
-    public async Task<UserModel> GetUserByIdAsync(int id)
-    {
-        var dbUser = await _dbContext.Users.FindAsync(id);
-
-        if (dbUser == null)
-        {
-            throw new NullReferenceException("Usuário não encontrado");
-        }
-
-        return dbUser;
     }
 
     private JwtSecurityToken GetToken(List<Claim> authClaim)
@@ -95,8 +72,9 @@ public class UserRepository : IUserRepository
                     var claims = new List<Claim>() 
                     {
                         new(JwtRegisteredClaimNames.Sub, dbUser.Id.ToString()),
+                        new(JwtRegisteredClaimNames.Name, dbUser.Firstname),
                         new(JwtRegisteredClaimNames.Email, dbUser.Email.ToString()),
-                        new("type_user", dbUser.Role)
+                        new(IdentityData.UserClaimName, IdentityData.UserPolicyName)
                     };
                     string token = new JwtSecurityTokenHandler().WriteToken(GetToken(claims));
                     return new Response(200, token);
@@ -140,37 +118,28 @@ public class UserRepository : IUserRepository
         throw new FormatException(validation.ToString());
     }
 
+    
     public async Task<Response> UpdatePasswordUser(int id, ForgottenPasswordRequest request)
     {
-        var dbUser = await GetUserByIdAsync(id);
+        // var dbUser = await GetUserByIdAsync(id);
 
-        var passwordHasher = new PasswordHasher<ForgottenPasswordRequest>();
-        request.NewPassword = passwordHasher.HashPassword(request, request.NewPassword);
+        // var passwordHasher = new PasswordHasher<ForgottenPasswordRequest>();
+        // request.NewPassword = passwordHasher.HashPassword(request, request.NewPassword);
 
-        dbUser.Password = request.NewPassword;
-        dbUser.UpdatedAt = DateTime.Today;
-        await _dbContext.SaveChangesAsync();
+        // dbUser.Password = request.NewPassword;
+        // dbUser.UpdatedAt = DateTime.Today;
+        // await _dbContext.SaveChangesAsync();
 
         return new Response(200, "sucess");
     }
 
-    public async Task<Response> DeleteAllUsersAsync(int skip, int take)
+    public Task<UserModel> GetMyData()
     {
-        var dbUsers = await GetAllUsersAsync(skip, take);
-
-        _dbContext.Users.RemoveRange(dbUsers);
-        await _dbContext.SaveChangesAsync();
-        
-        return new Response(200, "sucess");
+        throw new NotImplementedException();
     }
 
-    public async Task<Response> DeleteUserByIdAsync(int id)
+    public Task DeleteMyAccount()
     {
-        var dbUser = await GetUserByIdAsync(id);
-
-        _dbContext.Users.Remove(dbUser);
-        await _dbContext.SaveChangesAsync();
-
-        return new Response(200, "sucess");
+        throw new NotImplementedException();
     }
 }

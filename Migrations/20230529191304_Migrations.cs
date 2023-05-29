@@ -15,19 +15,19 @@ namespace kazariobranco_backend.Migrations
                 name: "Contacts",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    name = table.Column<string>(type: "varchar(40)", nullable: false),
-                    email = table.Column<string>(type: "varchar(40)", nullable: false),
-                    phone = table.Column<string>(type: "varchar(11)", nullable: false),
-                    reason = table.Column<string>(type: "char(11)", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ended_at = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Name = table.Column<string>(type: "varchar(40)", nullable: false),
+                    Email = table.Column<string>(type: "varchar(40)", nullable: false),
+                    Phone = table.Column<string>(type: "varchar(11)", nullable: false),
+                    Reason = table.Column<string>(type: "varchar(11)", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "date", nullable: false),
+                    EndedAt = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_contact_id", x => x.id);
+                    table.PrimaryKey("pk_contact_id", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,7 +36,6 @@ namespace kazariobranco_backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Role = table.Column<string>(type: "varchar(5)", nullable: true, defaultValue: "user"),
                     Firstname = table.Column<string>(type: "varchar(20)", nullable: false),
                     Lastname = table.Column<string>(type: "varchar(20)", nullable: false),
                     Cpf = table.Column<string>(type: "varchar(84)", nullable: false),

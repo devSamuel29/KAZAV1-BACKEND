@@ -11,49 +11,48 @@ public class ContactMap : IEntityTypeConfiguration<ContactModel>
         builder.ToTable("Contacts");
 
         builder.HasKey(p => p.Id).HasName("pk_contact_id");
-        builder
-            .Property(p => p.Id)
-            .HasColumnName("id")
-            .HasColumnType("int")
-            .UseIdentityColumn()
-            .IsRequired();
+        builder.Property(p => p.Id).HasColumnName("Id").HasColumnType("int").UseIdentityColumn();
 
         builder
             .Property(p => p.Name)
-            .HasColumnName("name")
+            .HasColumnName("Name")
             .HasColumnType("varchar(40)")
             .IsRequired();
 
         builder
             .Property(p => p.Email)
-            .HasColumnName("email")
+            .HasColumnName("Email")
             .HasColumnType("varchar(40)")
             .IsRequired();
 
         builder
             .Property(p => p.Phone)
-            .HasColumnName("phone")
+            .HasColumnName("Phone")
             .HasColumnType("varchar(11)")
             .IsRequired();
 
         builder
             .Property(p => p.Reason)
-            .HasColumnName("reason")
-            .HasColumnType("char(11)")
+            .HasColumnName("Reason")
+            .HasColumnType("varchar(11)")
             .IsRequired();
 
         builder
             .Property(p => p.Description)
-            .HasColumnName("description")
+            .HasColumnName("Description")
             .HasColumnType("text")
             .IsRequired();
 
         builder
             .Property(p => p.CreatedAt)
-            .HasColumnName("created_at")
-            .HasColumnType("datetime2")
+            .HasColumnName("CreatedAt")
+            .HasColumnType("date")
             .IsRequired();
 
-        builder.Property(p => p.EndedAt).HasColumnName("ended_at").HasColumnType("datetime2");
+        builder
+            .Property(p => p.EndedAt)
+            .HasColumnName("EndedAt")
+            .HasColumnType("date")
+            .IsRequired();
     }
 }

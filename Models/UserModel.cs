@@ -2,10 +2,8 @@ namespace kazariobranco_backend.Models;
 
 public class UserModel 
 {  
-    public int Id { get; set; }
+    public int Id { get; }
     
-    public string Role { get; set; }
-
     public string Firstname { get; set; }
     
     public string  Lastname { get; set; }

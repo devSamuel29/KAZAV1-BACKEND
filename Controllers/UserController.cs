@@ -9,7 +9,7 @@ using kazariobranco_backend.Identity;
 namespace kazariobranco_backend.Controllers;
 
 [ApiController]
-[Route("v1/[controller]")]
+[Route("v1/api/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
@@ -19,41 +19,6 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [HttpGet("get-users/{skip}/{take}")]
-    public async Task<IActionResult> GetAllUsersAsync(int skip, int take)
-    {
-        try
-        {
-            return Ok(await _userRepository.GetAllUsersAsync(skip, take));
-        }
-        catch (NullReferenceException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (SqlException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpGet("get-user/{id}")]
-    public async Task<IActionResult> GetUserByIdAsync(int id)
-    {
-        try
-        {
-            return Ok(await _userRepository.GetUserByIdAsync(id));
-        }
-        catch (NullReferenceException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (SqlException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    // *********
     [AllowAnonymous]
     [HttpPost("register-user")]
     public async Task<IActionResult> Register(RegisterRequest request)
@@ -69,7 +34,6 @@ public class UserController : ControllerBase
         }
     }
 
-    // *********
     [AllowAnonymous]
     [HttpPost("authenticate-user")]
     public async Task<IActionResult> Authenticate(LoginRequest request)
@@ -85,48 +49,13 @@ public class UserController : ControllerBase
         }
     }
 
-    [Authorize]
-    [RequiresClaim(IdentityData.AdminUserClaimName, "true")]
+    [Authorize(Policy = IdentityData.UserPolicyName)]
     [HttpPatch("update-user-password/{id}")]
     public async Task<IActionResult> UpdatePasswordUser(int id, ForgottenPasswordRequest request)
     {
         try
         {
             return Ok(await _userRepository.UpdatePasswordUser(id, request));
-        }
-        catch (NullReferenceException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (SqlException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpDelete("delete-users/{skip}/{take}")]
-    public async Task<IActionResult> DeleteAllUsersAsync(int skip, int take)
-    {
-        try
-        {
-            return Ok(await _userRepository.DeleteAllUsersAsync(skip, take));
-        }
-        catch (NullReferenceException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (SqlException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpDelete("delete-user/{id}")]
-    public async Task<IActionResult> DeleteUserByIdAsync(int id)
-    {
-        try
-        {
-            return Ok(await _userRepository.DeleteUserByIdAsync(id));
         }
         catch (NullReferenceException e)
         {

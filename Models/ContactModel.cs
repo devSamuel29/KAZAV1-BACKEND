@@ -2,7 +2,7 @@ namespace kazariobranco_backend.Models;
 
 public class ContactModel
 {
-    public int Id { get; set; }
+    public int Id { get; }
 
     public string Name { get; set; }
 
@@ -14,7 +14,7 @@ public class ContactModel
 
     public string Description { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; }
 
     public DateTime EndedAt { get; set; }
 }

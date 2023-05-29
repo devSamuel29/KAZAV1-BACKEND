@@ -6,7 +6,7 @@ using Microsoft.Data.SqlClient;
 namespace kazariobranco_backend.Controllers;
 
 [ApiController]
-[Route("v1/[controller]")]
+[Route("v1/api/[controller]")]
 public class ContactController : ControllerBase
 {
     private readonly IContactRepository _contactRepository;
@@ -16,47 +16,13 @@ public class ContactController : ControllerBase
         _contactRepository = contactRepository;
     }
 
-    [HttpGet("get-contacts/{skip}/{take}")]
-    public async Task<IActionResult> GetAllContactsAsync(int skip, int take)
-    {
-        try
-        {
-            return Ok(await _contactRepository.GetAllContactsAsync(skip, take));
-        }
-        catch (NullReferenceException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (SqlException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpGet("get-contact/{id}")]
-    public async Task<IActionResult> GetContactByIdAsync(int id)
-    {
-        try
-        {
-            return Ok(await _contactRepository.GetContactByIdAsync(id));
-        }
-        catch (NullReferenceException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (SqlException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
     [HttpPost("create-contact")]
     public async Task<IActionResult> CreateContact(ContactRequest request)
     {
         try
         {
-            var response = await _contactRepository.CreateContactAsync(request);
-            return Ok(response.Message);
+            await _contactRepository.CreateContactAsync(request);
+            return Ok();
         }
         catch (NullReferenceException e)
         {
@@ -65,61 +31,6 @@ public class ContactController : ControllerBase
         catch (FormatException e)
         {
             return BadRequest(e.Message);
-        }
-        catch (SqlException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpPatch("update-status/{id}")]
-    public async Task<IActionResult> UpdateStatusContactByIdAsync(int id)
-    {
-        try
-        {
-            return Ok(await _contactRepository.UpdateStatusContactByIdAsync(id));
-        }
-        catch (NullReferenceException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (InvalidOperationException)
-        {
-            return NoContent();
-        }
-        catch (SqlException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpDelete("delete-contacts/{skip}/{take}")]
-    public async Task<IActionResult> DeleteAllContactsAsync(int skip, int take)
-    {
-        try
-        {
-            return Ok(await _contactRepository.DeleteAllContactsAsync(skip, take));
-        }
-        catch (NullReferenceException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (SqlException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpDelete("delete-contact/{id}")]
-    public async Task<IActionResult> DeleteContactByIdAsync(int id)
-    {
-        try
-        {
-            return Ok(await _contactRepository.DeleteContactById(id));
-        }
-        catch (NullReferenceException e)
-        {
-            return NotFound(e.Message);
         }
         catch (SqlException e)
         {
