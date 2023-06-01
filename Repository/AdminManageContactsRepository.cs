@@ -17,7 +17,11 @@ public class AdminManageContactsRepository : IAdminManageContactsRepository
 
     public async Task<List<ContactModel>> GetAllContactsAsync(int skip, int take)
     {
-        var _dbContacts = await _dbContext.Contacts.Skip(skip).Take(take).ToListAsync();
+        var _dbContacts = await _dbContext.Contacts
+            .Skip(skip)
+            .Take(take)
+            .AsNoTracking()
+            .ToListAsync();
 
         if (_dbContacts.Count == 0)
         {
@@ -29,7 +33,10 @@ public class AdminManageContactsRepository : IAdminManageContactsRepository
 
     public async Task<ContactModel> GetContactByIdAsync(int id)
     {
-        var _dbContact = await _dbContext.Contacts.Where(u => u.Id == id).FirstOrDefaultAsync();
+        var _dbContact = await _dbContext.Contacts
+            .Where(u => u.Id == id)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
 
         if (_dbContact == null)
         {

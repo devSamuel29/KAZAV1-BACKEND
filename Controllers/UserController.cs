@@ -19,36 +19,6 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [AllowAnonymous]
-    [HttpPost("register-user")]
-    public async Task<IActionResult> Register(RegisterRequest request)
-    {
-        try
-        {
-            var response = await _userRepository.Register(request);
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [AllowAnonymous]
-    [HttpPost("authenticate-user")]
-    public async Task<IActionResult> Authenticate(LoginRequest request)
-    {
-        try
-        {
-            var response = await _userRepository.Authenticate(request);
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
     [Authorize(Policy = IdentityData.UserPolicyName)]
     [HttpPatch("update-user-password/{id}")]
     public async Task<IActionResult> UpdatePasswordUser(int id, ForgottenPasswordRequest request)

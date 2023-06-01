@@ -14,6 +14,8 @@ public class ContactModel
 
     public string Description { get; set; }
 
+    public CartModel Cart { get; set; }
+
     public DateTime CreatedAt { get; }
 
     public DateTime EndedAt { get; set; }

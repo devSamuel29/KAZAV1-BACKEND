@@ -9,17 +9,17 @@ namespace kazariobranco_backend.Controllers;
 [Authorize(Policy = IdentityData.AdminUserPolicyName)]
 [ApiController]
 [Route("v1/api/[controller]")]
-public class AdminToUserController : ControllerBase
+public class AdminManageUsersController : ControllerBase
 {
     private readonly IAdminManageUsersRepository _adminMangeUsersRepository;
 
-    public AdminToUserController(IAdminManageUsersRepository adminMangeUsersRepository)
+    public AdminManageUsersController(IAdminManageUsersRepository adminMangeUsersRepository)
     {
         _adminMangeUsersRepository = adminMangeUsersRepository;
     }
 
     [HttpGet("get-all-users-async/{skip}/{take}")]
-    public async Task<IActionResult> GetAllUsersAsync(int skip, int take)
+    public async Task<IActionResult> GetAllUsersAsync([FromRoute] int skip, [FromRoute] int take)
     {
         try
         {
@@ -33,7 +33,7 @@ public class AdminToUserController : ControllerBase
     }
 
     [HttpGet("get-user-by-id-async/{id}")]
-    public async Task<IActionResult> GetUserByIdAsync(int id)
+    public async Task<IActionResult> GetUserByIdAsync([FromRoute] int id)
     {
         try
         {
@@ -47,7 +47,7 @@ public class AdminToUserController : ControllerBase
     }
 
     [HttpDelete("delete-all-users-async/{skip}/{take}")]
-    public async Task<IActionResult> DeleteAllUsersAsync(int skip, int take)
+    public async Task<IActionResult> DeleteAllUsersAsync([FromRoute] int skip, [FromRoute] int take)
     {
         try
         {
@@ -61,7 +61,7 @@ public class AdminToUserController : ControllerBase
     }
 
     [HttpDelete("delete-user-by-id-async/{id}")]
-    public async Task<IActionResult> DeleteUserByIdAsync(int id)
+    public async Task<IActionResult> DeleteUserByIdAsync([FromRoute] int id)
     {
         try
         {

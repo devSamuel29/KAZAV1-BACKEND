@@ -22,7 +22,7 @@ public class AdminManageContactsController : ControllerBase
     }
 
     [HttpGet("get-all-contacts/{skip}/{take}")]
-    public async Task<IActionResult> GetAllContactsAsync(int skip, int take)
+    public async Task<IActionResult> GetAllContactsAsync([FromRoute] int skip, [FromRoute] int take)
     {
         try
         {
@@ -40,7 +40,7 @@ public class AdminManageContactsController : ControllerBase
     }
 
     [HttpGet("get-contact-by-id/{id}")]
-    public async Task<IActionResult> GetUserById(int id)
+    public async Task<IActionResult> GetUserById([FromRoute] int id)
     {
         try
         {
@@ -58,7 +58,10 @@ public class AdminManageContactsController : ControllerBase
     }
 
     [HttpPatch("update-all-contacts/{skip}/{take}")]
-    public async Task<IActionResult> UpdateAllContactsAsync(int skip, int take)
+    public async Task<IActionResult> UpdateAllContactsAsync(
+        [FromRoute] int skip,
+        [FromRoute] int take
+    )
     {
         try
         {
@@ -76,7 +79,7 @@ public class AdminManageContactsController : ControllerBase
     }
 
     [HttpPatch("update-contact-by-id/{id}")]
-    public async Task<IActionResult> UpdateStatusByIdAsync(int id)
+    public async Task<IActionResult> UpdateStatusByIdAsync([FromRoute] int id)
     {
         try
         {
@@ -94,11 +97,17 @@ public class AdminManageContactsController : ControllerBase
     }
 
     [HttpDelete("delete-all-contacts/{skip}/{take}")]
-    public async Task<IActionResult> DeleteAllContactsAsync(int skip, int take)
+    public async Task<IActionResult> DeleteAllContactsAsync(
+        [FromRoute] int skip,
+        [FromRoute] int take
+    )
     {
         try
         {
-            var _dbContacts = await _adminManageContactsRepository.DeleteAllContactsAsync(skip, take);
+            var _dbContacts = await _adminManageContactsRepository.DeleteAllContactsAsync(
+                skip,
+                take
+            );
             return Ok(_dbContacts);
         }
         catch (NullReferenceException e)
@@ -112,7 +121,7 @@ public class AdminManageContactsController : ControllerBase
     }
 
     [HttpDelete("delete-contact-by-id/{id}")]
-    public async Task<IActionResult> DeleteUserById(int id)
+    public async Task<IActionResult> DeleteUserById([FromRoute] int id)
     {
         try
         {

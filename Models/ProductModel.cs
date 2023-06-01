@@ -1,6 +1,3 @@
 namespace kazariobranco_backend.Models;
 
-public class AdminModel
-{
-    
-}
+public class ProductModel { }

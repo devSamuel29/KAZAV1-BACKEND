@@ -1,12 +1,10 @@
 namespace kazariobranco_backend.Identity;
 
-    public class IdentityData
-    {
-        public const string AdminUserClaimName = "admin";
+public class IdentityData
+{
+    public const string Role = "role";
 
-        public const string AdminUserPolicyName = "Admin";
+    public const string AdminUserPolicyName = "Admin";
 
-        public const string UserClaimName = "user";
-        
-        public const string UserPolicyName = "User";
-    }
+    public const string UserPolicyName = "User";
+}

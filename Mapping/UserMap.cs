@@ -11,11 +11,14 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
         builder.ToTable("Users");
 
         builder.HasKey(p => p.Id).HasName("PkUserId");
+        builder.Property(p => p.Id).HasColumnName("Id").HasColumnType("int").UseIdentityColumn();
+
         builder
-            .Property(p => p.Id)
-            .HasColumnName("Id")
-            .HasColumnType("int")
-            .UseIdentityColumn();
+            .Property(p => p.Role)
+            .HasColumnName("Role")
+            .HasColumnType("char(5)")
+            .HasDefaultValueSql()
+            .IsRequired();
 
         builder
             .Property(p => p.Firstname)
