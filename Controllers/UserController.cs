@@ -20,12 +20,12 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Policy = IdentityData.UserPolicyName)]
-    [HttpPatch("update-user-password/{id}")]
-    public async Task<IActionResult> UpdatePasswordUser(int id, ForgottenPasswordRequest request)
+    [HttpPatch("update-user-password/{jwt}")]
+    public async Task<IActionResult> UpdatePasswordUser(string jwt, ForgottenPasswordRequest request)
     {
         try
         {
-            return Ok(await _userRepository.UpdatePasswordUser(id, request));
+            return Ok(await _userRepository.UpdatePasswordUser(jwt, request));
         }
         catch (NullReferenceException e)
         {

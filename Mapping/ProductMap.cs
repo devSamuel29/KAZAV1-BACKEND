@@ -6,8 +6,15 @@ namespace kazariobranco_backend.Mapping;
 
 public class ProductMap : IEntityTypeConfiguration<ProductModel>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<ProductModel> builder)
+    public void Configure(
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<ProductModel> builder
+    )
     {
-        throw new NotImplementedException();
+        builder
+            .Property(p => p.Id)
+            .HasColumnName("Id")
+            .HasColumnType("int")
+            .UseIdentityColumn()
+            .IsRequired();
     }
 }

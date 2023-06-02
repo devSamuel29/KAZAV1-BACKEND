@@ -17,7 +17,7 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
             .Property(p => p.Role)
             .HasColumnName("Role")
             .HasColumnType("char(5)")
-            .HasDefaultValueSql()
+            .HasDefaultValueSql("user")
             .IsRequired();
 
         builder

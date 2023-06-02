@@ -10,7 +10,7 @@ public interface IUserRepository
 {
     Task<UserModel> GetMyData();
 
-    Task<Response> UpdatePasswordUser(int id, ForgottenPasswordRequest request);
+    Task<Response> UpdatePasswordUser(string jwt, ForgottenPasswordRequest request);
 
     Task DeleteMyAccount();
 }

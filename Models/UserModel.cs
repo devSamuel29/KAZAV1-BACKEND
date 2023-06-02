@@ -18,11 +18,11 @@ public class UserModel
 
     public string Password { get; set; }
 
+    public ICollection<AddressModel> Addresses { get; set; }
+
+    public CartModel Cart { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
-
-    public List<AddressModel> Addresses { get; set; }
-
-    public CartModel Cart { get; set; }
 }

@@ -31,7 +31,7 @@ public class UserRepository : IUserRepository
         _config = config;
     }
     
-    public async Task<Response> UpdatePasswordUser(int id, ForgottenPasswordRequest request)
+    public async Task<Response> UpdatePasswordUser(string jwt, ForgottenPasswordRequest request)
     {
         // var dbUser = await GetUserByIdAsync(id);
 

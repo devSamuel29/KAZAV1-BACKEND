@@ -17,9 +17,9 @@ public class MyDbContext : DbContext
 
     public DbSet<AddressModel> Addresses { get; set; }
 
-    public DbSet<CartModel> Carts { get; set; }
+    // public DbSet<CartModel> Carts { get; set; }
 
-    public DbSet<ProductModel> Products { get; set; }
+    // public DbSet<ProductModel> Products { get; set; }
     
     public DbSet<ContactModel> Contacts { get; set; }
 }

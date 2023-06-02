@@ -6,8 +6,15 @@ namespace kazariobranco_backend.Mapping;
 
 public class CartMap : IEntityTypeConfiguration<CartModel>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<CartModel> builder)
+    public void Configure(
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<CartModel> builder
+    )
     {
-        throw new NotImplementedException();
+        builder
+            .Property(p => p.Id)
+            .HasColumnName("Id")
+            .HasColumnType("int")
+            .UseIdentityColumn()
+            .IsRequired();
     }
 }
