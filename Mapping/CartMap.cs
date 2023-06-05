@@ -16,5 +16,13 @@ public class CartMap : IEntityTypeConfiguration<CartModel>
             .HasColumnType("int")
             .UseIdentityColumn()
             .IsRequired();
+
+        builder.Property(p => p.UserId).HasColumnName("UserId").HasColumnType("int").IsRequired();
+
+        // builder
+        //     .HasOne(p => p.User)
+        //     .WithOne(p => p.Cart)
+        //     .HasForeignKey<CartModel>(p => p.Id)
+        //     .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -10,42 +10,51 @@ public class AddressMap : IEntityTypeConfiguration<AddressModel>
         Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<AddressModel> builder
     )
     {
-        builder.ToTable("Addresses");
+        builder.ToTable("Address");
 
-        builder.HasKey(u => u.Id).HasName("PkAddressId");
+        builder.HasKey(p => p.Id).HasName("PkAddressId");
         builder
-            .Property(u => u.Id)
+            .Property(p => p.Id)
             .HasColumnName("Id")
             .HasColumnType("int")
             .UseIdentityColumn()
             .IsRequired();
 
         builder
-            .Property(u => u.Address)
+            .Property(p => p.Address)
             .HasColumnName("Adress")
             .HasColumnType("varchar(40)")
             .IsRequired();
 
-        builder.Property(u => u.Number).HasColumnName("Number").HasColumnType("int").IsRequired();
+        builder.Property(p => p.Number).HasColumnName("Number").HasColumnType("int").IsRequired();
 
         builder
-            .Property(u => u.District)
+            .Property(p => p.District)
             .HasColumnName("District")
             .HasColumnType("varchar(30)")
             .IsRequired();
 
         builder
-            .Property(u => u.City)
+            .Property(p => p.City)
             .HasColumnName("City")
             .HasColumnType("varchar(20)")
             .IsRequired();
 
         builder
-            .Property(u => u.State)
+            .Property(p => p.State)
             .HasColumnName("State")
             .HasColumnType("varchar(20)")
             .IsRequired();
 
-        builder.Property(u => u.ZipCode).HasColumnName("ZipCode").HasColumnType("int").IsRequired();
+        builder.Property(p => p.ZipCode).HasColumnName("ZipCode").HasColumnType("int").IsRequired();
+
+        builder.Property(p => p.UserId).HasColumnName("UserId").HasColumnType("int").IsRequired();
+
+        builder
+            .HasOne(p => p.User)
+            .WithMany(p => p.Addresses)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FkAddressUserId");
     }
 }

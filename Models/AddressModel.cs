@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace kazariobranco_backend.Models;
 
 public class AddressModel
@@ -20,4 +15,9 @@ public class AddressModel
     public string City { get; set; }
 
     public int ZipCode { get; set; }
+
+    // FK
+    public int UserId { get; set; }
+
+    public UserModel User { get; set; }
 }
