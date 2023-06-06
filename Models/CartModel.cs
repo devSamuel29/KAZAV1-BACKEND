@@ -4,11 +4,12 @@ public class CartModel
 {
     public int Id { get; set; }
 
+    // RELATIONSHIPS
+    public IList<OrderModel> Orders { get; set; }
 
     // FK
+
     public int UserId { get; set; }
 
     public UserModel User { get; set; }
-    
-    public IList<ProductModel> Products { get; set; }
 }
