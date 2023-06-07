@@ -84,28 +84,13 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnType("int")
                         .HasColumnName("UserId");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PkCartId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("kazariobranco_backend.Models.CartProductModel", b =>
-                {
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CartId", "ProductId")
-                        .HasName("Pk_CartProduct");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CartProduct", (string)null);
                 });
 
             modelBuilder.Entity("kazariobranco_backend.Models.ContactModel", b =>
@@ -116,9 +101,6 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CartId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("date")
@@ -156,9 +138,42 @@ namespace kazariobranco_backend.Migrations
                     b.HasKey("Id")
                         .HasName("pk_contact_id");
 
+                    b.ToTable("Contacts", (string)null);
+                });
+
+            modelBuilder.Entity("kazariobranco_backend.Models.OrderModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id")
+                        .HasName("PkAOrderId");
+
                     b.HasIndex("CartId");
 
-                    b.ToTable("Contacts", (string)null);
+                    b.ToTable("Orders", (string)null);
+                });
+
+            modelBuilder.Entity("kazariobranco_backend.Models.OrderProductModel", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderProductModel");
                 });
 
             modelBuilder.Entity("kazariobranco_backend.Models.ProductModel", b =>
@@ -262,49 +277,55 @@ namespace kazariobranco_backend.Migrations
                         .WithOne("Cart")
                         .HasForeignKey("kazariobranco_backend.Models.CartModel", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FkUserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("kazariobranco_backend.Models.CartProductModel", b =>
+            modelBuilder.Entity("kazariobranco_backend.Models.OrderModel", b =>
                 {
                     b.HasOne("kazariobranco_backend.Models.CartModel", "Cart")
-                        .WithMany("Products")
+                        .WithMany("Orders")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("Fk_CartProduct_Carts_CartId");
-
-                    b.HasOne("kazariobranco_backend.Models.ProductModel", "Product")
-                        .WithMany("Carts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("Fk_CartProduct_Products_ProductId");
+                        .IsRequired();
 
                     b.Navigation("Cart");
+                });
+
+            modelBuilder.Entity("kazariobranco_backend.Models.OrderProductModel", b =>
+                {
+                    b.HasOne("kazariobranco_backend.Models.OrderModel", "Order")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("kazariobranco_backend.Models.ProductModel", "Product")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
 
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("kazariobranco_backend.Models.ContactModel", b =>
-                {
-                    b.HasOne("kazariobranco_backend.Models.CartModel", "Cart")
-                        .WithMany()
-                        .HasForeignKey("CartId");
-
-                    b.Navigation("Cart");
-                });
-
             modelBuilder.Entity("kazariobranco_backend.Models.CartModel", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("kazariobranco_backend.Models.OrderModel", b =>
+                {
+                    b.Navigation("OrderProducts");
                 });
 
             modelBuilder.Entity("kazariobranco_backend.Models.ProductModel", b =>
                 {
-                    b.Navigation("Carts");
+                    b.Navigation("OrderProducts");
                 });
 
             modelBuilder.Entity("kazariobranco_backend.Models.UserModel", b =>

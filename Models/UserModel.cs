@@ -4,7 +4,7 @@ public class UserModel
 {
     public int Id { get; }
 
-    public string Role { get; set; }
+    public string Role { get; set; } = "user";
 
     public string Firstname { get; set; }
 
@@ -18,13 +18,13 @@ public class UserModel
 
     public string Password { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Today;
 
-    public DateTime UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; } = DateTime.Today;
 
     // FK
     
-    public CartModel Cart { get; set; }
+    public CartModel Cart { get; set; } = new CartModel();
 
     public IList<AddressModel> Addresses { get; set; }
 }

@@ -12,6 +12,25 @@ namespace kazariobranco_backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Contacts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "varchar(40)", nullable: false),
+                    Email = table.Column<string>(type: "varchar(40)", nullable: false),
+                    Phone = table.Column<string>(type: "varchar(11)", nullable: false),
+                    Reason = table.Column<string>(type: "varchar(11)", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "date", nullable: false),
+                    EndedAt = table.Column<DateTime>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_contact_id", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -79,9 +98,9 @@ namespace kazariobranco_backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
+                    table.PrimaryKey("PkCartId", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Carts_Users_UserId",
+                        name: "FkUserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -89,52 +108,46 @@ namespace kazariobranco_backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartProduct",
+                name: "Orders",
                 columns: table => new
                 {
-                    CartId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CartId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("Pk_CartProduct", x => new { x.CartId, x.ProductId });
+                    table.PrimaryKey("PkAOrderId", x => x.Id);
                     table.ForeignKey(
-                        name: "Fk_CartProduct_Carts_CartId",
+                        name: "FK_Orders_Carts_CartId",
                         column: x => x.CartId,
                         principalTable: "Carts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "Fk_CartProduct_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Contacts",
+                name: "OrderProductModel",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(40)", nullable: false),
-                    Email = table.Column<string>(type: "varchar(40)", nullable: false),
-                    Phone = table.Column<string>(type: "varchar(11)", nullable: false),
-                    Reason = table.Column<string>(type: "varchar(11)", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    CartId = table.Column<int>(type: "int", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "date", nullable: false),
-                    EndedAt = table.Column<DateTime>(type: "date", nullable: false)
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_contact_id", x => x.Id);
+                    table.PrimaryKey("PK_OrderProductModel", x => new { x.OrderId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_Contacts_Carts_CartId",
-                        column: x => x.CartId,
-                        principalTable: "Carts",
-                        principalColumn: "Id");
+                        name: "FK_OrderProductModel_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderProductModel_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -143,19 +156,19 @@ namespace kazariobranco_backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartProduct_ProductId",
-                table: "CartProduct",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Carts_UserId",
                 table: "Carts",
                 column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contacts_CartId",
-                table: "Contacts",
+                name: "IX_OrderProductModel_ProductId",
+                table: "OrderProductModel",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_CartId",
+                table: "Orders",
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
@@ -184,10 +197,13 @@ namespace kazariobranco_backend.Migrations
                 name: "Address");
 
             migrationBuilder.DropTable(
-                name: "CartProduct");
+                name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "Contacts");
+                name: "OrderProductModel");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");

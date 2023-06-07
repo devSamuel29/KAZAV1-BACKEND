@@ -10,6 +10,7 @@ public class CartMap : IEntityTypeConfiguration<CartModel>
         Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<CartModel> builder
     )
     {
+        builder.HasKey(p => p.Id).HasName("PkCartId");
         builder
             .Property(p => p.Id)
             .HasColumnName("Id")
@@ -18,7 +19,7 @@ public class CartMap : IEntityTypeConfiguration<CartModel>
             .IsRequired();
 
         builder.Property(p => p.UserId).HasColumnName("UserId").HasColumnType("int").IsRequired();
-        builder.HasOne(p => p.User).WithOne(p => p.Cart).HasForeignKey("FkUserId");
+        builder.HasOne(p => p.User).WithOne(p => p.Cart).HasConstraintName("FkUserId");
 
         
     }

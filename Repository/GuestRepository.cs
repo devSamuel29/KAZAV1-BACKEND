@@ -128,14 +128,15 @@ public class GuestRepository : IGuestRepository
                 Phone = request.Phone,
                 Email = request.Email,
                 Password = request.Password,
-                CreatedAt = DateTime.Today,
-                UpdatedAt = DateTime.Today
             };
 
             await _dbContext.AddAsync(newUser);
             await _dbContext.SaveChangesAsync();
         }
-        throw new FormatException(validation.ToString());
+        else 
+        {
+            throw new FormatException(validation.ToString());
+        }
     }
 
     public Task ContactAsync(ContactRequest request)
