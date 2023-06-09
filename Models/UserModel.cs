@@ -22,9 +22,7 @@ public class UserModel
 
     public DateTime UpdatedAt { get; set; } = DateTime.Today;
 
-    // FK
-    
     public CartModel Cart { get; set; } = new CartModel();
 
-    public IList<AddressModel> Addresses { get; set; }
+    public IList<AddressModel> Addresses { get; set; } = new List<AddressModel>();
 }

@@ -12,7 +12,7 @@ using kazariobranco_backend.Database;
 namespace kazariobranco_backend.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230607201500_Migrations")]
+    [Migration("20230609182549_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />
@@ -239,7 +239,7 @@ namespace kazariobranco_backend.Migrations
                     b.Property<string>("Role")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(5)")
+                        .HasColumnType("varchar(5)")
                         .HasColumnName("Role")
                         .HasDefaultValueSql("user");
 

@@ -236,7 +236,7 @@ namespace kazariobranco_backend.Migrations
                     b.Property<string>("Role")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(5)")
+                        .HasColumnType("varchar(5)")
                         .HasColumnName("Role")
                         .HasDefaultValueSql("user");
 

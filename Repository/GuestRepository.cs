@@ -94,11 +94,10 @@ public class GuestRepository : IGuestRepository
                     var claims = new List<Claim>()
                     {
                         new(JwtRegisteredClaimNames.Sub, dbUser.Id.ToString()),
-                        new(JwtRegisteredClaimNames.Name, dbUser.Firstname),
+                        new(JwtRegisteredClaimNames.Name, $"{dbUser.Firstname} {dbUser.Lastname}"),
                         new(JwtRegisteredClaimNames.Email, dbUser.Email),
-                        new(IdentityData.Role, dbUser.Role)
+                        new(IdentityData.ClaimTitle, dbUser.Role)
                     };
-
                     return GetToken(claims);
 
                 case PasswordVerificationResult.SuccessRehashNeeded:

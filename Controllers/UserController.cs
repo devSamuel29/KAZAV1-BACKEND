@@ -8,6 +8,7 @@ using kazariobranco_backend.Identity;
 
 namespace kazariobranco_backend.Controllers;
 
+[Authorize(Policy = IdentityData.UserPolicyName)]
 [ApiController]
 [Route("v1/api/[controller]")]
 public class UserController : ControllerBase
@@ -19,19 +20,53 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [Authorize(Policy = IdentityData.UserPolicyName)]
-    [HttpPatch("update-user-password/{jwt}")]
-    public async Task<IActionResult> UpdatePasswordUser(string jwt, ForgottenPasswordRequest request)
+    [HttpGet("get-my-data/{id}/{email}")]
+    public async Task<IActionResult> GetMyDataAsync([FromRoute] int id, [FromRoute] string email)
+    {
+        try 
+        { 
+            return Ok(await _userRepository.GetMyDataAsync(id, email));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPatch("update-user-password/{id}")]
+    public async Task<IActionResult> UpdatePasswordUser(
+        [FromBody] ForgottenPasswordRequest request,
+        [FromRoute] int id
+    )
     {
         try
         {
-            return Ok(await _userRepository.UpdatePasswordUser(jwt, request));
+            await _userRepository.UpdatePasswordUserAsync(request, id);
+            return NoContent();
         }
         catch (NullReferenceException e)
         {
             return NotFound(e.Message);
         }
         catch (SqlException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("register-user-address/{id}/{email}")]
+    public async Task<IActionResult> RegisterAddress(
+        [FromBody] AddressRequest request,
+        [FromRoute] int id,
+        [FromRoute] string email
+    )
+    {
+        try
+        {
+            await _userRepository.RegisterAddressAsync(request, id, email);
+            return NoContent();
+        }
+        catch (Exception e)
         {
             return BadRequest(e.Message);
         }

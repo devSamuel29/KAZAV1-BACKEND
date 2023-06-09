@@ -39,8 +39,8 @@ builder.Services
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(
-        IdentityData.AdminUserPolicyName,
-        p => p.RequireClaim(IdentityData.Role, IdentityData.AdminUserPolicyName)
+        IdentityData.AdminPolicyName,
+        p => p.RequireClaim(IdentityData.ClaimTitle, IdentityData.AdminClaimName)
     );
 });
 
@@ -48,7 +48,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(
         IdentityData.UserPolicyName,
-        p => p.RequireClaim(IdentityData.Role, IdentityData.UserPolicyName)
+        p => p.RequireClaim(IdentityData.ClaimTitle, IdentityData.UserClaimName)
     );
 });
 
@@ -64,6 +64,7 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 builder.Services.AddScoped<IAdminManageUsersRepository, AdminManageUsersRepository>();
 builder.Services.AddScoped<IAdminManageContactsRepository, AdminManageContactsRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IGuestRepository, GuestRepository>();
 
 var app = builder.Build();

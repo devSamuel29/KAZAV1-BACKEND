@@ -6,7 +6,7 @@ using kazariobranco_backend.Identity;
 
 namespace kazariobranco_backend.Controllers;
 
-[Authorize(Policy = IdentityData.AdminUserPolicyName)]
+[Authorize(Policy = IdentityData.AdminPolicyName)]
 [ApiController]
 [Route("v1/api/[controller]")]
 public class AdminManageUsersController : ControllerBase

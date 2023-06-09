@@ -51,5 +51,13 @@ public class GuestController : ControllerBase
         {
             return BadRequest(e.Message);
         }
+        catch (InvalidOperationException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (FormatException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

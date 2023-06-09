@@ -1,9 +1,7 @@
-namespace kazariobranco_backend.Models;
+namespace kazariobranco_backend.Request;
 
-public class AddressModel
+public class AddressRequest
 {
-    public int Id { get; set; }
-
     public string Address { get; set; }
 
     public int Number { get; set; }
@@ -15,8 +13,4 @@ public class AddressModel
     public string City { get; set; }
 
     public int ZipCode { get; set; }
-    
-    public int UserId { get; set; }
-
-    public UserModel User { get; set; }
 }

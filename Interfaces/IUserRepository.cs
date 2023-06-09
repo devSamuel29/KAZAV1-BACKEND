@@ -8,9 +8,11 @@ namespace kazariobranco_backend.Interfaces;
 
 public interface IUserRepository
 {
-    Task<UserModel> GetMyData();
+    Task<UserModel> GetMyDataAsync(int id, string email);
 
-    Task<Response> UpdatePasswordUser(string jwt, ForgottenPasswordRequest request);
+    Task UpdatePasswordUserAsync(ForgottenPasswordRequest request, int id);
 
-    Task DeleteMyAccount();
+    Task RegisterAddressAsync(AddressRequest request, int id, string email);
+
+    Task DeleteMyAccountAsync();
 }

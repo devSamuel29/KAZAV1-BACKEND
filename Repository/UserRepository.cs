@@ -1,16 +1,7 @@
-using System.Text;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
-using kazariobranco_backend.Validator;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using kazariobranco_backend.Identity;
 
 namespace kazariobranco_backend.Repository;
 
@@ -20,18 +11,37 @@ public class UserRepository : IUserRepository
 
     private readonly IConfiguration _config;
 
-    public Task<UserModel> GetMyData()
-    {
-        throw new NotImplementedException();
-    }
-    
-    public UserRepository(IConfiguration config, MyDbContext dbContext)
+    private readonly IAddressRepository _addressRepository;
+
+    public UserRepository(
+        IConfiguration config,
+        MyDbContext dbContext,
+        IAddressRepository addressRepository
+    )
     {
         _dbContext = dbContext;
         _config = config;
+        _addressRepository = addressRepository;
     }
-    
-    public async Task<Response> UpdatePasswordUser(string jwt, ForgottenPasswordRequest request)
+
+    public async Task<UserModel> GetMyDataAsync(int id, string email)
+    {
+        var dbUser = await _dbContext.Users.FindAsync(id);
+
+        if (dbUser == null)
+        {
+            throw new NullReferenceException();
+        }
+        else if (dbUser.Email != email)
+        {
+            throw new InvalidOperationException();
+        }
+
+        dbUser.Addresses = await _addressRepository.GetMyAddresses(id);
+        return dbUser;
+    }
+
+    public async Task UpdatePasswordUserAsync(ForgottenPasswordRequest request, int id)
     {
         // var dbUser = await GetUserByIdAsync(id);
 
@@ -41,12 +51,16 @@ public class UserRepository : IUserRepository
         // dbUser.Password = request.NewPassword;
         // dbUser.UpdatedAt = DateTime.Today;
         // await _dbContext.SaveChangesAsync();
-
-        return new Response(200, "sucess");
     }
 
+    public async Task RegisterAddressAsync(AddressRequest request, int id, string email)
+    {
+        var dbUser = await GetMyDataAsync(id, email);
 
-    public Task DeleteMyAccount()
+        await _addressRepository.AddAddressAsync(request, dbUser);
+    }
+
+    public async Task DeleteMyAccountAsync()
     {
         throw new NotImplementedException();
     }
