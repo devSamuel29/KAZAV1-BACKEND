@@ -18,7 +18,7 @@ public class AddressRepository : IAddressRepository
 
     public async Task<IList<AddressModel>> GetMyAddresses(int id)
     {
-        return await _dbContext.Addresses.ToListAsync();
+        return await _dbContext.Addresses.Where(p => p.UserId == id).ToListAsync();
     }
 
     public async Task AddAddressAsync(AddressRequest request, UserModel user)

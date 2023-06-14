@@ -15,7 +15,9 @@ public class AddressModel
     public string City { get; set; }
 
     public int ZipCode { get; set; }
-    
+
+    //
+
     public int UserId { get; set; }
 
     public UserModel User { get; set; }

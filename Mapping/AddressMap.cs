@@ -54,7 +54,7 @@ public class AddressMap : IEntityTypeConfiguration<AddressModel>
             .HasOne(p => p.User)
             .WithMany(p => p.Addresses)
             .HasForeignKey(p => p.UserId)
-            .OnDelete(DeleteBehavior.Cascade)
-            .HasConstraintName("FkAddressUserId");
+            .HasConstraintName("FkAddressUserId")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

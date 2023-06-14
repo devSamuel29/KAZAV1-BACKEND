@@ -18,10 +18,12 @@ public class UserModel
 
     public string Password { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.Today;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-    public DateTime UpdatedAt { get; set; } = DateTime.Today;
-
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    
+    //
+    
     public CartModel Cart { get; set; } = new CartModel();
 
     public IList<AddressModel> Addresses { get; set; } = new List<AddressModel>();

@@ -17,7 +17,6 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
             .Property(p => p.Role)
             .HasColumnName("Role")
             .HasColumnType("varchar(5)")
-            .HasDefaultValueSql("user")
             .IsRequired();
 
         builder
@@ -58,13 +57,13 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
         builder
             .Property(p => p.CreatedAt)
             .HasColumnName("CreatedAt")
-            .HasColumnType("date")
+            .HasColumnType("datetime2")
             .IsRequired();
 
         builder
             .Property(p => p.UpdatedAt)
             .HasColumnName("UpdatedAt")
-            .HasColumnType("date")
+            .HasColumnType("datetime2")
             .IsRequired();
     }
 }

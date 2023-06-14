@@ -74,35 +74,25 @@ public class GuestRepository : IGuestRepository
                 .Where(u => u.Email == request.Email)
                 .FirstOrDefaultAsync();
 
-            if (dbUser == null)
+            if (dbUser is null)
             {
                 throw new NullReferenceException("Usuário não encontrado");
             }
 
-            var isValidHash = passwordHasher.VerifyHashedPassword(
-                request,
-                dbUser.Password,
-                request.Password
-            );
+            var isValidHash = BCrypt.Net.BCrypt.Verify(request.Password, dbUser.Password);
 
-            switch (isValidHash)
+            if (isValidHash)
             {
-                case PasswordVerificationResult.Failed:
-                    throw new InvalidOperationException("unauthorized");
-
-                case PasswordVerificationResult.Success:
-                    var claims = new List<Claim>()
-                    {
-                        new(JwtRegisteredClaimNames.Sub, dbUser.Id.ToString()),
-                        new(JwtRegisteredClaimNames.Name, $"{dbUser.Firstname} {dbUser.Lastname}"),
-                        new(JwtRegisteredClaimNames.Email, dbUser.Email),
-                        new(IdentityData.ClaimTitle, dbUser.Role)
-                    };
-                    return GetToken(claims);
-
-                case PasswordVerificationResult.SuccessRehashNeeded:
-                    break;
+                var claims = new List<Claim>()
+                {
+                    new(JwtRegisteredClaimNames.Sub, dbUser.Id.ToString()),
+                    new(JwtRegisteredClaimNames.Name, $"{dbUser.Firstname} {dbUser.Lastname}"),
+                    new(JwtRegisteredClaimNames.Email, dbUser.Email),
+                    new(IdentityData.ClaimTitle, dbUser.Role)
+                };
+                return GetToken(claims);
             }
+            throw new InvalidDataException("dados incorretos");
         }
         throw new FormatException(validation.ToString());
     }
@@ -114,25 +104,20 @@ public class GuestRepository : IGuestRepository
 
         if (validation.IsValid)
         {
-            var passwordHasher = new PasswordHasher<RegisterRequest>();
-            request.Password = passwordHasher.HashPassword(request, request.Password);
-            request.Cpf = passwordHasher.HashPassword(request, request.Cpf);
-            var date = DateTime.Now;
-
             var newUser = new UserModel()
             {
                 Firstname = request.Firstname,
                 Lastname = request.Lastname,
-                Cpf = request.Cpf,
+                Cpf = BCrypt.Net.BCrypt.HashPassword(request.Cpf),
                 Phone = request.Phone,
                 Email = request.Email,
-                Password = request.Password,
+                Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
             };
 
             await _dbContext.AddAsync(newUser);
             await _dbContext.SaveChangesAsync();
         }
-        else 
+        else
         {
             throw new FormatException(validation.ToString());
         }

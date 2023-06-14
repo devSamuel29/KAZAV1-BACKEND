@@ -48,15 +48,15 @@ namespace kazariobranco_backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Role = table.Column<string>(type: "varchar(5)", nullable: false, defaultValueSql: "user"),
+                    Role = table.Column<string>(type: "varchar(5)", nullable: false),
                     Firstname = table.Column<string>(type: "varchar(20)", nullable: false),
                     Lastname = table.Column<string>(type: "varchar(20)", nullable: false),
                     Cpf = table.Column<string>(type: "varchar(84)", nullable: false),
                     Phone = table.Column<string>(type: "varchar(32)", nullable: false),
                     Email = table.Column<string>(type: "varchar(40)", nullable: false),
                     Password = table.Column<string>(type: "varchar(85)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "date", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "date", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -12,7 +12,7 @@ using kazariobranco_backend.Database;
 namespace kazariobranco_backend.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230609182549_Migrations")]
+    [Migration("20230614170938_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />
@@ -208,7 +208,7 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnName("Cpf");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasColumnName("CreatedAt");
 
                     b.Property<string>("Email")
@@ -238,13 +238,11 @@ namespace kazariobranco_backend.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(5)")
-                        .HasColumnName("Role")
-                        .HasDefaultValueSql("user");
+                        .HasColumnName("Role");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasColumnName("UpdatedAt");
 
                     b.HasKey("Id")

@@ -23,7 +23,7 @@ public class AdminManageContactsRepository : IAdminManageContactsRepository
             .AsNoTracking()
             .ToListAsync();
 
-        if (_dbContacts.Count == 0)
+        if (_dbContacts is null)
         {
             throw new NullReferenceException();
         }
@@ -38,7 +38,7 @@ public class AdminManageContactsRepository : IAdminManageContactsRepository
             .AsNoTracking()
             .FirstOrDefaultAsync();
 
-        if (_dbContact == null)
+        if (_dbContact is null)
         {
             throw new NullReferenceException();
         }
@@ -50,7 +50,7 @@ public class AdminManageContactsRepository : IAdminManageContactsRepository
     {
         var _dbContacts = await GetAllContactsAsync(skip, take);
 
-        if (_dbContacts.Count < 0)
+        if (_dbContacts is null)
         {
             throw new NullReferenceException();
         }
@@ -67,7 +67,7 @@ public class AdminManageContactsRepository : IAdminManageContactsRepository
     {
         var _dbContact = await GetContactByIdAsync(id);
 
-        if (_dbContact == null)
+        if (_dbContact is null)
         {
             throw new NullReferenceException();
         }

@@ -205,7 +205,7 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnName("Cpf");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasColumnName("CreatedAt");
 
                     b.Property<string>("Email")
@@ -235,13 +235,11 @@ namespace kazariobranco_backend.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(5)")
-                        .HasColumnName("Role")
-                        .HasDefaultValueSql("user");
+                        .HasColumnName("Role");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasColumnName("UpdatedAt");
 
                     b.HasKey("Id")

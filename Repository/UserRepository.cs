@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
@@ -13,22 +15,20 @@ public class UserRepository : IUserRepository
 
     private readonly IAddressRepository _addressRepository;
 
-    public UserRepository(
-        IConfiguration config,
-        MyDbContext dbContext,
-        IAddressRepository addressRepository
-    )
+    public UserRepository(MyDbContext dbContext, IAddressRepository addressRepository)
     {
         _dbContext = dbContext;
-        _config = config;
         _addressRepository = addressRepository;
     }
 
     public async Task<UserModel> GetMyDataAsync(int id, string email)
     {
-        var dbUser = await _dbContext.Users.FindAsync(id);
+        var dbUser = await _dbContext.Users
+            .Include(p => p.Cart)
+            .Where(p => p.Id == id)
+            .FirstOrDefaultAsync();
 
-        if (dbUser == null)
+        if (dbUser is null)
         {
             throw new NullReferenceException();
         }
@@ -37,7 +37,6 @@ public class UserRepository : IUserRepository
             throw new InvalidOperationException();
         }
 
-        dbUser.Addresses = await _addressRepository.GetMyAddresses(id);
         return dbUser;
     }
 
