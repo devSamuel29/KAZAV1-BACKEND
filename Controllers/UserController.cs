@@ -20,12 +20,12 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [HttpGet("get-my-data/{id}/{email}")]
-    public async Task<IActionResult> GetMyDataAsync([FromRoute] int id, [FromRoute] string email)
+    [HttpPost("get-my-data")]
+    public async Task<IActionResult> GetMyDataAsync([FromBody] string jwt)
     {
-        try 
-        { 
-            return Ok(await _userRepository.GetMyDataAsync(id, email));
+        try
+        {
+            return Ok(await _userRepository.GetMyDataAsync(jwt));
         }
         catch (Exception e)
         {
@@ -63,7 +63,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            await _userRepository.RegisterAddressAsync(request, id, email);
+            // await _userRepository.RegisterAddressAsync(request, id, email);
             return NoContent();
         }
         catch (Exception e)

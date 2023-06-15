@@ -9,7 +9,7 @@ public class CartModel
     public int UserId { get; set; }
     
     // RELATIONSHIPS
-    public IList<OrderModel> Orders { get; set; }
-
     public virtual UserModel User { get; set; }
+    
+    public virtual IList<OrderModel> Orders { get; set; }
 }

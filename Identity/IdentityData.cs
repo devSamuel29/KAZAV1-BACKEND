@@ -2,7 +2,7 @@ namespace kazariobranco_backend.Identity;
 
 public class IdentityData
 {
-    public const string ClaimTitle = "Role";
+    public const string ClaimTitle = "role";
 
     public const string AdminPolicyName = "Admin";
 

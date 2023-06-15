@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -69,7 +68,6 @@ public class GuestRepository : IGuestRepository
         var validation = validator.Validate(request);
         if (validation.IsValid)
         {
-            var passwordHasher = new PasswordHasher<LoginRequest>();
             var dbUser = await _dbContext.Users
                 .Where(u => u.Email == request.Email)
                 .FirstOrDefaultAsync();

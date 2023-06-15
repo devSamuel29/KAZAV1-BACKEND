@@ -12,7 +12,7 @@ using kazariobranco_backend.Database;
 namespace kazariobranco_backend.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230614170938_Migrations")]
+    [Migration("20230614181418_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />

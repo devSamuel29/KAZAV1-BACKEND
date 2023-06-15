@@ -22,9 +22,9 @@ public class UserModel
 
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
     
-    //
+    // RELATIONSHIPS
     
-    public CartModel Cart { get; set; } = new CartModel();
+    public virtual CartModel Cart { get; set; } = new CartModel();
 
     public IList<AddressModel> Addresses { get; set; } = new List<AddressModel>();
 }

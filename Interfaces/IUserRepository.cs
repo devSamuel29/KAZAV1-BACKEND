@@ -1,18 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
 using kazariobranco_backend.Request;
-using kazariobranco_backend.Models;
-using System.Collections.Generic;
-using System.Security.Claims;
+using kazariobranco_backend.Response;
 
 namespace kazariobranco_backend.Interfaces;
 
 public interface IUserRepository
 {
-    Task<UserModel> GetMyDataAsync(int id, string email);
+    Task<UserResponse> GetMyDataAsync(string jwt);
 
     Task UpdatePasswordUserAsync(ForgottenPasswordRequest request, int id);
 
-    Task RegisterAddressAsync(AddressRequest request, int id, string email);
+    // Task RegisterAddressAsync(AddressRequest request, int id, string email);
 
     Task DeleteMyAccountAsync();
 }
