@@ -18,14 +18,15 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<UserResponse> GetMyDataAsync(string jwt)
+    public async Task<UserResponse> GetMyDataAsync(JwtRequest request)
     {
 
-        var validateToken = new JwtSecurityTokenHandler();
-        if(!validateToken.CanReadToken(jwt)) {
+        var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+        if(!jwtSecurityTokenHandler.CanReadToken(request.Token)) {
             throw new Exception();
         }
-
+        var token = jwtSecurityTokenHandler.ReadJwtToken(request.Token);
+        
         var dbUser = await _dbContext.Users
             .Include(p => p.Cart)
             .ThenInclude(p => p.Orders)
@@ -45,7 +46,7 @@ public class UserRepository : IUserRepository
             Cart = new CartResponse()
             {
                 Id = dbUser.Cart.Id,
-                Orders = new List<OrderResponse>() { },
+                Orders = new List<OrderResponse>() {  },
             },
             Addresses = new List<AddressResponse>() { },
         };

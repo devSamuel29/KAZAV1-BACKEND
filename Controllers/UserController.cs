@@ -21,11 +21,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("get-my-data")]
-    public async Task<IActionResult> GetMyDataAsync([FromBody] string jwt)
+    public async Task<IActionResult> GetMyDataAsync([FromBody] JwtRequest request)
     {
         try
         {
-            return Ok(await _userRepository.GetMyDataAsync(jwt));
+            return Ok(await _userRepository.GetMyDataAsync(request));
         }
         catch (Exception e)
         {

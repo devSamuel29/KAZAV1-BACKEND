@@ -7,5 +7,5 @@ public interface IAddressRepository
 { 
     Task<IList<AddressModel>> GetMyAddresses(int id);
 
-    Task AddAddressAsync(AddressRequest Request, UserModel user);
+    Task AddAddressAsync(JwtRequest jwt, AddressRequest request);
 }

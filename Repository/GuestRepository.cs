@@ -47,21 +47,6 @@ public class GuestRepository : IGuestRepository
         throw new FormatException(validate.Errors.ToString());
     }
 
-    private JwtSecurityToken GetToken(List<Claim> authClaim)
-    {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            expires: DateTime.Now.AddMinutes(30),
-            claims: authClaim,
-            signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
-        );
-
-        return token;
-    }
-
     public async Task<JwtSecurityToken> LoginAsync(LoginRequest request)
     {
         var validator = new LoginValidator();
@@ -139,5 +124,20 @@ public class GuestRepository : IGuestRepository
     public Task DeleteCartProductsAsync()
     {
         throw new NotImplementedException();
+    }
+
+    private JwtSecurityToken GetToken(List<Claim> authClaim)
+    {
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+
+        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            expires: DateTime.Now.AddMinutes(30),
+            claims: authClaim,
+            signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256)
+        );
+
+        return token;
     }
 }

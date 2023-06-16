@@ -5,7 +5,7 @@ namespace kazariobranco_backend.Interfaces;
 
 public interface IUserRepository
 {
-    Task<UserResponse> GetMyDataAsync(string jwt);
+    Task<UserResponse> GetMyDataAsync(JwtRequest request);
 
     Task UpdatePasswordUserAsync(ForgottenPasswordRequest request, int id);
 
