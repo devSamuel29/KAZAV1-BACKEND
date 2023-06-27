@@ -24,7 +24,7 @@ public class UserModel
     
     // RELATIONSHIPS
     
-    public virtual CartModel Cart { get; set; } = new CartModel();
+    public CartModel Cart { get; set; } = new CartModel();
 
     public IList<AddressModel> Addresses { get; set; } = new List<AddressModel>();
 }

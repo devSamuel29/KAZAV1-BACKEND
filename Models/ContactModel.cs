@@ -14,7 +14,7 @@ public class ContactModel
 
     public string Description { get; set; }
 
-    public DateTime CreatedAt { get; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-    public DateTime EndedAt { get; set; }
+    public DateTime EndedAt { get; set; } = DateTime.Now;
 }

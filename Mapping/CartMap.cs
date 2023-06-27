@@ -23,7 +23,6 @@ public class CartMap : IEntityTypeConfiguration<CartModel>
         builder
             .HasOne(p => p.User)
             .WithOne(p => p.Cart)
-            .HasForeignKey<CartModel>(p => p.Id)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
