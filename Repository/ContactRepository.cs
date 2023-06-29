@@ -27,7 +27,7 @@ public class ContactRepository : IContactRepository
             .Take(take)
             .AsNoTracking()
             .ToListAsync();
-
+        
         if (_dbContacts is null)
         {
             throw new NullReferenceException();

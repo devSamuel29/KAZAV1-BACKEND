@@ -8,7 +8,6 @@ using kazariobranco_backend.Interfaces;
 
 namespace kazariobranco_backend.Controllers;
 
-[Authorize(Policy = IdentityData.UserPolicyName)]
 [ApiController]
 [Route("v1/api/[controller]")]
 public class UserController : ControllerBase
@@ -53,6 +52,37 @@ public class UserController : ControllerBase
         }
     }
 
+    [Authorize(Policy = IdentityData.UserPolicyName)]
+    [HttpPost("my-data")]
+    public async Task<IActionResult> MyDataAsync([FromBody] JwtRequest request)
+    {
+        try
+        {
+            return Ok(await _userRepository.MyDataAsync(request));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [Authorize(Policy = IdentityData.UserPolicyName)]
+    [HttpPost("register-address")]
+    public async Task<IActionResult> RegisterAddress(
+        [FromBody] RegisterAddressRequest request
+    )
+    {
+        try
+        {
+            var test = await _userRepository.RegisterAddressAsync(request);
+            return Ok(test);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
     [Authorize(Policy = IdentityData.AdminPolicyName)]
     [HttpDelete("delete-all-users-async/{skip}/{take}")]
     public async Task<IActionResult> DeleteAllUsersAsync(
@@ -85,54 +115,4 @@ public class UserController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-
-    [HttpPost("get-my-data")]
-    public async Task<IActionResult> GetMyDataAsync([FromBody] JwtRequest request)
-    {
-        try
-        {
-            return Ok(await _userRepository.GetMyDataAsync(request));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    // [HttpPatch("update-user-password/{id}")]
-    // public async Task<IActionResult> UpdatePasswordUser(
-    //     [FromBody] ForgottenPasswordRequest request,
-    //     [FromRoute] int id
-    // )
-    // {
-    //     try
-    //     {
-    //         await _userRepository.UpdatePasswordUserAsync(request);
-    //         return NoContent();
-    //     }
-    //     catch (NullReferenceException e)
-    //     {
-    //         return NotFound(e.Message);
-    //     }
-    //     catch (SqlException e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
-
-    // [HttpPost("register-user-address")]
-    // public async Task<IActionResult> RegisterAddressAsync(
-    //     [FromBody] JwtRequest jwtRequest
-    // )
-    // {
-    //     try
-    //     {
-    //         await _userRepository.RegisterAddressAsync(jwtRequest);
-    //         return NoContent();
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
 }

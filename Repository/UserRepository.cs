@@ -6,6 +6,10 @@ using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Response;
 using kazariobranco_backend.Models;
+using System.Formats.Asn1;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using kazariobranco_backend.Identity;
 
 namespace kazariobranco_backend.Repository;
 
@@ -13,16 +17,23 @@ public class UserRepository : IUserRepository
 {
     private readonly MyDbContext _dbContext;
 
-    public UserRepository(MyDbContext dbContext)
+    private readonly IJwtService _jwtService;
+
+    public UserRepository(MyDbContext dbContext, IJwtService jwtService)
     {
         _dbContext = dbContext;
+        _jwtService = jwtService;
     }
 
     public async Task<List<UserModel>> GetAllUsersAsync(int skip, int take)
     {
-        var _dbUsers = await _dbContext.Users.Skip(skip).Take(take).ToListAsync();
+        var _dbUsers = await _dbContext.Users
+            .Skip(skip)
+            .Take(take)
+            .AsNoTracking()
+            .ToListAsync();
 
-        if (_dbUsers.Count == 0)
+        if (_dbUsers is null)
         {
             throw new NullReferenceException();
         }
@@ -34,7 +45,7 @@ public class UserRepository : IUserRepository
     {
         var _dbUser = await _dbContext.Users.FindAsync(id);
 
-        if (_dbUser == null)
+        if (_dbUser is null)
         {
             throw new NullReferenceException();
         }
@@ -98,7 +109,7 @@ public class UserRepository : IUserRepository
         return dbUser;
     }
 
-    public async Task<UserResponse> GetMyDataAsync(JwtRequest request)
+    public async Task<UserResponse> MyDataAsync(JwtRequest request)
     {
         var dbUser = await GetUser(request);
 
@@ -135,31 +146,22 @@ public class UserRepository : IUserRepository
         return response;
     }
 
-    public async Task RegisterAddressAsync(
-        JwtRequest jwtRequest,
-        AddressRequest addressRequest
-    )
+    public async Task<Claims> RegisterAddressAsync(RegisterAddressRequest request)
     {
-        var dbUser = await GetUser(jwtRequest);
-        dbUser.Addresses.Add(
-            new AddressModel()
-            {
-                Address = addressRequest.Address,
-                Number = addressRequest.Number,
-                ZipCode = addressRequest.ZipCode,
-                District = addressRequest.District,
-                City = addressRequest.City,
-                State = addressRequest.State
-            }
-        );
+        var isValidToken = await _jwtService.ReadTokenAsync(request.Token);
+        
+        if (isValidToken)
+        {
+            var test = await _jwtService.GetClaims(request.Token);
+            return test;
+            // await _dbContext.SaveChangesAsync();
+        }
 
-        await _dbContext.SaveChangesAsync();
+        //mudar a exception
+        throw new Exception("sla");
     }
 
-    public async Task UpdatePasswordUserAsync(
-        ForgottenPasswordRequest forgottenPasswordRequest,
-        JwtRequest jwtRequest
-    )
+    public async Task UpdatePasswordUserAsync(JwtRequest jwtRequest)
     {
         // var dbUser = await GetUserByIdAsync(id);
 
@@ -171,7 +173,7 @@ public class UserRepository : IUserRepository
         // await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteMyAccountAsync()
+    public async Task DeleteMyAccountAsync(JwtRequest jwtRequest)
     {
         throw new NotImplementedException();
     }

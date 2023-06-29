@@ -5,8 +5,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 
 using Microsoft.IdentityModel.Tokens;
-
-using Newtonsoft.Json;
+using kazariobranco_backend.Identity;
 
 namespace PROJETO.Domain.Services;
 
@@ -39,7 +38,7 @@ public class JwtService : IJwtService
         return await Task.FromResult(token);
     }
 
-    public async Task<string> ReadTokenAsync(string token)
+    public async Task<bool> ReadTokenAsync(string token)
     {
         var tokenHandler = await new JwtSecurityTokenHandler().ValidateTokenAsync(
             token,
@@ -57,13 +56,36 @@ public class JwtService : IJwtService
             }
         );
 
-        return await Task.FromResult(JsonConvert.SerializeObject(tokenHandler.Claims));
+        return await Task.FromResult(tokenHandler.IsValid);
     }
 
-    // //TO-DO
-    // public async Task<JwtClaimsResponse> MapClaims(string token)
-    // {
-    //     var tokenHandler = await ReadTokenAsync(token);
-        
-    // }
+    //TO-DO
+    public async Task<Claims> GetClaims(string token)
+    {
+        bool isValidToken = await ReadTokenAsync(token);
+
+        if (isValidToken)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            IList<string> claimsList = new List<string>();
+
+            foreach (var claim in handler.ReadJwtToken(token).Claims)
+            {
+                claimsList.Add(claim.Value);
+            }
+
+            Claims claims = new Claims()
+            {
+                Id = claimsList[0],
+                Name = claimsList[1],
+                Email = claimsList[2],
+                Role = claimsList[3],
+                Exp = int.Parse(claimsList[4]),
+            };
+
+            return await Task.FromResult(claims);
+        }
+
+        throw new Exception("sla");
+    }
 }

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using kazariobranco_backend.Identity;
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Response;
@@ -10,18 +12,15 @@ public interface IUserRepository
 
     Task<UserModel> GetUserByIdAsync(int id);
 
-    Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take);
+    Task<UserResponse> MyDataAsync(JwtRequest request);
+
+    Task<Claims> RegisterAddressAsync(RegisterAddressRequest request);
+
+    Task UpdatePasswordUserAsync(JwtRequest jwtRequest);
+
+    Task DeleteMyAccountAsync(JwtRequest jwtRequest);
 
     Task<UserModel> DeleteUserByIdAsync(int id);
-    
-    Task<UserResponse> GetMyDataAsync(JwtRequest request);
 
-    Task UpdatePasswordUserAsync(
-        ForgottenPasswordRequest forgottenPasswordRequest,
-        JwtRequest jwtRequest
-    );
-
-    Task RegisterAddressAsync(JwtRequest jwtRequest, AddressRequest addressRequest);
-
-    Task DeleteMyAccountAsync();
+    Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take);
 }

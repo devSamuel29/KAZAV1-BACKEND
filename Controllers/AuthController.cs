@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
@@ -21,8 +22,8 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var loginResponse = await _authRepository.LoginAsync(request);
-            return Ok(loginResponse.EncodedPayload);
+            var response = await _authRepository.LoginAsync(request);
+            return Ok(new JwtSecurityTokenHandler().WriteToken(response));
         }
         catch (Exception e)
         {
@@ -38,7 +39,11 @@ public class AuthController : ControllerBase
             await _authRepository.RegisterAsync(request);
             return Created(
                 "minha url",
-                new { name = request.Firstname + request.Lastname }
+                new
+                {
+                    name = $"{request.Firstname} {request.Lastname}",
+                    Email = request.Email,
+                }
             );
         }
         catch (Exception e)

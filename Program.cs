@@ -57,7 +57,10 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddDbContext<MyDbContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
+    options =>
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("connectionString")
+        )
 );
 
 builder.Services.AddControllers();
@@ -65,13 +68,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(typeof(MyAutoMapper));
-builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddTransient<
+    IConfigureOptions<SwaggerGenOptions>,
+    ConfigureSwaggerOptions
+>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 
 // TESTAR ADCIONAR UM TRANSIENT COM TODAS AS INJEÇOES DEVE FUNFAR
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 
 var app = builder.Build();
@@ -83,8 +88,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseRouting();
 
 app.UseAuthentication();
 
