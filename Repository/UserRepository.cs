@@ -6,10 +6,7 @@ using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Response;
 using kazariobranco_backend.Models;
-using System.Formats.Asn1;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using kazariobranco_backend.Identity;
+using AutoMapper;
 
 namespace kazariobranco_backend.Repository;
 
@@ -17,11 +14,14 @@ public class UserRepository : IUserRepository
 {
     private readonly MyDbContext _dbContext;
 
+    private readonly IMapper _mapper;
+
     private readonly IJwtService _jwtService;
 
-    public UserRepository(MyDbContext dbContext, IJwtService jwtService)
+    public UserRepository(MyDbContext dbContext, IMapper mapper, IJwtService jwtService)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
         _jwtService = jwtService;
     }
 
@@ -146,15 +146,22 @@ public class UserRepository : IUserRepository
         return response;
     }
 
-    public async Task<Claims> RegisterAddressAsync(RegisterAddressRequest request)
+    public async Task RegisterAddressAsync(AddNewAddressRequest request)
     {
         var isValidToken = await _jwtService.ReadTokenAsync(request.Token);
-        
+
         if (isValidToken)
         {
-            var test = await _jwtService.GetClaims(request.Token);
-            return test;
-            // await _dbContext.SaveChangesAsync();
+            var claims = await _jwtService.GetClaims(request.Token);
+            var _dbUser = await _dbContext.Users.FindAsync(claims.Id);
+            if (_dbUser.Email == claims.Email)
+            {
+                _dbUser.Addresses.Add(_mapper.Map<AddressModel>(request));
+                await _dbContext.SaveChangesAsync();
+                return;
+            }
+
+            throw new Exception("sla");
         }
 
         //mudar a exception

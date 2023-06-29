@@ -3,6 +3,7 @@ using kazariobranco_backend.Request;
 
 using AutoMapper;
 using Microsoft.Extensions.Options;
+using kazariobranco_backend.Response;
 
 namespace kazariobranco_backend.Mapping;
 
@@ -18,5 +19,7 @@ public class MyAutoMapper : Profile
             );
 
         CreateMap<ContactRequest, ContactModel>();
+
+        CreateMap<AddNewAddressRequest, AddressModel>();
     }
 }

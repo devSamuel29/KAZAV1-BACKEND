@@ -69,13 +69,13 @@ public class UserController : ControllerBase
     [Authorize(Policy = IdentityData.UserPolicyName)]
     [HttpPost("register-address")]
     public async Task<IActionResult> RegisterAddress(
-        [FromBody] RegisterAddressRequest request
+        [FromBody] AddNewAddressRequest request
     )
     {
         try
         {
-            var test = await _userRepository.RegisterAddressAsync(request);
-            return Ok(test);
+            await _userRepository.RegisterAddressAsync(request);
+            return NoContent();
         }
         catch (Exception e)
         {

@@ -76,7 +76,7 @@ public class JwtService : IJwtService
 
             Claims claims = new Claims()
             {
-                Id = claimsList[0],
+                Id = int.Parse(claimsList[0]),
                 Name = claimsList[1],
                 Email = claimsList[2],
                 Role = claimsList[3],

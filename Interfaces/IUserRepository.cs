@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using kazariobranco_backend.Identity;
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Response;
@@ -14,7 +12,7 @@ public interface IUserRepository
 
     Task<UserResponse> MyDataAsync(JwtRequest request);
 
-    Task<Claims> RegisterAddressAsync(RegisterAddressRequest request);
+    Task RegisterAddressAsync(AddNewAddressRequest request);
 
     Task UpdatePasswordUserAsync(JwtRequest jwtRequest);
 

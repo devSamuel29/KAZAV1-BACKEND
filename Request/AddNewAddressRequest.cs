@@ -1,6 +1,6 @@
 namespace kazariobranco_backend.Request;
 
-public class RegisterAddressRequest
+public class AddNewAddressRequest
 {
     public string Token { get; set; }
 
