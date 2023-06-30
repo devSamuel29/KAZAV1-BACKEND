@@ -7,6 +7,7 @@ using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Response;
 using kazariobranco_backend.Models;
 using AutoMapper;
+using kazariobranco_backend.Identity;
 
 namespace kazariobranco_backend.Repository;
 
@@ -27,30 +28,30 @@ public class UserRepository : IUserRepository
 
     public async Task<List<UserModel>> GetAllUsersAsync(int skip, int take)
     {
-        var _dbUsers = await _dbContext.Users
+        var dbUsers = await _dbContext.Users
             .Skip(skip)
             .Take(take)
             .AsNoTracking()
             .ToListAsync();
 
-        if (_dbUsers is null)
+        if (dbUsers is null)
         {
             throw new NullReferenceException();
         }
 
-        return _dbUsers;
+        return dbUsers;
     }
 
     public async Task<UserModel> GetUserByIdAsync(int id)
     {
-        var _dbUser = await _dbContext.Users.FindAsync(id);
+        var dbUser = await _dbContext.Users.FindAsync(id);
 
-        if (_dbUser is null)
+        if (dbUser is null)
         {
             throw new NullReferenceException();
         }
 
-        return _dbUser;
+        return dbUser;
     }
 
     public async Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take)
@@ -109,60 +110,26 @@ public class UserRepository : IUserRepository
         return dbUser;
     }
 
-    public async Task<UserResponse> MyDataAsync(JwtRequest request)
+    public async Task<UserResponse> MyDataAsync(string token)
     {
-        var dbUser = await GetUser(request);
-
-        List<AddressResponse> addresses = new List<AddressResponse>();
-
-        foreach (var address in dbUser.Addresses)
-        {
-            addresses.Add(
-                new AddressResponse()
-                {
-                    Address = address.Address,
-                    Number = address.Number,
-                    District = address.District,
-                    City = address.City,
-                    State = address.State,
-                    ZipCode = address.ZipCode
-                }
-            );
-        }
-
-        var response = new UserResponse()
-        {
-            Name = $"{dbUser.Firstname} {dbUser.Lastname}",
-            Email = dbUser.Email,
-            Phone = dbUser.Phone,
-            Cart = new CartResponse()
-            {
-                Id = dbUser.Cart.Id,
-                Orders = new List<OrderResponse>() { },
-            },
-            Addresses = addresses
-        };
-
-        return response;
+        token = await _jwtService.FormatToken(token);
+        Claims claims = await _jwtService.GetClaims(token);
+        
+        var dbUser = await GetUserByIdAsync(claims.Id);
+        return _mapper.Map<UserResponse>(dbUser);
     }
 
     public async Task RegisterAddressAsync(string token, AddNewAddressRequest request)
     {
         token = await _jwtService.FormatToken(token);
-        var isValidToken = await _jwtService.ReadTokenAsync(token);
 
-        if (isValidToken)
+        var claims = await _jwtService.GetClaims(token);
+        var _dbUser = await _dbContext.Users.FindAsync(claims.Id);
+        if (_dbUser.Email == claims.Email)
         {
-            var claims = await _jwtService.GetClaims(token);
-            var _dbUser = await _dbContext.Users.FindAsync(claims.Id);
-            if (_dbUser.Email == claims.Email)
-            {
-                _dbUser.Addresses.Add(_mapper.Map<AddressModel>(request));
-                await _dbContext.SaveChangesAsync();
-                return;
-            }
-
-            throw new Exception("sla");
+            _dbUser.Addresses.Add(_mapper.Map<AddressModel>(request));
+            await _dbContext.SaveChangesAsync();
+            return;
         }
 
         //mudar a exception

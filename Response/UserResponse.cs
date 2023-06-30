@@ -7,8 +7,4 @@ public class UserResponse
     public string Email { get; set; }
 
     public string Phone { get; set; }
-
-    public CartResponse Cart { get; set; }
-
-    public List<AddressResponse> Addresses { get; set; }
 }

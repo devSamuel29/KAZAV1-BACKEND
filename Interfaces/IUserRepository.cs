@@ -10,7 +10,7 @@ public interface IUserRepository
 
     Task<UserModel> GetUserByIdAsync(int id);
 
-    Task<UserResponse> MyDataAsync(JwtRequest request);
+    Task<UserResponse> MyDataAsync(string token);
 
     Task RegisterAddressAsync(string token, AddNewAddressRequest request);
 

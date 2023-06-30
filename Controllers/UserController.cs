@@ -56,11 +56,12 @@ public class UserController : ControllerBase
 
     [Authorize(Policy = IdentityData.UserPolicyName)]
     [HttpPost("my-data")]
-    public async Task<IActionResult> MyDataAsync([FromBody] JwtRequest request)
+    public async Task<IActionResult> MyDataAsync()
     {
         try
         {
-            return Ok(await _userRepository.MyDataAsync(request));
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            return Ok(await _userRepository.MyDataAsync(headerValue));
         }
         catch (Exception e)
         {
