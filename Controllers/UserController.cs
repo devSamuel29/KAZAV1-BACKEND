@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Identity;
 using kazariobranco_backend.Interfaces;
+using System.Net.Http.Headers;
+using Microsoft.Extensions.Primitives;
 
 namespace kazariobranco_backend.Controllers;
 
@@ -74,7 +76,8 @@ public class UserController : ControllerBase
     {
         try
         {
-            await _userRepository.RegisterAddressAsync(request);
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            await _userRepository.RegisterAddressAsync(headerValue, request);
             return NoContent();
         }
         catch (Exception e)

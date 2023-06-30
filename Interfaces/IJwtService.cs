@@ -12,4 +12,6 @@ public interface IJwtService
     Task<bool> ReadTokenAsync(string token);
 
     Task<Claims> GetClaims(string token);
+
+    Task<string> FormatToken(string token);
 }

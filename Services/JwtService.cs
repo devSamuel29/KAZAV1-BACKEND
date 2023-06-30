@@ -17,13 +17,31 @@ public class JwtService : IJwtService
     {
         _config = config;
     }
+    
+    public async Task<string> FormatToken(string token)
+    {
+        if (token.StartsWith("Bearer"))
+        {
+            string[] splitedToken = token.Split(" ");
+            if (await ReadTokenAsync(splitedToken[1]))
+            {
+                token = splitedToken[1];
+            }
+            else
+            {
+                throw new Exception("");
+            }
+        }
+
+        return await Task.FromResult(token);
+    }
 
     public async Task<JwtSecurityToken> GetTokenAsync(List<Claim> authClaim)
     {
         var securityKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config["Jwt:Key"])
         );
-
+        
         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
@@ -40,6 +58,7 @@ public class JwtService : IJwtService
 
     public async Task<bool> ReadTokenAsync(string token)
     {
+        token = await FormatToken(token);
         var tokenHandler = await new JwtSecurityTokenHandler().ValidateTokenAsync(
             token,
             new TokenValidationParameters()
@@ -59,7 +78,6 @@ public class JwtService : IJwtService
         return await Task.FromResult(tokenHandler.IsValid);
     }
 
-    //TO-DO
     public async Task<Claims> GetClaims(string token)
     {
         bool isValidToken = await ReadTokenAsync(token);
@@ -86,6 +104,6 @@ public class JwtService : IJwtService
             return await Task.FromResult(claims);
         }
 
-        throw new Exception("sla");
+        throw new InvalidDataException("invalid token");
     }
 }

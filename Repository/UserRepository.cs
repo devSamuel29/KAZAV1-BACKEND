@@ -146,13 +146,14 @@ public class UserRepository : IUserRepository
         return response;
     }
 
-    public async Task RegisterAddressAsync(AddNewAddressRequest request)
+    public async Task RegisterAddressAsync(string token, AddNewAddressRequest request)
     {
-        var isValidToken = await _jwtService.ReadTokenAsync(request.Token);
+        token = await _jwtService.FormatToken(token);
+        var isValidToken = await _jwtService.ReadTokenAsync(token);
 
         if (isValidToken)
         {
-            var claims = await _jwtService.GetClaims(request.Token);
+            var claims = await _jwtService.GetClaims(token);
             var _dbUser = await _dbContext.Users.FindAsync(claims.Id);
             if (_dbUser.Email == claims.Email)
             {

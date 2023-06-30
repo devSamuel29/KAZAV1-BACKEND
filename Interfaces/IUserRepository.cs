@@ -12,7 +12,7 @@ public interface IUserRepository
 
     Task<UserResponse> MyDataAsync(JwtRequest request);
 
-    Task RegisterAddressAsync(AddNewAddressRequest request);
+    Task RegisterAddressAsync(string token, AddNewAddressRequest request);
 
     Task UpdatePasswordUserAsync(JwtRequest jwtRequest);
 
