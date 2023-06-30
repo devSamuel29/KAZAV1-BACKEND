@@ -26,5 +26,7 @@ public class MyAutoMapper : Profile
         CreateMap<ContactRequest, ContactModel>();
 
         CreateMap<AddNewAddressRequest, AddressModel>();
+
+        CreateMap<AddressModel, AddressResponse>();
     }
 }

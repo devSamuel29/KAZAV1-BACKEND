@@ -55,7 +55,22 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Policy = IdentityData.UserPolicyName)]
-    [HttpPost("my-data")]
+    [HttpGet("get-my-addresses")]
+    public async Task<IActionResult> ListMyAddresses()
+    {
+        try
+        {
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            return Ok(await _userRepository.ListMyAddressesAsync(headerValue));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [Authorize(Policy = IdentityData.UserPolicyName)]
+    [HttpGet("my-data")]
     public async Task<IActionResult> MyDataAsync()
     {
         try

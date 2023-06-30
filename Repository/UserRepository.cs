@@ -104,30 +104,54 @@ public class UserRepository : IUserRepository
                 .Include(p => p.Cart)
                 .ThenInclude(p => p.Orders)
                 .Include(p => p.Addresses)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == 1)
             ?? throw new NullReferenceException();
 
         return dbUser;
     }
 
+    public async Task<IList<AddressResponse>> ListMyAddressesAsync(string token)
+    {
+        Claims claims = await GetClaims(token);
+
+        var dbUser = await _dbContext.Users
+            .Include(p => p.Addresses)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == claims.Id && p.Email == claims.Email);
+
+        IList<AddressResponse> response = new List<AddressResponse>();
+        foreach (var address in dbUser.Addresses)
+        {
+            response.Add(_mapper.Map<AddressResponse>(address));
+        }
+
+        return await Task.FromResult(response);
+    }
+
     public async Task<UserResponse> MyDataAsync(string token)
     {
-        token = await _jwtService.FormatToken(token);
-        Claims claims = await _jwtService.GetClaims(token);
-        
+        Claims claims = await GetClaims(token);
+
         var dbUser = await GetUserByIdAsync(claims.Id);
         return _mapper.Map<UserResponse>(dbUser);
     }
 
     public async Task RegisterAddressAsync(string token, AddNewAddressRequest request)
     {
-        token = await _jwtService.FormatToken(token);
+        Claims claims = await GetClaims(token);
 
-        var claims = await _jwtService.GetClaims(token);
-        var _dbUser = await _dbContext.Users.FindAsync(claims.Id);
-        if (_dbUser.Email == claims.Email)
+        var dbUser = await _dbContext.Users
+            .Include(p => p.Addresses)
+            .FirstAsync(p => p.Id == claims.Id && p.Email == claims.Email);
+
+        if (dbUser.Addresses.Count > 2)
         {
-            _dbUser.Addresses.Add(_mapper.Map<AddressModel>(request));
+            throw new Exception("opa nao pode mais");
+        }
+        else if (dbUser.Email == claims.Email)
+        {
+            dbUser.Addresses.Add(_mapper.Map<AddressModel>(request));
             await _dbContext.SaveChangesAsync();
             return;
         }
@@ -151,5 +175,11 @@ public class UserRepository : IUserRepository
     public async Task DeleteMyAccountAsync(JwtRequest jwtRequest)
     {
         throw new NotImplementedException();
+    }
+
+    private async Task<Claims> GetClaims(string token)
+    {
+        token = await _jwtService.FormatToken(token);
+        return await _jwtService.GetClaims(token);
     }
 }
