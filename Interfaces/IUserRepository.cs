@@ -11,14 +11,14 @@ public interface IUserRepository
     Task<UserModel> GetUserByIdAsync(int id);
 
     Task<IList<AddressResponse>> ListMyAddressesAsync(string token);
-    
+
     Task<UserResponse> MyDataAsync(string token);
 
     Task RegisterAddressAsync(string token, AddNewAddressRequest request);
 
-    Task UpdatePasswordUserAsync(JwtRequest jwtRequest);
+    Task UpdatePasswordUserAsync();
 
-    Task DeleteMyAccountAsync(JwtRequest jwtRequest);
+    Task DeleteMyAccountAsync(string token);
 
     Task<UserModel> DeleteUserByIdAsync(int id);
 

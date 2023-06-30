@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
-
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Response;
 using kazariobranco_backend.Models;
-using AutoMapper;
 using kazariobranco_backend.Identity;
+
+using Microsoft.EntityFrameworkCore;
+
+using AutoMapper;
 
 namespace kazariobranco_backend.Repository;
 
@@ -50,63 +50,6 @@ public class UserRepository : IUserRepository
         {
             throw new NullReferenceException();
         }
-
-        return dbUser;
-    }
-
-    public async Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take)
-    {
-        var _dbUsers = await GetAllUsersAsync(skip, take);
-
-        if (_dbUsers.Count == 0)
-        {
-            throw new NullReferenceException();
-        }
-
-        _dbContext.Users.RemoveRange(_dbUsers);
-        var _isSaved = await _dbContext.SaveChangesAsync();
-
-        return _dbUsers;
-    }
-
-    public async Task<UserModel> DeleteUserByIdAsync(int id)
-    {
-        var _dbUser = await GetUserByIdAsync(id);
-
-        if (_dbUser == null)
-        {
-            throw new NullReferenceException();
-        }
-
-        _dbContext.Users.Remove(_dbUser);
-        await _dbContext.SaveChangesAsync();
-
-        return _dbUser;
-    }
-
-    private async Task<UserModel> GetUser(JwtRequest request)
-    {
-        var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-        if (!jwtSecurityTokenHandler.CanReadToken(request.Token))
-        {
-            throw new Exception();
-        }
-
-        var token = jwtSecurityTokenHandler.ReadJwtToken(request.Token);
-
-        if (!(token.ValidTo >= DateTime.Now))
-        {
-            throw new Exception();
-        }
-
-        var dbUser =
-            await _dbContext.Users
-                .Include(p => p.Cart)
-                .ThenInclude(p => p.Orders)
-                .Include(p => p.Addresses)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == 1)
-            ?? throw new NullReferenceException();
 
         return dbUser;
     }
@@ -160,7 +103,7 @@ public class UserRepository : IUserRepository
         throw new Exception("sla");
     }
 
-    public async Task UpdatePasswordUserAsync(JwtRequest jwtRequest)
+    public async Task UpdatePasswordUserAsync()
     {
         // var dbUser = await GetUserByIdAsync(id);
 
@@ -172,9 +115,46 @@ public class UserRepository : IUserRepository
         // await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteMyAccountAsync(JwtRequest jwtRequest)
+    public async Task DeleteMyAccountAsync(string token)
     {
-        throw new NotImplementedException();
+        Claims claims = await GetClaims(token);
+
+        var dbUser = await _dbContext.Users.FirstAsync(
+            p => p.Id == claims.Id && p.Email == claims.Email
+        );
+
+        _dbContext.Users.Remove(dbUser);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<UserModel> DeleteUserByIdAsync(int id)
+    {
+        var _dbUser = await GetUserByIdAsync(id);
+
+        if (_dbUser == null)
+        {
+            throw new NullReferenceException();
+        }
+
+        _dbContext.Users.Remove(_dbUser);
+        await _dbContext.SaveChangesAsync();
+
+        return _dbUser;
+    }
+
+    public async Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take)
+    {
+        var _dbUsers = await GetAllUsersAsync(skip, take);
+
+        if (_dbUsers.Count == 0)
+        {
+            throw new NullReferenceException();
+        }
+
+        _dbContext.Users.RemoveRange(_dbUsers);
+        var _isSaved = await _dbContext.SaveChangesAsync();
+
+        return _dbUsers;
     }
 
     private async Task<Claims> GetClaims(string token)
