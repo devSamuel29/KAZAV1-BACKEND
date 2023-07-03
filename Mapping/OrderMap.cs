@@ -12,7 +12,7 @@ public class OrderMap : IEntityTypeConfiguration<OrderModel>
     {
         builder.ToTable("Orders");
 
-        builder.HasKey(p => p.Id).HasName("PkAOrderId");
+        builder.HasKey(p => p.Id).HasName("PkOrderId");
         builder
             .Property(p => p.Id)
             .HasColumnName("Id")
@@ -20,14 +20,6 @@ public class OrderMap : IEntityTypeConfiguration<OrderModel>
             .UseIdentityColumn()
             .IsRequired();
 
-        builder.HasOne(p => p.Cart).WithMany(p => p.Orders).HasForeignKey(p => p.CartId);
 
-        builder
-            .HasMany(p => p.Products)
-            .WithMany(p => p.Orders)
-            .UsingEntity<OrderProductModel>(
-                l => l.HasOne(p => p.Product).WithMany(p => p.OrderProducts),
-                r => r.HasOne(p => p.Order).WithMany(e => e.OrderProducts)
-            );
     }
 }

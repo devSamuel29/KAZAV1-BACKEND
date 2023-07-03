@@ -80,6 +80,11 @@ public class UserRepository : IUserRepository
         return _mapper.Map<UserResponse>(dbUser);
     }
 
+    public async Task AddProductsCart(string token, AddProductsCartRequest request)
+    {
+
+    }
+    
     public async Task RegisterAddressAsync(string token, AddNewAddressRequest request)
     {
         Claims claims = await GetClaims(token);

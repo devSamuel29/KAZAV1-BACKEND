@@ -3,6 +3,7 @@ using kazariobranco_backend.Database;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
+using kazariobranco_backend.Response;
 using kazariobranco_backend.Validator;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,37 +21,6 @@ public class ContactRepository : IContactRepository
         _mapper = mapper;
     }
 
-    public async Task<List<ContactModel>> GetAllContactsAsync(int skip, int take)
-    {
-        var _dbContacts = await _dbContext.Contacts
-            .Skip(skip)
-            .Take(take)
-            .AsNoTracking()
-            .ToListAsync();
-        
-        if (_dbContacts is null)
-        {
-            throw new NullReferenceException();
-        }
-
-        return _dbContacts;
-    }
-
-    public async Task<ContactModel> GetContactByIdAsync(int id)
-    {
-        var _dbContact = await _dbContext.Contacts
-            .Where(u => u.Id == id)
-            .AsNoTracking()
-            .FirstOrDefaultAsync();
-
-        if (_dbContact is null)
-        {
-            throw new NullReferenceException();
-        }
-
-        return _dbContact;
-    }
-
     public async Task CreateContactAsync(ContactRequest request)
     {
         var validator = new ContactValidator();
@@ -66,70 +36,176 @@ public class ContactRepository : IContactRepository
         throw new InvalidDataException(validate.ToString());
     }
 
-    public async Task<List<ContactModel>> UpdateAllStatusAsync(int skip, int take)
+    public async Task<ContactResponse> ReadContactByIdAsync(int id)
     {
-        var _dbContacts = await GetAllContactsAsync(skip, take);
+        var dbContact = await _dbContext.Contacts.FindAsync(id);
 
-        if (_dbContacts is null)
+        if (dbContact is null)
         {
-            throw new NullReferenceException();
+            throw new NullReferenceException("id inexistente");
         }
 
-        _dbContacts.ForEach(u => u.EndedAt = DateTime.Today);
-
-        _dbContext.UpdateRange(_dbContacts);
-        await _dbContext.SaveChangesAsync();
-
-        return _dbContacts;
+        return _mapper.Map<ContactResponse>(dbContact);
     }
 
-    public async Task<ContactModel> UpdateStatusByIdAsync(int id)
+    public async Task<IList<ContactResponse>> ReadContactsByEmailAsync(string email)
     {
-        var _dbContact = await GetContactByIdAsync(id);
+        var dbContacts = await _dbContext.Contacts
+            .Where(p => p.Email == email)
+            .AsNoTracking()
+            .ToListAsync();
 
-        if (_dbContact is null)
-        {
-            throw new NullReferenceException();
-        }
+        var response = _mapper.Map<IList<ContactResponse>>(dbContacts);
 
-        if (_dbContact.EndedAt == DateTime.MinValue)
-        {
-            _dbContact.EndedAt = DateTime.Now;
-            await _dbContext.SaveChangesAsync();
-
-            return _dbContact;
-        }
-
-        throw new InvalidOperationException("Status já alterado");
+        return response;
     }
 
-    public async Task<List<ContactModel>> DeleteAllContactsAsync(int skip, int take)
+    public async Task<IList<ContactResponse>> ReadContactsByPhoneAsync(string phone)
     {
-        var _dbContacts = await GetAllContactsAsync(skip, take);
+        var dbContacts = await _dbContext.Contacts
+            .Where(p => p.Phone == phone)
+            .AsNoTracking()
+            .ToListAsync();
 
-        if (_dbContacts.Count < 0)
-        {
-            throw new NullReferenceException();
-        }
+        var response = _mapper.Map<IList<ContactResponse>>(dbContacts);
 
-        _dbContext.Contacts.RemoveRange(_dbContacts);
-        await _dbContext.SaveChangesAsync();
-
-        return _dbContacts;
+        return response;
     }
 
-    public async Task<ContactModel> DeleteContactByIdAsync(int id)
+    public async Task<ReadAllContactsResponse> ReadContactsInRangeAsync(
+        int skip,
+        int take,
+        bool? orderByDate
+    )
     {
-        var _dbContact = await GetContactByIdAsync(id);
-
-        if (_dbContact == null)
+        if (skip > take || skip == take)
         {
-            throw new NullReferenceException();
+            throw new Exception("ainda n sei oq colocar");
+        }
+        else if (orderByDate.HasValue)
+        {
+            if (orderByDate.Value)
+            {
+                return await AllContactsByDateAsync(skip, take, orderByDate.Value);
+            }
         }
 
-        _dbContext.Contacts.Remove(_dbContact);
+        return await AllContactsAsync(skip, take);
+    }
+
+    public async Task<ContactResponse> UpdateStatusByIdAsync(int id)
+    {
+        var dbContact = await _dbContext.Contacts.FindAsync(id);
+
+        if (dbContact is null)
+        {
+            throw new Exception("sei la");
+        }
+
+        dbContact.EndedAt = DateTime.Now;
         await _dbContext.SaveChangesAsync();
 
-        return _dbContact;
+        return _mapper.Map<ContactResponse>(dbContact);
+    }
+
+    public async Task<IList<ContactResponse>> UpdateStatusInRangeAsync(int skip, int take)
+    {
+        var dbContacts = await _dbContext.Contacts.Skip(skip).Take(take).ToListAsync();
+
+        if (dbContacts is null)
+        {
+            throw new Exception("sei la");
+        }
+        dbContacts.ForEach(p => p.EndedAt = DateTime.Now);
+        await _dbContext.SaveChangesAsync();
+
+        return _mapper.Map<IList<ContactResponse>>(dbContacts);
+    }
+
+    public async Task DeleteContactByIdAsync(int id)
+    {
+        var dbContact = await _dbContext.Contacts.FindAsync(id);
+
+        if (dbContact is null)
+        {
+            throw new NullReferenceException("id inexistente");
+        }
+
+        _dbContext.Contacts.Remove(dbContact);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteContactsInRangeAsync(int skip, int take)
+    {
+        var dbContacts = _dbContext.Contacts.Skip(skip).Take(take).AsNoTracking();
+
+        if (dbContacts is null)
+        {
+            throw new Exception("sei la");
+        }
+
+        _dbContext.Contacts.RemoveRange(dbContacts);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    // public async Task DeleteAllContactsAsync()
+    // {
+    //     var dbContacts = _dbContext.Contacts.Skip(skip).Take(take).AsNoTracking();
+    //     _dbContext.Contacts.Remove();
+    // }
+
+    private async Task<ReadAllContactsResponse> AllContactsAsync(int skip, int take)
+    {
+        var dbContacts = await _dbContext.Contacts
+            .Skip(skip)
+            .Take(take)
+            .AsNoTracking()
+            .ToListAsync();
+
+        var mappedContacts = _mapper.Map<IList<ContactResponse>>(dbContacts);
+
+        var response = new ReadAllContactsResponse()
+        {
+            Size = _dbContext.Contacts.Count(),
+            From = skip,
+            To = take,
+            Quantity = dbContacts.Count,
+            Contacts = mappedContacts
+        };
+
+        return response;
+    }
+
+    private async Task<ReadAllContactsResponse> AllContactsByDateAsync(
+        int skip,
+        int take,
+        bool orderByDate
+    )
+    {
+        if (orderByDate)
+        {
+            var dbContacts = await _dbContext.Contacts
+                .Skip(skip)
+                .Take(take)
+                .OrderBy(p => p.CreatedAt)
+                .Reverse()
+                .AsNoTracking()
+                .ToListAsync();
+
+            var mappedContacts = _mapper.Map<IList<ContactResponse>>(dbContacts);
+
+            var response = new ReadAllContactsResponse()
+            {
+                Size = _dbContext.Contacts.Count(),
+                From = skip,
+                To = take,
+                Quantity = dbContacts.Count,
+                Contacts = mappedContacts
+            };
+
+            return response;
+        }
+
+        return await AllContactsAsync(skip, take);
     }
 }

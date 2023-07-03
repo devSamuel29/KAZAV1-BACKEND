@@ -22,6 +22,21 @@ namespace kazariobranco_backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CartModelProductModel", b =>
+                {
+                    b.Property<int>("CartsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartsId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("CartModelProductModel");
+                });
+
             modelBuilder.Entity("kazariobranco_backend.Models.AddressModel", b =>
                 {
                     b.Property<int>("Id")
@@ -103,7 +118,7 @@ namespace kazariobranco_backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasColumnName("CreatedAt");
 
                     b.Property<string>("Description")
@@ -117,7 +132,7 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnName("Email");
 
                     b.Property<DateTime>("EndedAt")
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasColumnName("EndedAt");
 
                     b.Property<string>("Name")
@@ -154,7 +169,7 @@ namespace kazariobranco_backend.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PkAOrderId");
+                        .HasName("PkOrderId");
 
                     b.HasIndex("CartId");
 
@@ -163,13 +178,21 @@ namespace kazariobranco_backend.Migrations
 
             modelBuilder.Entity("kazariobranco_backend.Models.OrderProductModel", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
@@ -185,7 +208,12 @@ namespace kazariobranco_backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("OrderModelId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderModelId");
 
                     b.ToTable("Products");
                 });
@@ -201,7 +229,7 @@ namespace kazariobranco_backend.Migrations
 
                     b.Property<string>("Cpf")
                         .IsRequired()
-                        .HasColumnType("varchar(84)")
+                        .HasColumnType("varchar(11)")
                         .HasColumnName("Cpf");
 
                     b.Property<DateTime>("CreatedAt")
@@ -230,7 +258,7 @@ namespace kazariobranco_backend.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("varchar(32)")
+                        .HasColumnType("varchar(11)")
                         .HasColumnName("Phone");
 
                     b.Property<string>("Role")
@@ -257,6 +285,21 @@ namespace kazariobranco_backend.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("CartModelProductModel", b =>
+                {
+                    b.HasOne("kazariobranco_backend.Models.CartModel", null)
+                        .WithMany()
+                        .HasForeignKey("CartsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("kazariobranco_backend.Models.ProductModel", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("kazariobranco_backend.Models.AddressModel", b =>
                 {
                     b.HasOne("kazariobranco_backend.Models.UserModel", "User")
@@ -275,8 +318,7 @@ namespace kazariobranco_backend.Migrations
                         .WithOne("Cart")
                         .HasForeignKey("kazariobranco_backend.Models.CartModel", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FkUserId");
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -284,7 +326,7 @@ namespace kazariobranco_backend.Migrations
             modelBuilder.Entity("kazariobranco_backend.Models.OrderModel", b =>
                 {
                     b.HasOne("kazariobranco_backend.Models.CartModel", "Cart")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -301,7 +343,7 @@ namespace kazariobranco_backend.Migrations
                         .IsRequired();
 
                     b.HasOne("kazariobranco_backend.Models.ProductModel", "Product")
-                        .WithMany("OrderProducts")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -311,26 +353,26 @@ namespace kazariobranco_backend.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("kazariobranco_backend.Models.CartModel", b =>
+            modelBuilder.Entity("kazariobranco_backend.Models.ProductModel", b =>
                 {
-                    b.Navigation("Orders");
+                    b.HasOne("kazariobranco_backend.Models.OrderModel", null)
+                        .WithMany("Products")
+                        .HasForeignKey("OrderModelId");
                 });
 
             modelBuilder.Entity("kazariobranco_backend.Models.OrderModel", b =>
                 {
                     b.Navigation("OrderProducts");
-                });
 
-            modelBuilder.Entity("kazariobranco_backend.Models.ProductModel", b =>
-                {
-                    b.Navigation("OrderProducts");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("kazariobranco_backend.Models.UserModel", b =>
                 {
                     b.Navigation("Addresses");
 
-                    b.Navigation("Cart");
+                    b.Navigation("Cart")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

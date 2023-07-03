@@ -1,9 +1,9 @@
-namespace kazariobranco_backend.Models;
+namespace kazariobranco_backend.Response;
 
-public class ContactModel
+public class ContactResponse
 {
-    public int Id { get; }
-
+    public int Id { get; set; }
+    
     public required string Name { get; set; }
 
     public required string Email { get; set; }
@@ -14,7 +14,7 @@ public class ContactModel
 
     public required string Description { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; }
 
-    public DateTime EndedAt { get; set; } = DateTime.MinValue;
+    public bool IsFinished { get; set; }
 }

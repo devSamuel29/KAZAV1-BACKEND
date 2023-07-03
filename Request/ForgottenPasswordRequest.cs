@@ -7,5 +7,5 @@ namespace kazariobranco_backend.Request;
 
 public class ForgottenPasswordRequest
 {
-    public String NewPassword { get; set; }
+    public required string NewPassword { get; set; }
 }

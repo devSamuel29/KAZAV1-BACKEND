@@ -32,13 +32,13 @@ public class UserMap : IEntityTypeConfiguration<UserModel>
             .IsRequired();
 
         builder.HasIndex(p => p.Cpf).IsUnique();
-        builder.Property(p => p.Cpf).HasColumnName("Cpf").HasColumnType("varchar(84)").IsRequired();
+        builder.Property(p => p.Cpf).HasColumnName("Cpf").HasColumnType("varchar(11)").IsRequired();
 
         builder.HasIndex(p => p.Phone).IsUnique();
         builder
             .Property(p => p.Phone)
             .HasColumnName("Phone")
-            .HasColumnType("varchar(32)")
+            .HasColumnType("varchar(11)")
             .IsRequired();
 
         builder.HasIndex(p => p.Email).IsUnique();

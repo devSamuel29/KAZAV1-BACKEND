@@ -4,12 +4,10 @@ public class CartModel
 {
     public int Id { get; set; }
 
-    // FK
-
     public int UserId { get; set; }
     
     // RELATIONSHIPS
-    public virtual UserModel User { get; set; }
+    public UserModel User { get; set; } = null!;
     
-    public virtual IList<OrderModel> Orders { get; set; }
+    public IList<ProductModel> Products { get; set; } = null!;
 }

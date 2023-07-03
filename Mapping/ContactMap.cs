@@ -46,13 +46,13 @@ public class ContactMap : IEntityTypeConfiguration<ContactModel>
         builder
             .Property(p => p.CreatedAt)
             .HasColumnName("CreatedAt")
-            .HasColumnType("date")
+            .HasColumnType("datetime2")
             .IsRequired();
 
         builder
             .Property(p => p.EndedAt)
             .HasColumnName("EndedAt")
-            .HasColumnType("date")
+            .HasColumnType("datetime2")
             .IsRequired();
     }
 }

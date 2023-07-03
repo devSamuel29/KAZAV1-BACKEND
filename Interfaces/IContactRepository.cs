@@ -1,21 +1,28 @@
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
+using kazariobranco_backend.Response;
 
 namespace kazariobranco_backend.Interfaces;
 
 public interface IContactRepository
 {
-    Task<List<ContactModel>> GetAllContactsAsync(int skip, int take);
-
-    Task<ContactModel> GetContactByIdAsync(int id);
-
     Task CreateContactAsync(ContactRequest request);
 
-    Task<ContactModel> UpdateStatusByIdAsync(int id);
+    Task<IList<ContactResponse>> ReadContactsByEmailAsync(string email);
 
-    Task<List<ContactModel>> UpdateAllStatusAsync(int skip, int take);
+    Task<IList<ContactResponse>> ReadContactsByPhoneAsync(string phone);
 
-    Task<ContactModel> DeleteContactByIdAsync(int id);
+    Task<ReadAllContactsResponse> ReadContactsInRangeAsync(int skip, int take, bool? byDate);
 
-    Task<List<ContactModel>> DeleteAllContactsAsync(int skip, int take);
+    Task<ContactResponse> ReadContactByIdAsync(int id);
+
+    Task<ContactResponse> UpdateStatusByIdAsync(int id);
+
+    Task<IList<ContactResponse>> UpdateStatusInRangeAsync(int skip, int take);
+
+    Task DeleteContactByIdAsync(int id);
+
+    Task DeleteContactsInRangeAsync(int skip, int take);
+
+    // Task DeleteAllContactsAsync();
 }

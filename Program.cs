@@ -35,7 +35,7 @@ builder.Services
             ValidIssuer = builder.Configuration.GetValue<string>("Jwt:Issuer"),
             ValidAudience = builder.Configuration.GetValue<string>("Jwt:Audience"),
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Jwt:Key"))
+                Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Jwt:Key")!)
             )
         };
     });

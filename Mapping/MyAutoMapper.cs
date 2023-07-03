@@ -4,6 +4,7 @@ using kazariobranco_backend.Request;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using kazariobranco_backend.Response;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace kazariobranco_backend.Mapping;
 
@@ -24,6 +25,11 @@ public class MyAutoMapper : Profile
             );
 
         CreateMap<ContactRequest, ContactModel>();
+        CreateMap<ContactModel, ContactResponse>()
+            .ForMember(
+                p => p.IsFinished,
+                options => options.MapFrom(p => p.EndedAt != DateTime.MinValue)
+            );
 
         CreateMap<AddNewAddressRequest, AddressModel>();
 

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Identity;
 using kazariobranco_backend.Interfaces;
-using System.Net.Http.Headers;
 using Microsoft.Extensions.Primitives;
 
 namespace kazariobranco_backend.Controllers;
@@ -61,7 +60,7 @@ public class UserController : ControllerBase
         try
         {
             Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-            return Ok(await _userRepository.ListMyAddressesAsync(headerValue));
+            return Ok(await _userRepository.ListMyAddressesAsync(headerValue!));
         }
         catch (Exception e)
         {
@@ -76,7 +75,7 @@ public class UserController : ControllerBase
         try
         {
             Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-            return Ok(await _userRepository.MyDataAsync(headerValue));
+            return Ok(await _userRepository.MyDataAsync(headerValue!));
         }
         catch (Exception e)
         {
@@ -85,7 +84,7 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Policy = IdentityData.UserPolicyName)]
-    [HttpPost("register-address")]
+    [HttpPost("add-address")]
     public async Task<IActionResult> RegisterAddress(
         [FromBody] AddNewAddressRequest request
     )
@@ -93,7 +92,7 @@ public class UserController : ControllerBase
         try
         {
             Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-            await _userRepository.RegisterAddressAsync(headerValue, request);
+            await _userRepository.RegisterAddressAsync(headerValue!, request);
             return NoContent();
         }
         catch (Exception e)
@@ -102,6 +101,20 @@ public class UserController : ControllerBase
         }
     }
 
+    // [Authorize(Policy = IdentityData.UserPolicyName)]
+    // [HttpPost("cart-add-products")]
+    // public async Task<IActionResult> AddProductsCart()
+    // {
+    //     try
+    //     {
+    //         Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return BadRequest(e.Message);
+    //     }
+    // }
+
     [Authorize(Policy = IdentityData.UserPolicyName)]
     [HttpDelete("delete-my-account")]
     public async Task<IActionResult> DeleteMyAccount()
@@ -109,8 +122,7 @@ public class UserController : ControllerBase
         try
         {
             Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-
-            await _userRepository.DeleteMyAccountAsync(headerValue);
+            await _userRepository.DeleteMyAccountAsync(headerValue!);
             return Ok();
         }
         catch (Exception e)
