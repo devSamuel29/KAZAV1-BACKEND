@@ -1,8 +1,9 @@
-using System.IdentityModel.Tokens.Jwt;
 using kazariobranco_backend.Interfaces;
-using kazariobranco_backend.Models;
-using kazariobranco_backend.Request;
+using kazariobranco_backend.Request.Auth;
+
 using Microsoft.AspNetCore.Mvc;
+
+using System.IdentityModel.Tokens.Jwt;
 
 namespace kazariobranco_backend.Controllers;
 

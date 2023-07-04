@@ -1,11 +1,14 @@
-using AutoMapper;
-using kazariobranco_backend.Database;
-using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
+using kazariobranco_backend.Database;
 using kazariobranco_backend.Response;
 using kazariobranco_backend.Validator;
+using kazariobranco_backend.Interfaces;
+using kazariobranco_backend.Request.Contact;
+
 using Microsoft.EntityFrameworkCore;
+
+using AutoMapper;
 
 namespace kazariobranco_backend.Repository;
 
@@ -48,10 +51,25 @@ public class ContactRepository : IContactRepository
         return _mapper.Map<ContactResponse>(dbContact);
     }
 
+    public async Task<IList<ContactResponse>> ReadContactsByNameAsync(string name)
+    {
+        var dbContacts = await _dbContext.Contacts
+            .Where(p => p.Name.StartsWith(name))
+            .OrderBy(p => p.CreatedAt)
+            .Reverse()
+            .AsNoTracking()
+            .ToListAsync();
+
+        var response = _mapper.Map<IList<ContactResponse>>(dbContacts);
+        return response;
+    }
+
     public async Task<IList<ContactResponse>> ReadContactsByEmailAsync(string email)
     {
         var dbContacts = await _dbContext.Contacts
-            .Where(p => p.Email == email)
+            .Where(p => p.Email.StartsWith(email))
+            .OrderBy(p => p.CreatedAt)
+            .Reverse()
             .AsNoTracking()
             .ToListAsync();
 
@@ -63,7 +81,9 @@ public class ContactRepository : IContactRepository
     public async Task<IList<ContactResponse>> ReadContactsByPhoneAsync(string phone)
     {
         var dbContacts = await _dbContext.Contacts
-            .Where(p => p.Phone == phone)
+            .Where(p => p.Phone.StartsWith(phone))
+            .OrderBy(p => p.CreatedAt)
+            .Reverse()
             .AsNoTracking()
             .ToListAsync();
 
@@ -137,13 +157,10 @@ public class ContactRepository : IContactRepository
 
     public async Task DeleteContactsInRangeAsync(int skip, int take)
     {
-        var dbContacts = _dbContext.Contacts.Skip(skip).Take(take).AsNoTracking();
-
-        if (dbContacts is null)
-        {
-            throw new Exception("sei la");
-        }
-
+        var dbContacts =
+            _dbContext.Contacts.Skip(skip).Take(take).AsNoTracking()
+            ?? throw new Exception("sei la");
+            
         _dbContext.Contacts.RemoveRange(dbContacts);
         await _dbContext.SaveChangesAsync();
     }

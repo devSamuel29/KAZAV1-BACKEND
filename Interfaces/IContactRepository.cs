@@ -1,5 +1,4 @@
-using kazariobranco_backend.Models;
-using kazariobranco_backend.Request;
+using kazariobranco_backend.Request.Contact;
 using kazariobranco_backend.Response;
 
 namespace kazariobranco_backend.Interfaces;
@@ -7,6 +6,8 @@ namespace kazariobranco_backend.Interfaces;
 public interface IContactRepository
 {
     Task CreateContactAsync(ContactRequest request);
+
+    Task<IList<ContactResponse>> ReadContactsByNameAsync(string name);
 
     Task<IList<ContactResponse>> ReadContactsByEmailAsync(string email);
 

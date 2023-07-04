@@ -1,5 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
-using kazariobranco_backend.Request;
+using kazariobranco_backend.Request.Auth;
 
 namespace kazariobranco_backend.Interfaces;
 

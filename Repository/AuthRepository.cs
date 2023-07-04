@@ -1,14 +1,16 @@
 using kazariobranco_backend.Models;
-using kazariobranco_backend.Request;
 using kazariobranco_backend.Database;
+using kazariobranco_backend.Identity;
 using kazariobranco_backend.Validator;
 using kazariobranco_backend.Interfaces;
+using kazariobranco_backend.Request.Auth;
+
+using Microsoft.EntityFrameworkCore;
+
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
-using kazariobranco_backend.Identity;
-using System.Security.Claims;
 
 namespace kazariobranco_backend.Repository;
 

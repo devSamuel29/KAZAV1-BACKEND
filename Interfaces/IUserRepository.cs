@@ -6,21 +6,21 @@ namespace kazariobranco_backend.Interfaces;
 
 public interface IUserRepository
 {
-    Task<List<UserModel>> GetAllUsersAsync(int skip, int take);
+    Task CreateAddressAsync(string token, AddNewAddressRequest request);
 
-    Task<UserModel> GetUserByIdAsync(int id);
+    Task<UserResponse> ReadUserByIdAsync(int id);
 
-    Task<IList<AddressResponse>> ListMyAddressesAsync(string token);
+    Task<IList<UserResponse>> ReadUsersInRangeAsync(int skip, int take);
 
-    Task<UserResponse> MyDataAsync(string token);
+    Task<IList<AddressResponse>> ReadMyAddressesAsync(string token);
 
-    Task RegisterAddressAsync(string token, AddNewAddressRequest request);
+    Task<UserResponse> ReadMyDataAsync(string token);
 
     Task UpdatePasswordUserAsync();
 
     Task DeleteMyAccountAsync(string token);
 
-    Task<UserModel> DeleteUserByIdAsync(int id);
+    Task DeleteUserByIdAsync(int id);
 
-    Task<List<UserModel>> DeleteAllUsersAsync(int skip, int take);
+    Task DeleteUsersInRangeAsync(int skip, int take);
 }

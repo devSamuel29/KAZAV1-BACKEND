@@ -1,9 +1,10 @@
 using kazariobranco_backend.Identity;
 using kazariobranco_backend.Interfaces;
-using kazariobranco_backend.Request;
-using Microsoft.AspNetCore.Authorization;
+using kazariobranco_backend.Request.Contact;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Authorization;
 
 namespace kazariobranco_backend.Controllers;
 
@@ -52,6 +53,25 @@ public class ContactController : ControllerBase
     }
 
     [Authorize(Policy = IdentityData.AdminPolicyName)]
+    [HttpGet("read-contacts-by-name/{name}")]
+    public async Task<IActionResult> ReadContactsByNameAsync([FromRoute] string name)
+    {
+        try
+        {
+            var _dbContacts = await _contactController.ReadContactsByNameAsync(name);
+            return Ok(_dbContacts);
+        }
+        catch (NullReferenceException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (SqlException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [Authorize(Policy = IdentityData.AdminPolicyName)]
     [HttpGet("read-contacts-by-email/{email}")]
     public async Task<IActionResult> ReadContactsByEmailAsync([FromRoute] string email)
     {
@@ -72,7 +92,7 @@ public class ContactController : ControllerBase
 
     [Authorize(Policy = IdentityData.AdminPolicyName)]
     [HttpGet("read-contacts-by-phone/{phone}")]
-    public async Task<IActionResult> ReadContactsByNameAsync([FromRoute] string phone)
+    public async Task<IActionResult> ReadContactsByPhoneAsync([FromRoute] string phone)
     {
         try
         {

@@ -1,10 +1,10 @@
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
+using kazariobranco_backend.Response;
+using kazariobranco_backend.Request.Auth;
+using kazariobranco_backend.Request.Contact;
 
 using AutoMapper;
-using Microsoft.Extensions.Options;
-using kazariobranco_backend.Response;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace kazariobranco_backend.Mapping;
 

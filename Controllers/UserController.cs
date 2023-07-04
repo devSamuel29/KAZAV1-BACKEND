@@ -1,11 +1,10 @@
-using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Identity;
-using kazariobranco_backend.Interfaces;
 using Microsoft.Extensions.Primitives;
+using kazariobranco_backend.Interfaces;
 
 namespace kazariobranco_backend.Controllers;
 
@@ -20,6 +19,24 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
+    [Authorize(Policy = IdentityData.UserPolicyName)]
+    [HttpPost("add-address")]
+    public async Task<IActionResult> RegisterAddress(
+        [FromBody] AddNewAddressRequest request
+    )
+    {
+        try
+        {
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            await _userRepository.CreateAddressAsync(headerValue!, request);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
     [Authorize(Policy = IdentityData.AdminPolicyName)]
     [HttpGet("get-all-users-async/{skip}/{take}")]
     public async Task<IActionResult> GetAllUsersAsync(
@@ -29,7 +46,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            var _dbUsers = await _userRepository.GetAllUsersAsync(skip, take);
+            var _dbUsers = await _userRepository.ReadUsersInRangeAsync(skip, take);
             return Ok(_dbUsers);
         }
         catch (Exception e)
@@ -44,7 +61,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            var _dbUser = await _userRepository.GetUserByIdAsync(id);
+            var _dbUser = await _userRepository.ReadUserByIdAsync(id);
             return Ok(_dbUser);
         }
         catch (Exception e)
@@ -60,7 +77,7 @@ public class UserController : ControllerBase
         try
         {
             Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-            return Ok(await _userRepository.ListMyAddressesAsync(headerValue!));
+            return Ok(await _userRepository.ReadMyAddressesAsync(headerValue!));
         }
         catch (Exception e)
         {
@@ -75,25 +92,7 @@ public class UserController : ControllerBase
         try
         {
             Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-            return Ok(await _userRepository.MyDataAsync(headerValue!));
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [Authorize(Policy = IdentityData.UserPolicyName)]
-    [HttpPost("add-address")]
-    public async Task<IActionResult> RegisterAddress(
-        [FromBody] AddNewAddressRequest request
-    )
-    {
-        try
-        {
-            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-            await _userRepository.RegisterAddressAsync(headerValue!, request);
-            return NoContent();
+            return Ok(await _userRepository.ReadMyDataAsync(headerValue!));
         }
         catch (Exception e)
         {
@@ -132,16 +131,13 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Policy = IdentityData.AdminPolicyName)]
-    [HttpDelete("delete-all-users-async/{skip}/{take}")]
-    public async Task<IActionResult> DeleteAllUsersAsync(
-        [FromRoute] int skip,
-        [FromRoute] int take
-    )
+    [HttpDelete("delete-user-by-id-async/{id}")]
+    public async Task<IActionResult> DeleteUserByIdAsync([FromRoute] int id)
     {
         try
         {
-            var _dbUsers = await _userRepository.DeleteAllUsersAsync(skip, take);
-            return Ok(_dbUsers);
+            await _userRepository.DeleteUserByIdAsync(id);
+            return NoContent();
         }
         catch (Exception e)
         {
@@ -150,13 +146,16 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Policy = IdentityData.AdminPolicyName)]
-    [HttpDelete("delete-user-by-id-async/{id}")]
-    public async Task<IActionResult> DeleteUserByIdAsync([FromRoute] int id)
+    [HttpDelete("delete-all-users-async/{skip}/{take}")]
+    public async Task<IActionResult> DeleteAllUsersAsync(
+        [FromRoute] int skip,
+        [FromRoute] int take
+    )
     {
         try
         {
-            var _dbUser = await _userRepository.DeleteUserByIdAsync(id);
-            return Ok(_dbUser);
+            await _userRepository.DeleteUsersInRangeAsync(skip, take);
+            return NoContent();
         }
         catch (Exception e)
         {

@@ -1,5 +1,5 @@
 using FluentValidation;
-using kazariobranco_backend.Request;
+using kazariobranco_backend.Request.Auth;
 
 namespace kazariobranco_backend.Validator;
 
