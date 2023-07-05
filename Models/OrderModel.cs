@@ -4,14 +4,13 @@ public class OrderModel
 {
     public int Id { get; set; }
 
+    public int CartId { get; set; }
+
     // RELATIONSHIPS
 
-    public CartModel Cart { get; set; }
+    public CartModel Cart { get; set; } = null!;
 
-    public IList<ProductModel> Products { get; set; }
+    public IList<ProductModel> Products { get; set; } = null!;
 
-    public IList<OrderProductModel> OrderProducts { get; set; }
-    // FK
-
-    public int CartId { get; set; }
+    public IList<OrderProductModel> OrderProducts { get; set; } = null!;
 }

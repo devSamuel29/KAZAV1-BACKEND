@@ -115,6 +115,22 @@ public class UserController : ControllerBase
     // }
 
     [Authorize(Policy = IdentityData.UserPolicyName)]
+    [HttpDelete("delete-all-addresses")]
+    public async Task<IActionResult> DeleteMyAddresses()
+    {
+        try
+        {
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            await _userRepository.DeleteMyAddressAsync(headerValue!);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [Authorize(Policy = IdentityData.UserPolicyName)]
     [HttpDelete("delete-my-account")]
     public async Task<IActionResult> DeleteMyAccount()
     {

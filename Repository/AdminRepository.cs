@@ -1,43 +1,71 @@
-using kazariobranco_backend.Models;
-using kazariobranco_backend.Request;
-using kazariobranco_backend.Database;
-using kazariobranco_backend.Response;
-using kazariobranco_backend.Validator;
-using kazariobranco_backend.Interfaces;
-using kazariobranco_backend.Request.Contact;
-
-using Microsoft.EntityFrameworkCore;
-
 using AutoMapper;
+using kazariobranco_backend.Database;
+using kazariobranco_backend.Identity;
+using kazariobranco_backend.Interfaces;
+using kazariobranco_backend.Response;
+using Microsoft.EntityFrameworkCore;
 
 namespace kazariobranco_backend.Repository;
 
-public class ContactRepository : IContactRepository
+public class AdminRepository : IAdminRepository
 {
-    private readonly MyDbContext _dbContext;
-
     private readonly IMapper _mapper;
 
-    public ContactRepository(MyDbContext dbContext, IMapper mapper)
+    private readonly MyDbContext _dbContext;
+
+    private readonly IJwtService _jwtService;
+
+    public AdminRepository(IMapper mapper, MyDbContext dbContext, IJwtService jwtService)
     {
-        _dbContext = dbContext;
         _mapper = mapper;
+        _dbContext = dbContext;
+        _jwtService = jwtService;
     }
 
-    public async Task CreateContactAsync(ContactRequest request)
+    // ADMIN-USER
+
+    public async Task<UserResponse> ReadUserByIdAsync(int id)
     {
-        var validator = new ContactValidator();
-        var validate = await validator.ValidateAsync(request);
+        var dbUser =
+            await _dbContext.Users.FindAsync(id) ?? throw new NullReferenceException();
 
-        if (validate.IsValid)
-        {
-            await _dbContext.Contacts.AddAsync(_mapper.Map<ContactModel>(request));
-            await _dbContext.SaveChangesAsync();
-            return;
-        }
-
-        throw new InvalidDataException(validate.ToString());
+        return _mapper.Map<UserResponse>(dbUser);
     }
+
+    public async Task<IList<UserResponse>> ReadUsersInRangeAsync(int skip, int take)
+    {
+        var dbUsers =
+            await _dbContext.Users
+                .Skip(skip)
+                .Take(take)
+                .Where(p => p.Role != IdentityData.AdminClaimName)
+                .AsNoTracking()
+                .ToListAsync() ?? throw new NullReferenceException();
+
+        return _mapper.Map<IList<UserResponse>>(dbUsers);
+    }
+
+    public async Task DeleteUserByIdAsync(int id)
+    {
+        var dbUser =
+            await _dbContext.Users.FindAsync(id)
+            ?? throw new NullReferenceException("asddsa");
+
+        _dbContext.Users.Remove(dbUser);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteUsersInRangeAsync(int skip, int take)
+    {
+        var dbUsers =
+            _dbContext.Users.Skip(skip).Take(take).AsNoTracking()
+            ?? throw new Exception("sei la");
+
+        _dbContext.Users.RemoveRange(dbUsers);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    // ADMIN-CONTACT
 
     public async Task<ContactResponse> ReadContactByIdAsync(int id)
     {
@@ -51,19 +79,6 @@ public class ContactRepository : IContactRepository
         return _mapper.Map<ContactResponse>(dbContact);
     }
 
-    public async Task<IList<ContactResponse>> ReadContactsByNameAsync(string name)
-    {
-        var dbContacts = await _dbContext.Contacts
-            .Where(p => p.Name.StartsWith(name))
-            .OrderBy(p => p.CreatedAt)
-            .Reverse()
-            .AsNoTracking()
-            .ToListAsync();
-
-        var response = _mapper.Map<IList<ContactResponse>>(dbContacts);
-        return response;
-    }
-
     public async Task<IList<ContactResponse>> ReadContactsByEmailAsync(string email)
     {
         var dbContacts = await _dbContext.Contacts
@@ -73,9 +88,19 @@ public class ContactRepository : IContactRepository
             .AsNoTracking()
             .ToListAsync();
 
-        var response = _mapper.Map<IList<ContactResponse>>(dbContacts);
+        return _mapper.Map<IList<ContactResponse>>(dbContacts);
+    }
 
-        return response;
+    public async Task<IList<ContactResponse>> ReadContactsByNameAsync(string name)
+    {
+        var dbContacts = await _dbContext.Contacts
+            .Where(p => p.Name.StartsWith(name))
+            .OrderBy(p => p.CreatedAt)
+            .Reverse()
+            .AsNoTracking()
+            .ToListAsync();
+
+        return _mapper.Map<IList<ContactResponse>>(dbContacts);
     }
 
     public async Task<IList<ContactResponse>> ReadContactsByPhoneAsync(string phone)
@@ -87,9 +112,7 @@ public class ContactRepository : IContactRepository
             .AsNoTracking()
             .ToListAsync();
 
-        var response = _mapper.Map<IList<ContactResponse>>(dbContacts);
-
-        return response;
+        return _mapper.Map<IList<ContactResponse>>(dbContacts);
     }
 
     public async Task<ReadAllContactsResponse> ReadContactsInRangeAsync(
@@ -160,7 +183,7 @@ public class ContactRepository : IContactRepository
         var dbContacts =
             _dbContext.Contacts.Skip(skip).Take(take).AsNoTracking()
             ?? throw new Exception("sei la");
-            
+
         _dbContext.Contacts.RemoveRange(dbContacts);
         await _dbContext.SaveChangesAsync();
     }

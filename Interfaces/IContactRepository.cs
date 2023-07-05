@@ -24,6 +24,4 @@ public interface IContactRepository
     Task DeleteContactByIdAsync(int id);
 
     Task DeleteContactsInRangeAsync(int skip, int take);
-
-    // Task DeleteAllContactsAsync();
 }

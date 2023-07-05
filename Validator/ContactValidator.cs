@@ -14,7 +14,7 @@ public class ContactValidator : AbstractValidator<ContactRequest>
             .WithMessage("PEQUENO DEMIASI");
 
         RuleFor(o => o.Email).EmailAddress().WithMessage("FORMATO DE EMAIL");
-
+        
         RuleFor(o => o.Description)
             .NotEmpty()
             .MinimumLength(10)

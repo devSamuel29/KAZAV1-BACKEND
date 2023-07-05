@@ -39,7 +39,7 @@ public class JwtService : IJwtService
     public async Task<JwtSecurityToken> GetTokenAsync(List<Claim> authClaim)
     {
         var securityKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_config["Jwt:Key"])
+            Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
         );
         
         var token = new JwtSecurityToken(
@@ -70,7 +70,7 @@ public class JwtService : IJwtService
                 ValidIssuer = _config["Jwt:Issuer"],
                 ValidAudience = _config["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(_config["Jwt:Key"])
+                    Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
                 )
             }
         );

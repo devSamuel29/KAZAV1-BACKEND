@@ -64,8 +64,12 @@ public class UserRepository : IUserRepository
     public async Task<IList<UserResponse>> ReadUsersInRangeAsync(int skip, int take)
     {
         var dbUsers =
-            await _dbContext.Users.Skip(skip).Take(take).AsNoTracking().ToListAsync()
-            ?? throw new NullReferenceException();
+            await _dbContext.Users
+                .Skip(skip)
+                .Take(take)
+                .Where(p => p.Role != IdentityData.AdminClaimName)
+                .AsNoTracking()
+                .ToListAsync() ?? throw new NullReferenceException();
 
         return _mapper.Map<IList<UserResponse>>(dbUsers);
     }
@@ -106,6 +110,30 @@ public class UserRepository : IUserRepository
         // dbUser.Password = request.NewPassword;
         // dbUser.UpdatedAt = DateTime.Today;
         // await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteMyAddressByIdAsync(string token, int id)
+    {
+        Claims claims = await GetClaims(token);
+
+        var dbUserAddress = await _dbContext.Addresses.FirstAsync(
+            p => p.UserId == claims.Id && p.Id == id
+        );
+
+        _dbContext.Addresses.Remove(dbUserAddress);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteMyAddressesAsync(string token)
+    {
+        Claims claims = await GetClaims(token);
+
+        var dbUserAddresses =
+            await _dbContext.Addresses.Where(p => p.UserId == claims.Id).ToListAsync()
+            ?? throw new NullReferenceException("asddsa");
+
+        _dbContext.Addresses.RemoveRange(dbUserAddresses);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteMyAccountAsync(string token)
