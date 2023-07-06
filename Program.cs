@@ -77,6 +77,7 @@ builder.Services.AddTransient<IJwtService, JwtService>();
 // TESTAR ADCIONAR UM TRANSIENT COM TODAS AS INJEÇOES DEVE FUNFAR
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 
 var app = builder.Build();

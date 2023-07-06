@@ -1,13 +1,14 @@
+using kazariobranco_backend.Models;
 using kazariobranco_backend.Request;
 using kazariobranco_backend.Database;
-using kazariobranco_backend.Interfaces;
-using kazariobranco_backend.Response;
-using kazariobranco_backend.Models;
 using kazariobranco_backend.Identity;
+using kazariobranco_backend.Response;
+using kazariobranco_backend.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
+using kazariobranco_backend.Request.User;
 
 namespace kazariobranco_backend.Repository;
 
@@ -26,7 +27,7 @@ public class UserRepository : IUserRepository
         _jwtService = jwtService;
     }
 
-    public async Task CreateAddressAsync(string token, AddNewAddressRequest request)
+    public async Task CreateAddressAsync(string token, CreteAddressRequest request)
     {
         Claims claims = await GetClaims(token);
 
@@ -44,35 +45,12 @@ public class UserRepository : IUserRepository
             await _dbContext.SaveChangesAsync();
             return;
         }
-
-        throw new Exception("sla");
     }
 
     public async Task CreateProductsCartAsync(
         string token,
         AddProductsCartRequest request
     ) { }
-
-    public async Task<UserResponse> ReadUserByIdAsync(int id)
-    {
-        var dbUser =
-            await _dbContext.Users.FindAsync(id) ?? throw new NullReferenceException();
-
-        return _mapper.Map<UserResponse>(dbUser);
-    }
-
-    public async Task<IList<UserResponse>> ReadUsersInRangeAsync(int skip, int take)
-    {
-        var dbUsers =
-            await _dbContext.Users
-                .Skip(skip)
-                .Take(take)
-                .Where(p => p.Role != IdentityData.AdminClaimName)
-                .AsNoTracking()
-                .ToListAsync() ?? throw new NullReferenceException();
-
-        return _mapper.Map<IList<UserResponse>>(dbUsers);
-    }
 
     public async Task<IList<AddressResponse>> ReadMyAddressesAsync(string token)
     {
@@ -83,33 +61,33 @@ public class UserRepository : IUserRepository
             .AsNoTracking()
             .FirstAsync(p => p.Id == claims.Id && p.Email == claims.Email);
 
-        IList<AddressResponse> response = new List<AddressResponse>();
-        foreach (var address in dbUser!.Addresses)
-        {
-            response.Add(_mapper.Map<AddressResponse>(address));
-        }
+        IList<AddressResponse> response = _mapper.Map<IList<AddressResponse>>(
+            dbUser.Addresses.ToList()
+        );
 
-        return response;
+        if (!response.Any())
+        {
+            throw new Exception(
+                $"Não há endereços cadastrados para o usuário {dbUser.Firstname} {dbUser.Lastname}!"
+            );
+        }
+        return _mapper.Map<IList<AddressResponse>>(dbUser.Addresses.ToList());
     }
 
     public async Task<UserResponse> ReadMyDataAsync(string token)
     {
         Claims claims = await GetClaims(token);
 
-        var dbUser = await ReadUserByIdAsync(claims.Id);
+        var dbUser = await _dbContext.Users.FirstAsync(
+            p => p.Id == claims.Id && p.Email == claims.Email
+        );
+
         return _mapper.Map<UserResponse>(dbUser);
     }
 
-    public async Task UpdatePasswordUserAsync()
+    public async Task UpdatePasswordUserAsync(string email)
     {
-        // var dbUser = await GetUserByIdAsync(id);
-
-        // var passwordHasher = new PasswordHasher<ForgottenPasswordRequest>();
-        // request.NewPassword = passwordHasher.HashPassword(request, request.NewPassword);
-
-        // dbUser.Password = request.NewPassword;
-        // dbUser.UpdatedAt = DateTime.Today;
-        // await _dbContext.SaveChangesAsync();
+        
     }
 
     public async Task DeleteMyAddressByIdAsync(string token, int id)
@@ -145,26 +123,6 @@ public class UserRepository : IUserRepository
             ?? throw new NullReferenceException("asddsa");
 
         _dbContext.Users.Remove(dbUser);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task DeleteUserByIdAsync(int id)
-    {
-        var dbUser =
-            await _dbContext.Users.FindAsync(id)
-            ?? throw new NullReferenceException("asddsa");
-
-        _dbContext.Users.Remove(dbUser);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task DeleteUsersInRangeAsync(int skip, int take)
-    {
-        var dbUsers =
-            _dbContext.Users.Skip(skip).Take(take).AsNoTracking()
-            ?? throw new Exception("sei la");
-
-        _dbContext.Users.RemoveRange(dbUsers);
         await _dbContext.SaveChangesAsync();
     }
 

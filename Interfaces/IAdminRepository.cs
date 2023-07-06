@@ -6,35 +6,40 @@ public interface IAdminRepository
 {
     // ADMIN-USER
 
-    Task<UserResponse> ReadUserByIdAsync(int id);
+    Task<UserResponse> ReadUserByIdAsync(string token, int id);
 
-    Task<IList<UserResponse>> ReadUsersInRangeAsync(int skip, int take);
+    Task<IList<UserResponse>> ReadUsersInRangeAsync(string token, int skip, int take);
 
-    Task DeleteUserByIdAsync(int id);
+    Task DeleteUserByIdAsync(string token, int id);
 
-    Task DeleteUsersInRangeAsync(int skip, int take);
+    Task DeleteUsersInRangeAsync(string token, int skip, int take);
 
     // ADMIN-CONTACT
 
-    Task<ContactResponse> ReadContactByIdAsync(int id);
+    Task<ContactResponse> ReadContactByIdAsync(string token, int id);
 
-    Task<IList<ContactResponse>> ReadContactsByNameAsync(string name);
+    Task<IList<ContactResponse>> ReadContactsByNameAsync(string token, string name);
 
-    Task<IList<ContactResponse>> ReadContactsByEmailAsync(string email);
+    Task<IList<ContactResponse>> ReadContactsByEmailAsync(string token, string email);
 
-    Task<IList<ContactResponse>> ReadContactsByPhoneAsync(string phone);
+    Task<IList<ContactResponse>> ReadContactsByPhoneAsync(string token, string phone);
 
-    Task<ContactResponse> UpdateStatusByIdAsync(int id);
+    Task<ContactResponse> UpdateStatusByIdAsync(string token, int id);
 
-    Task<IList<ContactResponse>> UpdateStatusInRangeAsync(int skip, int take);
+    Task<IList<ContactResponse>> UpdateStatusInRangeAsync(
+        string token,
+        int skip,
+        int take
+    );
 
     Task<ReadAllContactsResponse> ReadContactsInRangeAsync(
+        string token,
         int skip,
         int take,
         bool? byDate
     );
 
-    Task DeleteContactByIdAsync(int id);
+    Task DeleteContactByIdAsync(string token, int id);
 
-    Task DeleteContactsInRangeAsync(int skip, int take);
+    Task DeleteContactsInRangeAsync(string token, int skip, int take);
 }

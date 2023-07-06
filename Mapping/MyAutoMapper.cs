@@ -1,10 +1,10 @@
 using kazariobranco_backend.Models;
-using kazariobranco_backend.Request;
 using kazariobranco_backend.Response;
 using kazariobranco_backend.Request.Auth;
 using kazariobranco_backend.Request.Contact;
 
 using AutoMapper;
+using kazariobranco_backend.Request.User;
 
 namespace kazariobranco_backend.Mapping;
 
@@ -31,8 +31,7 @@ public class MyAutoMapper : Profile
                 options => options.MapFrom(p => p.EndedAt != DateTime.MinValue)
             );
 
-        CreateMap<AddNewAddressRequest, AddressModel>();
-
+        CreateMap<CreteAddressRequest, AddressModel>();
         CreateMap<AddressModel, AddressResponse>();
     }
 }

@@ -5,6 +5,7 @@ using kazariobranco_backend.Request.Contact;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Primitives;
 
 namespace kazariobranco_backend.Controllers;
 
@@ -14,9 +15,15 @@ public class ContactController : ControllerBase
 {
     private readonly IContactRepository _contactController;
 
-    public ContactController(IContactRepository contactRepository)
+    private readonly IAdminRepository _adminRepository;
+
+    public ContactController(
+        IContactRepository contactRepository,
+        IAdminRepository adminRepository
+    )
     {
         _contactController = contactRepository;
+        _adminRepository = adminRepository;
     }
 
     [HttpPost("create-contact")]
@@ -39,7 +46,11 @@ public class ContactController : ControllerBase
     {
         try
         {
-            var _dbContact = await _contactController.ReadContactByIdAsync(id);
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            var _dbContact = await _adminRepository.ReadContactByIdAsync(
+                headerValue!,
+                id
+            );
             return Ok(_dbContact);
         }
         catch (NullReferenceException e)
@@ -58,7 +69,11 @@ public class ContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _contactController.ReadContactsByNameAsync(name);
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            var _dbContacts = await _adminRepository.ReadContactsByNameAsync(
+                headerValue!,
+                name
+            );
             return Ok(_dbContacts);
         }
         catch (NullReferenceException e)
@@ -77,7 +92,11 @@ public class ContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _contactController.ReadContactsByEmailAsync(email);
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            var _dbContacts = await _adminRepository.ReadContactsByEmailAsync(
+                headerValue!,
+                email
+            );
             return Ok(_dbContacts);
         }
         catch (NullReferenceException e)
@@ -96,7 +115,11 @@ public class ContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _contactController.ReadContactsByPhoneAsync(phone);
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            var _dbContacts = await _adminRepository.ReadContactsByPhoneAsync(
+                headerValue!,
+                phone
+            );
             return Ok(_dbContacts);
         }
         catch (NullReferenceException e)
@@ -119,7 +142,9 @@ public class ContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _contactController.ReadContactsInRangeAsync(
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            var _dbContacts = await _adminRepository.ReadContactsInRangeAsync(
+                headerValue!,
                 skip,
                 take,
                 orderByDate
@@ -142,7 +167,11 @@ public class ContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _contactController.UpdateStatusByIdAsync(id);
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            var _dbContacts = await _adminRepository.UpdateStatusByIdAsync(
+                headerValue!,
+                id
+            );
             return Ok(_dbContacts);
         }
         catch (NullReferenceException e)
@@ -164,7 +193,9 @@ public class ContactController : ControllerBase
     {
         try
         {
-            var _dbContacts = await _contactController.UpdateStatusInRangeAsync(
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            var _dbContacts = await _adminRepository.UpdateStatusInRangeAsync(
+                headerValue!,
                 skip,
                 take
             );
@@ -186,7 +217,8 @@ public class ContactController : ControllerBase
     {
         try
         {
-            await _contactController.DeleteContactByIdAsync(id);
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            await _adminRepository.DeleteContactByIdAsync(headerValue!, id);
             return NoContent();
         }
         catch (NullReferenceException e)
@@ -208,7 +240,8 @@ public class ContactController : ControllerBase
     {
         try
         {
-            await _contactController.DeleteContactsInRangeAsync(skip, take);
+            Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
+            await _adminRepository.DeleteContactsInRangeAsync(headerValue!, skip, take);
             return NoContent();
         }
         catch (NullReferenceException e)

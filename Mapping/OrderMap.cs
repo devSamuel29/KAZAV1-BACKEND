@@ -16,10 +16,9 @@ public class OrderMap : IEntityTypeConfiguration<OrderModel>
         builder
             .Property(p => p.Id)
             .HasColumnName("Id")
-            .HasColumnType("int")
-            .UseIdentityColumn()
+            .HasColumnType("varchar(36)")
             .IsRequired();
 
-
+        builder.HasOne(p => p.Cart).WithMany(p => p.Orders).HasForeignKey(p => p.CartId);
     }
 }

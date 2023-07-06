@@ -1,6 +1,6 @@
-namespace kazariobranco_backend.Request;
+namespace kazariobranco_backend.Request.User;
 
-public class AddNewAddressRequest
+public class CreteAddressRequest
 {
     public required string Address { get; set; }
 

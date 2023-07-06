@@ -24,16 +24,32 @@ public class AdminRepository : IAdminRepository
 
     // ADMIN-USER
 
-    public async Task<UserResponse> ReadUserByIdAsync(int id)
+    public async Task<UserResponse> ReadUserByIdAsync(string token, int id)
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbUser =
             await _dbContext.Users.FindAsync(id) ?? throw new NullReferenceException();
 
         return _mapper.Map<UserResponse>(dbUser);
     }
 
-    public async Task<IList<UserResponse>> ReadUsersInRangeAsync(int skip, int take)
+    public async Task<IList<UserResponse>> ReadUsersInRangeAsync(
+        string token,
+        int skip,
+        int take
+    )
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbUsers =
             await _dbContext.Users
                 .Skip(skip)
@@ -45,8 +61,14 @@ public class AdminRepository : IAdminRepository
         return _mapper.Map<IList<UserResponse>>(dbUsers);
     }
 
-    public async Task DeleteUserByIdAsync(int id)
+    public async Task DeleteUserByIdAsync(string token, int id)
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbUser =
             await _dbContext.Users.FindAsync(id)
             ?? throw new NullReferenceException("asddsa");
@@ -55,8 +77,14 @@ public class AdminRepository : IAdminRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteUsersInRangeAsync(int skip, int take)
+    public async Task DeleteUsersInRangeAsync(string token, int skip, int take)
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbUsers =
             _dbContext.Users.Skip(skip).Take(take).AsNoTracking()
             ?? throw new Exception("sei la");
@@ -67,8 +95,14 @@ public class AdminRepository : IAdminRepository
 
     // ADMIN-CONTACT
 
-    public async Task<ContactResponse> ReadContactByIdAsync(int id)
+    public async Task<ContactResponse> ReadContactByIdAsync(string token, int id)
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbContact = await _dbContext.Contacts.FindAsync(id);
 
         if (dbContact is null)
@@ -79,8 +113,17 @@ public class AdminRepository : IAdminRepository
         return _mapper.Map<ContactResponse>(dbContact);
     }
 
-    public async Task<IList<ContactResponse>> ReadContactsByEmailAsync(string email)
+    public async Task<IList<ContactResponse>> ReadContactsByEmailAsync(
+        string token,
+        string email
+    )
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbContacts = await _dbContext.Contacts
             .Where(p => p.Email.StartsWith(email))
             .OrderBy(p => p.CreatedAt)
@@ -91,8 +134,17 @@ public class AdminRepository : IAdminRepository
         return _mapper.Map<IList<ContactResponse>>(dbContacts);
     }
 
-    public async Task<IList<ContactResponse>> ReadContactsByNameAsync(string name)
+    public async Task<IList<ContactResponse>> ReadContactsByNameAsync(
+        string token,
+        string name
+    )
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbContacts = await _dbContext.Contacts
             .Where(p => p.Name.StartsWith(name))
             .OrderBy(p => p.CreatedAt)
@@ -103,8 +155,17 @@ public class AdminRepository : IAdminRepository
         return _mapper.Map<IList<ContactResponse>>(dbContacts);
     }
 
-    public async Task<IList<ContactResponse>> ReadContactsByPhoneAsync(string phone)
+    public async Task<IList<ContactResponse>> ReadContactsByPhoneAsync(
+        string token,
+        string phone
+    )
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbContacts = await _dbContext.Contacts
             .Where(p => p.Phone.StartsWith(phone))
             .OrderBy(p => p.CreatedAt)
@@ -116,11 +177,18 @@ public class AdminRepository : IAdminRepository
     }
 
     public async Task<ReadAllContactsResponse> ReadContactsInRangeAsync(
+        string token,
         int skip,
         int take,
         bool? orderByDate
     )
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         if (skip > take || skip == take)
         {
             throw new Exception("ainda n sei oq colocar");
@@ -136,8 +204,14 @@ public class AdminRepository : IAdminRepository
         return await AllContactsAsync(skip, take);
     }
 
-    public async Task<ContactResponse> UpdateStatusByIdAsync(int id)
+    public async Task<ContactResponse> UpdateStatusByIdAsync(string token, int id)
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbContact = await _dbContext.Contacts.FindAsync(id);
 
         if (dbContact is null)
@@ -151,8 +225,18 @@ public class AdminRepository : IAdminRepository
         return _mapper.Map<ContactResponse>(dbContact);
     }
 
-    public async Task<IList<ContactResponse>> UpdateStatusInRangeAsync(int skip, int take)
+    public async Task<IList<ContactResponse>> UpdateStatusInRangeAsync(
+        string token,
+        int skip,
+        int take
+    )
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbContacts = await _dbContext.Contacts.Skip(skip).Take(take).ToListAsync();
 
         if (dbContacts is null)
@@ -165,8 +249,14 @@ public class AdminRepository : IAdminRepository
         return _mapper.Map<IList<ContactResponse>>(dbContacts);
     }
 
-    public async Task DeleteContactByIdAsync(int id)
+    public async Task DeleteContactByIdAsync(string token, int id)
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbContact = await _dbContext.Contacts.FindAsync(id);
 
         if (dbContact is null)
@@ -178,8 +268,14 @@ public class AdminRepository : IAdminRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteContactsInRangeAsync(int skip, int take)
+    public async Task DeleteContactsInRangeAsync(string token, int skip, int take)
     {
+        Claims adminJwt = await GetClaims(token);
+
+        await _dbContext.Users.FirstAsync(
+            p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
+        );
+
         var dbContacts =
             _dbContext.Contacts.Skip(skip).Take(take).AsNoTracking()
             ?? throw new Exception("sei la");
@@ -241,5 +337,11 @@ public class AdminRepository : IAdminRepository
         }
 
         return await AllContactsAsync(skip, take);
+    }
+
+    private async Task<Claims> GetClaims(string token)
+    {
+        token = await _jwtService.FormatToken(token);
+        return await _jwtService.GetClaims(token);
     }
 }

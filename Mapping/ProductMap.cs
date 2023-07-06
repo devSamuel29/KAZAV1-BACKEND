@@ -16,7 +16,5 @@ public class ProductMap : IEntityTypeConfiguration<ProductModel>
             .HasColumnType("int")
             .UseIdentityColumn()
             .IsRequired();
-        
-        builder.HasMany(p => p.Carts).WithMany(p => p.Products);
     }
 }

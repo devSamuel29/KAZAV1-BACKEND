@@ -2,7 +2,7 @@ namespace kazariobranco_backend.Models;
 
 public class OrderModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     public int CartId { get; set; }
 
@@ -12,5 +12,4 @@ public class OrderModel
 
     public IList<ProductModel> Products { get; set; } = null!;
 
-    public IList<OrderProductModel> OrderProducts { get; set; } = null!;
 }
