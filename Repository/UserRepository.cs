@@ -55,11 +55,6 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task CreateProductsCartAsync(
-        string token,
-        AddProductsCartRequest request
-    ) { }
-
     public async Task<IList<AddressResponse>> ReadMyAddressesAsync(string token)
     {
         Claims claims = await GetClaims(token);
