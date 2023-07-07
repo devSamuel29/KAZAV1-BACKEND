@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using PROJETO.Domain.Services;
+using kazariobranco_backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +74,7 @@ builder.Services.AddTransient<
     ConfigureSwaggerOptions
 >();
 builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 // TESTAR ADCIONAR UM TRANSIENT COM TODAS AS INJEÇOES DEVE FUNFAR
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();

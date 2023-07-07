@@ -20,11 +20,19 @@ public class UserRepository : IUserRepository
 
     private readonly IJwtService _jwtService;
 
-    public UserRepository(MyDbContext dbContext, IMapper mapper, IJwtService jwtService)
+    private readonly IEmailService _emailSender;
+
+    public UserRepository(
+        MyDbContext dbContext,
+        IMapper mapper,
+        IJwtService jwtService,
+        IEmailService emailSender
+    )
     {
         _dbContext = dbContext;
         _mapper = mapper;
         _jwtService = jwtService;
+        _emailSender = emailSender;
     }
 
     public async Task CreateAddressAsync(string token, CreteAddressRequest request)
@@ -87,7 +95,12 @@ public class UserRepository : IUserRepository
 
     public async Task UpdatePasswordUserAsync(string email)
     {
-        
+        await _dbContext.Users.FirstAsync(p => p.Email == email);
+        await _emailSender.SendEmail(
+            email,
+            "PEDIDO DE MUDANÇA DE SENHA",
+            "aqui está o codigo para mudança de senha 32928939"
+        );
     }
 
     public async Task DeleteMyAddressByIdAsync(string token, int id)

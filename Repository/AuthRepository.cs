@@ -22,11 +22,19 @@ public class AuthRepository : IAuthRepository
 
     private readonly IJwtService _jwtService;
 
-    public AuthRepository(MyDbContext dbContext, IMapper mapper, IJwtService jwtService)
+    private readonly IEmailService _emailService;
+
+    public AuthRepository(
+        MyDbContext dbContext,
+        IMapper mapper,
+        IJwtService jwtService,
+        IEmailService emailService
+    )
     {
         _dbContext = dbContext;
         _mapper = mapper;
         _jwtService = jwtService;
+        _emailService = emailService;
     }
 
     public async Task<JwtSecurityToken> LoginAsync(LoginRequest request)
@@ -38,12 +46,7 @@ public class AuthRepository : IAuthRepository
         {
             var dbUser = await _dbContext.Users
                 .Where(u => u.Email == request.Email)
-                .FirstOrDefaultAsync();
-
-            if (dbUser is null)
-            {
-                throw new NullReferenceException("Usuário não encontrado!");
-            }
+                .FirstAsync();
 
             var isValidHash = BCrypt.Net.BCrypt.Verify(request.Password, dbUser.Password);
 
@@ -52,10 +55,18 @@ public class AuthRepository : IAuthRepository
                 var claims = new List<Claim>()
                 {
                     new(JwtRegisteredClaimNames.Sub, dbUser.Id.ToString()),
-                    new(JwtRegisteredClaimNames.Name, $"{dbUser.Firstname} {dbUser.Lastname}"),
+                    new(
+                        JwtRegisteredClaimNames.Name,
+                        $"{dbUser.Firstname} {dbUser.Lastname}"
+                    ),
                     new(JwtRegisteredClaimNames.Email, dbUser.Email),
                     new(IdentityData.ClaimTitle, dbUser.Role)
                 };
+                await _emailService.SendEmail(
+                    request.Email,
+                    "LOGIN KAZARIOBRANCO",
+                    $"Olá {dbUser.Firstname} {dbUser.Lastname}, você acaba de fazer login em www.site.com as {DateTime.Now}. Se não reconhecer esse login, por favor altere sua senha."
+                );
                 return await _jwtService.GetTokenAsync(claims);
             }
             throw new InvalidDataException("dados incorretos!");
@@ -72,6 +83,11 @@ public class AuthRepository : IAuthRepository
         {
             await _dbContext.AddAsync(_mapper.Map<UserModel>(request));
             await _dbContext.SaveChangesAsync();
+            await _emailService.SendEmail(
+                request.Email,
+                "CADASTRO KAZARIOBRANCO",
+                $"Olá {request.Firstname} {request.Lastname}, você acaba de criar uma conta em www.site.com as {DateTime.Now}."
+            );
             return;
         }
 
