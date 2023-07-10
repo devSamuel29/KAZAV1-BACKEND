@@ -10,8 +10,6 @@ public interface IAuthRepository
     Task RegisterAsync(RegisterRequest request);
 
     Task CreateChangePasswordAsync(string email);
-
-    Task ReadTest(string email, int code);
     
     Task UpdatePasswordAsync(ForgottenPasswordRequest request);
 }

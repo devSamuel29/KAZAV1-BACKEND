@@ -112,13 +112,6 @@ public class AuthRepository : IAuthRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task ReadTest(string email, int code)
-    {
-        await _dbContext.ChangePassword.FirstAsync(
-            p => p.Email == email && p.Code == code
-        );
-    }
-
     public async Task UpdatePasswordAsync(ForgottenPasswordRequest request)
     {
         var dbChangePwd = await _dbContext.ChangePassword.FirstAsync(

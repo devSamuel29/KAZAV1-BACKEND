@@ -60,23 +60,6 @@ public class AuthController : ControllerBase
         }
     }
 
-    [HttpGet("read-test/{email}/{code}")]
-    public async Task<IActionResult> ReadTest(
-        [FromRoute] string email,
-        [FromRoute] int code
-    )
-    {
-        try
-        {
-            await _authRepository.ReadTest(email, code);
-            return NoContent();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.StackTrace);
-        }
-    }
-
     [HttpPut("forgot-my-password")]
     public async Task<IActionResult> UpdatePassword(
         [FromBody] ForgottenPasswordRequest request
