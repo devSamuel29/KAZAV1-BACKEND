@@ -98,6 +98,37 @@ namespace kazariobranco_backend.Migrations
                     b.ToTable("Carts");
                 });
 
+            modelBuilder.Entity("kazariobranco_backend.Models.ChangePasswordModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("Email");
+
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsFinished");
+
+                    b.Property<DateTime>("IsValid")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("IsValid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChangePassword", (string)null);
+                });
+
             modelBuilder.Entity("kazariobranco_backend.Models.ContactModel", b =>
                 {
                     b.Property<int>("Id")

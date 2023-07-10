@@ -10,9 +10,7 @@ public interface IUserRepository
     Task<IList<AddressResponse>> ReadMyAddressesAsync(string token);
 
     Task<UserResponse> ReadMyDataAsync(string token);
-
-    Task UpdatePasswordUserAsync(string email);
-
+    
     Task DeleteMyAddressByIdAsync(string token, int id);
 
     Task DeleteMyAddressesAsync(string token);

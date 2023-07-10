@@ -27,7 +27,7 @@ public class ContactController : ControllerBase
     }
 
     [HttpPost("create-contact")]
-    public async Task<IActionResult> CreateContactAsync([FromBody] ContactRequest request)
+    public async Task<IActionResult> CreateContactAsync([FromHeader] ContactRequest request)
     {
         try
         {

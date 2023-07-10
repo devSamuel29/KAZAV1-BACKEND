@@ -12,6 +12,22 @@ namespace kazariobranco_backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ChangePassword",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "varchar(40)", nullable: false),
+                    IsValid = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsFinished = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChangePassword", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Contacts",
                 columns: table => new
                 {
@@ -197,6 +213,9 @@ namespace kazariobranco_backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Address");
+
+            migrationBuilder.DropTable(
+                name: "ChangePassword");
 
             migrationBuilder.DropTable(
                 name: "Contacts");

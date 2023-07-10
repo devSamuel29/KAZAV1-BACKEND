@@ -93,4 +93,55 @@ public class AuthRepository : IAuthRepository
 
         throw new InvalidDataException(validate.Errors.ToString());
     }
+
+    public async Task CreateChangePasswordAsync(string email)
+    {
+        await _dbContext.Users.FirstAsync(p => p.Email == email);
+
+        int code = new Random().Next(100000, 999999);
+
+        await _emailService.SendEmail(
+            email,
+            "PEDIDO DE MUDANÇA DE SENHA",
+            $"aqui está o codigo para mudança de senha: {code}"
+        );
+
+        await _dbContext.ChangePassword.AddAsync(
+            new ChangePasswordModel() { Email = email, Code = code }
+        );
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task ReadTest(string email, int code)
+    {
+        await _dbContext.ChangePassword.FirstAsync(
+            p => p.Email == email && p.Code == code
+        );
+    }
+
+    public async Task UpdatePasswordAsync(ForgottenPasswordRequest request)
+    {
+        var dbChangePwd = await _dbContext.ChangePassword.FirstAsync(
+            p => p.Email == request.Email && p.Code == request.Code
+        );
+
+        if (dbChangePwd.IsValid >= DateTime.Now && !dbChangePwd.IsFinished)
+        {
+            var dbUser = await _dbContext.Users.FirstAsync(p => p.Email == request.Email);
+            dbUser.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            dbChangePwd.IsFinished = true;
+            await _dbContext.SaveChangesAsync();
+
+            await _emailService.SendEmail(
+                request.Email,
+                "SENHA ALTERADA - KAZARIOBRANCO",
+                $"Sua senha acaba de ser alterada!"
+            );
+            return;
+        }
+
+        throw new Exception(
+            "O código enviado não é mais válido ou a senha já foi alterada!"
+        );
+    }
 }

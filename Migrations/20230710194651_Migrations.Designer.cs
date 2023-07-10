@@ -12,7 +12,7 @@ using kazariobranco_backend.Database;
 namespace kazariobranco_backend.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230706174556_Migrations")]
+    [Migration("20230710194651_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />
@@ -99,6 +99,37 @@ namespace kazariobranco_backend.Migrations
                         .IsUnique();
 
                     b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("kazariobranco_backend.Models.ChangePasswordModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("Email");
+
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsFinished");
+
+                    b.Property<DateTime>("IsValid")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("IsValid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChangePassword", (string)null);
                 });
 
             modelBuilder.Entity("kazariobranco_backend.Models.ContactModel", b =>

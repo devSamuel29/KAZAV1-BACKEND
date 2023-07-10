@@ -112,21 +112,6 @@ public class UserController : ControllerBase
         }
     }
 
-    
-    [HttpPatch("forgot-my-password")]
-    public async Task<IActionResult> UpdateMyPassword(string email)
-    {
-        try
-        {
-            await _userRepository.UpdatePasswordUserAsync(email);
-            return Ok();
-        }
-        catch(Exception e)
-        {
-            return BadRequest(e.ToString());
-        }
-    }
-
     // [Authorize(Policy = IdentityData.UserPolicyName)]
     // [HttpPost("cart-add-products")]
     // public async Task<IActionResult> AddProductsCart()
@@ -188,7 +173,7 @@ public class UserController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-    
+
     [Authorize(Policy = IdentityData.AdminPolicyName)]
     [HttpDelete("delete-users-in-range/{skip}/{take}")]
     public async Task<IActionResult> DeleteAllUsersAsync(

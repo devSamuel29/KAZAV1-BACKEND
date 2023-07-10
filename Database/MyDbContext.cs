@@ -13,13 +13,15 @@ public class MyDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyDbContext).Assembly);
     }
 
-    public DbSet<UserModel> Users { get; set; }
+    public DbSet<UserModel> Users { get; set; } = null!;
 
-    public DbSet<AddressModel> Addresses { get; set; }
+    public DbSet<ChangePasswordModel> ChangePassword { get; set; } = null!;
 
-    public DbSet<CartModel> Carts { get; set; }
+    public DbSet<AddressModel> Addresses { get; set; } = null!;
 
-    public DbSet<ProductModel> Products { get; set; }
-    
-    public DbSet<ContactModel> Contacts { get; set; }
+    public DbSet<CartModel> Carts { get; set; } = null!;
+
+    public DbSet<ProductModel> Products { get; set; } = null!;
+
+    public DbSet<ContactModel> Contacts { get; set; } = null!;
 }

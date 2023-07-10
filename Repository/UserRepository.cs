@@ -1,5 +1,4 @@
 using kazariobranco_backend.Models;
-using kazariobranco_backend.Request;
 using kazariobranco_backend.Database;
 using kazariobranco_backend.Identity;
 using kazariobranco_backend.Response;
@@ -86,16 +85,6 @@ public class UserRepository : IUserRepository
         );
 
         return _mapper.Map<UserResponse>(dbUser);
-    }
-
-    public async Task UpdatePasswordUserAsync(string email)
-    {
-        await _dbContext.Users.FirstAsync(p => p.Email == email);
-        await _emailSender.SendEmail(
-            email,
-            "PEDIDO DE MUDANÇA DE SENHA",
-            "aqui está o codigo para mudança de senha 32928939"
-        );
     }
 
     public async Task DeleteMyAddressByIdAsync(string token, int id)

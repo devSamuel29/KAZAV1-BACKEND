@@ -38,14 +38,54 @@ public class AuthController : ControllerBase
         try
         {
             await _authRepository.RegisterAsync(request);
-            return Created(
-                "minha url",
-                new
-                {
-                    name = $"{request.Firstname} {request.Lastname}",
-                    Email = request.Email,
-                }
-            );
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.ToString());
+        }
+    }
+
+    [HttpPost("forgot-my-password")]
+    public async Task<IActionResult> CreateChangePassword([FromHeader] string email)
+    {
+        try
+        {
+            await _authRepository.CreateChangePasswordAsync(email);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.ToString());
+        }
+    }
+
+    [HttpGet("read-test/{email}/{code}")]
+    public async Task<IActionResult> ReadTest(
+        [FromRoute] string email,
+        [FromRoute] int code
+    )
+    {
+        try
+        {
+            await _authRepository.ReadTest(email, code);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.StackTrace);
+        }
+    }
+
+    [HttpPut("forgot-my-password")]
+    public async Task<IActionResult> UpdatePassword(
+        [FromBody] ForgottenPasswordRequest request
+    )
+    {
+        try
+        {
+            await _authRepository.UpdatePasswordAsync(request);
+            return Ok();
         }
         catch (Exception e)
         {
