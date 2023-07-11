@@ -1,16 +1,15 @@
 using kazariobranco_backend.Models;
 using kazariobranco_backend.Database;
-using kazariobranco_backend.Identity;
 using kazariobranco_backend.Validator;
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Request.Auth;
 
 using Microsoft.EntityFrameworkCore;
 
-using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 
 using AutoMapper;
+using System.Text.RegularExpressions;
 
 namespace kazariobranco_backend.Repository;
 
@@ -45,39 +44,37 @@ public class AuthRepository : IAuthRepository
         if (validate.IsValid)
         {
             var dbUser = await _dbContext.Users
-                .Where(u => u.Email == request.Email)
+                .Where(p => p.Email == request.Email)
                 .FirstAsync();
 
             var isValidHash = BCrypt.Net.BCrypt.Verify(request.Password, dbUser.Password);
 
             if (isValidHash)
             {
-                var claims = new List<Claim>()
-                {
-                    new(JwtRegisteredClaimNames.Sub, dbUser.Id.ToString()),
-                    new(
-                        JwtRegisteredClaimNames.Name,
-                        $"{dbUser.Firstname} {dbUser.Lastname}"
-                    ),
-                    new(JwtRegisteredClaimNames.Email, dbUser.Email),
-                    new(IdentityData.ClaimTitle, dbUser.Role)
-                };
+                var claims = await _jwtService.CreateClaims(
+                    dbUser.Id,
+                    $"{dbUser.Firstname} {dbUser.Lastname}",
+                    dbUser.Email,
+                    dbUser.Role
+                );
+
                 await _emailService.SendEmail(
                     request.Email,
                     "LOGIN KAZARIOBRANCO",
                     $"Olá {dbUser.Firstname} {dbUser.Lastname}, você acaba de fazer login em www.site.com as {DateTime.Now}. Se não reconhecer esse login, por favor altere sua senha."
                 );
+
                 return await _jwtService.GetTokenAsync(claims);
             }
-            throw new InvalidDataException("dados incorretos!");
+            throw new InvalidDataException("Email ou senha incorretos!");
         }
-        throw new FormatException(validate.Errors.ToString());
+        throw new FormatException(validate.ToString());
     }
 
     public async Task RegisterAsync(RegisterRequest request)
     {
-        var registerValidate = new RegisterValidate();
-        var validate = await registerValidate.ValidateAsync(request);
+        var registerValidator = new RegisterValidator();
+        var validate = await registerValidator.ValidateAsync(request);
 
         if (validate.IsValid)
         {
@@ -91,7 +88,7 @@ public class AuthRepository : IAuthRepository
             return;
         }
 
-        throw new InvalidDataException(validate.Errors.ToString());
+        throw new FormatException(validate.ToString());
     }
 
     public async Task CreateChangePasswordAsync(string email)
@@ -112,28 +109,25 @@ public class AuthRepository : IAuthRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdatePasswordAsync(ForgottenPasswordRequest request)
+    public async Task UpdatePasswordAsync(ChangePasswordRequest request)
     {
         var dbChangePwd = await _dbContext.ChangePassword.FirstAsync(
             p => p.Email == request.Email && p.Code == request.Code
         );
 
-        if (dbChangePwd.IsValid >= DateTime.Now && !dbChangePwd.IsFinished)
-        {
-            var dbUser = await _dbContext.Users.FirstAsync(p => p.Email == request.Email);
-            dbUser.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
-            dbChangePwd.IsFinished = true;
-            await _dbContext.SaveChangesAsync();
+        var dbUser = await _dbContext.Users.FirstAsync(p => p.Email == request.Email);
+        dbUser.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        dbChangePwd.IsFinished = true;
+        await _dbContext.SaveChangesAsync();
 
-            await _emailService.SendEmail(
-                request.Email,
-                "SENHA ALTERADA - KAZARIOBRANCO",
-                $"Sua senha acaba de ser alterada!"
-            );
-            return;
-        }
+        await _emailService.SendEmail(
+            request.Email,
+            "SENHA ALTERADA - KAZARIOBRANCO",
+            $"Sua senha acaba de ser alterada!"
+        );
+        return;
 
-        throw new Exception(
+        throw new InvalidDataException(
             "O código enviado não é mais válido ou a senha já foi alterada!"
         );
     }

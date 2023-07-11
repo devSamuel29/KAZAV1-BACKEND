@@ -1,9 +1,10 @@
 using kazariobranco_backend.Interfaces;
 using kazariobranco_backend.Request.Auth;
 
-using Microsoft.AspNetCore.Mvc;
-
 using System.IdentityModel.Tokens.Jwt;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace kazariobranco_backend.Controllers;
 
@@ -13,9 +14,12 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthRepository _authRepository;
 
-    public AuthController(IAuthRepository authRepository)
+    private readonly ILogger<AuthController> _logger;
+
+    public AuthController(IAuthRepository authRepository, ILogger<AuthController> logger)
     {
         _authRepository = authRepository;
+        _logger = logger;
     }
 
     [HttpPost("login")]
@@ -23,12 +27,28 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var response = await _authRepository.LoginAsync(request);
-            return Ok(new JwtSecurityTokenHandler().WriteToken(response));
+            return Ok(
+                new JwtSecurityTokenHandler().WriteToken(
+                    await _authRepository.LoginAsync(request)
+                )
+            );
+        }
+        catch (InvalidDataException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound("Email ou senha incorretos!");
+        }
+        catch (FormatException e)
+        {
+            return BadRequest(e.Message);
         }
         catch (Exception e)
         {
-            return BadRequest(e.ToString());
+            _logger.LogError(e.Message);
+            return StatusCode(500, "ERRO NO SERVIDOR, CONTACTAR DEV");
         }
     }
 
@@ -38,41 +58,60 @@ public class AuthController : ControllerBase
         try
         {
             await _authRepository.RegisterAsync(request);
-            return Ok();
+            return NoContent();
+        }
+        catch (FormatException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (DbUpdateException e)
+        {
+            return Unauthorized(e.InnerException!.Message);
         }
         catch (Exception e)
         {
-            return BadRequest(e.ToString());
+            _logger.LogError(e.Message);
+            return StatusCode(500, "ERRO NO SERVIDOR, CONTACTAR DEV");
         }
     }
 
-    [HttpPost("forgot-my-password")]
-    public async Task<IActionResult> CreateChangePassword([FromHeader] string email)
+    [HttpPost("change-password")]
+    public async Task<IActionResult> CreateChangePassword([FromBody] string email)
     {
         try
         {
             await _authRepository.CreateChangePasswordAsync(email);
-            return Ok();
+            return NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound("Nenhum conta vinculada ao email fornecido!");
         }
         catch (Exception e)
         {
-            return BadRequest(e.ToString());
+            _logger.LogError(e.Message);
+            return StatusCode(500, "ERRO NO SERVIDOR, CONTACTAR DEV");
         }
     }
 
-    [HttpPut("forgot-my-password")]
+    [HttpPut("change-password")]
     public async Task<IActionResult> UpdatePassword(
-        [FromBody] ForgottenPasswordRequest request
+        [FromBody] ChangePasswordRequest request
     )
     {
         try
         {
             await _authRepository.UpdatePasswordAsync(request);
-            return Ok();
+            return NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound("Nenhuma conta vinculada ao email fornecido!");
         }
         catch (Exception e)
         {
-            return BadRequest(e.ToString());
+            _logger.LogError(e.Message);
+            return StatusCode(500, "ERRO NO SERVIDOR, CONTACTAR DEV");
         }
     }
 }

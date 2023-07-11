@@ -17,7 +17,7 @@ public class JwtService : IJwtService
     {
         _config = config;
     }
-    
+
     public async Task<string> FormatToken(string token)
     {
         if (token.StartsWith("Bearer"))
@@ -41,7 +41,7 @@ public class JwtService : IJwtService
         var securityKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
         );
-        
+
         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
@@ -105,5 +105,23 @@ public class JwtService : IJwtService
         }
 
         throw new InvalidDataException("invalid token");
+    }
+
+    public async Task<List<Claim>> CreateClaims(
+        int id,
+        string name,
+        string email,
+        string role
+    )
+    {
+        return await Task.FromResult(
+            new List<Claim>()
+            {
+                new(JwtRegisteredClaimNames.Sub, id.ToString()),
+                new(JwtRegisteredClaimNames.Name, name),
+                new(JwtRegisteredClaimNames.Email, email),
+                new(IdentityData.ClaimTitle, role)
+            }
+        );
     }
 }

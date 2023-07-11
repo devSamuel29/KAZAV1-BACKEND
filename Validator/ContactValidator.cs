@@ -9,17 +9,17 @@ public class ContactValidator : AbstractValidator<ContactRequest>
     {
         RuleFor(o => o.Name)
             .NotEmpty()
-            .WithMessage("Nome vazio")
+            .WithMessage("Campo nome não anulável!")
             .MinimumLength(5)
-            .WithMessage("PEQUENO DEMIASI");
+            .WithMessage("Escreve pelo menos seu sobrenome!");
 
-        RuleFor(o => o.Email).EmailAddress().WithMessage("FORMATO DE EMAIL");
+        RuleFor(o => o.Email).EmailAddress().WithMessage("Formato de email inválido!");
         
         RuleFor(o => o.Description)
             .NotEmpty()
             .MinimumLength(10)
-            .WithMessage("MUITO PEQUENO")
+            .WithMessage("Descreva um pouco melhor o que deseja nos falar")
             .MaximumLength(255)
-            .WithMessage("MUITO GRANDE");
+            .WithMessage("Tamanho máximo de texto atingido!");
     }
 }

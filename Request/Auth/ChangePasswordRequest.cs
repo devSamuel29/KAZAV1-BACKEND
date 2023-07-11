@@ -1,6 +1,6 @@
 namespace kazariobranco_backend.Request.Auth;
 
-public class ForgottenPasswordRequest
+public class ChangePasswordRequest
 {
     public required string Email { get; set; }
 

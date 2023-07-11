@@ -17,7 +17,24 @@ public class MyAutoMapper : Profile
                 p => p.Password,
                 options =>
                     options.MapFrom(p => BCrypt.Net.BCrypt.HashPassword(p.Password))
+            )
+            .ForMember(
+                p => p.Cpf,
+                options => options.MapFrom(p => p.Cpf.Replace(".", "").Replace("-", ""))
+            )
+            .ForMember(
+                p => p.Phone,
+                options =>
+                    options.MapFrom(
+                        p =>
+                            p.Phone
+                                .Replace("(", "")
+                                .Replace(")", "")
+                                .Replace(" ", "")
+                                .Replace("-", "")
+                    )
             );
+
         CreateMap<UserModel, UserResponse>()
             .ForMember(
                 p => p.Name,

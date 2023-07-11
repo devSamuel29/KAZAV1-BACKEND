@@ -11,5 +11,5 @@ public interface IAuthRepository
 
     Task CreateChangePasswordAsync(string email);
     
-    Task UpdatePasswordAsync(ForgottenPasswordRequest request);
+    Task UpdatePasswordAsync(ChangePasswordRequest request);
 }

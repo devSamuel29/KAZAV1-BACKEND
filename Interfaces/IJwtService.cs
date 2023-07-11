@@ -14,4 +14,6 @@ public interface IJwtService
     Task<Claims> GetClaims(string token);
 
     Task<string> FormatToken(string token);
+
+    Task<List<Claim>> CreateClaims(int id, string name, string email, string role);
 }
