@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 
 using AutoMapper;
-using System.Text.RegularExpressions;
 
 namespace kazariobranco_backend.Repository;
 
@@ -71,7 +70,7 @@ public class AuthRepository : IAuthRepository
         throw new FormatException(validate.ToString());
     }
 
-    public async Task RegisterAsync(RegisterRequest request)
+    public async Task<JwtSecurityToken> RegisterAsync(RegisterRequest request)
     {
         var registerValidator = new RegisterValidator();
         var validate = await registerValidator.ValidateAsync(request);
@@ -85,7 +84,7 @@ public class AuthRepository : IAuthRepository
                 "CADASTRO KAZARIOBRANCO",
                 $"Olá {request.Firstname} {request.Lastname}, você acaba de criar uma conta em www.site.com as {DateTime.Now}."
             );
-            return;
+            return await LoginAsync(_mapper.Map<LoginRequest>(request));
         }
 
         throw new FormatException(validate.ToString());

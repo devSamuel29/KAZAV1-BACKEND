@@ -7,7 +7,7 @@ public interface IAuthRepository
 {
     Task<JwtSecurityToken> LoginAsync(LoginRequest request);
 
-    Task RegisterAsync(RegisterRequest request);
+    Task<JwtSecurityToken> RegisterAsync(RegisterRequest request);
 
     Task CreateChangePasswordAsync(string email);
     

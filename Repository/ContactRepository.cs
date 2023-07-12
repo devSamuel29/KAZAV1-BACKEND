@@ -44,6 +44,6 @@ public class ContactRepository : IContactRepository
             return;
         }
 
-        throw new InvalidDataException(validate.ToString());
+        throw new FormatException(validate.ToString());
     }
 }

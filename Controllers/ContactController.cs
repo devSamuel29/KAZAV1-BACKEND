@@ -17,26 +17,37 @@ public class ContactController : ControllerBase
 
     private readonly IAdminRepository _adminRepository;
 
+    private readonly ILogger<ContactController> _logger;
+
     public ContactController(
         IContactRepository contactRepository,
-        IAdminRepository adminRepository
+        IAdminRepository adminRepository,
+        ILogger<ContactController> logger
     )
     {
         _contactController = contactRepository;
         _adminRepository = adminRepository;
+        _logger = logger;
     }
 
     [HttpPost("create-contact")]
-    public async Task<IActionResult> CreateContactAsync([FromHeader] ContactRequest request)
+    public async Task<IActionResult> CreateContactAsync(
+        [FromHeader] ContactRequest request
+    )
     {
         try
         {
             await _contactController.CreateContactAsync(request);
             return NoContent();
         }
+        catch (FormatException e)
+        {
+            return BadRequest(e.Message);
+        }
         catch (Exception e)
         {
-            return BadRequest(e.ToString());
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
         }
     }
 
@@ -61,6 +72,11 @@ public class ContactController : ControllerBase
         {
             return BadRequest(e.Message);
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
+        }
     }
 
     [Authorize(Policy = IdentityData.AdminPolicyName)]
@@ -83,6 +99,11 @@ public class ContactController : ControllerBase
         catch (SqlException e)
         {
             return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
         }
     }
 
@@ -107,6 +128,11 @@ public class ContactController : ControllerBase
         {
             return BadRequest(e.Message);
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
+        }
     }
 
     [Authorize(Policy = IdentityData.AdminPolicyName)]
@@ -129,6 +155,11 @@ public class ContactController : ControllerBase
         catch (SqlException e)
         {
             return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
         }
     }
 
@@ -159,6 +190,11 @@ public class ContactController : ControllerBase
         {
             return BadRequest(e.Message);
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
+        }
     }
 
     [Authorize(Policy = IdentityData.AdminPolicyName)]
@@ -181,6 +217,11 @@ public class ContactController : ControllerBase
         catch (SqlException e)
         {
             return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
         }
     }
 
@@ -209,6 +250,11 @@ public class ContactController : ControllerBase
         {
             return BadRequest(e.Message);
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
+        }
     }
 
     [Authorize(Policy = IdentityData.AdminPolicyName)]
@@ -228,6 +274,11 @@ public class ContactController : ControllerBase
         catch (SqlException e)
         {
             return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
         }
     }
 
@@ -251,6 +302,11 @@ public class ContactController : ControllerBase
         catch (SqlException e)
         {
             return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR O SUPORTE");
         }
     }
 }

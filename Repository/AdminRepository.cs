@@ -189,9 +189,9 @@ public class AdminRepository : IAdminRepository
             p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
         );
 
-        if (skip > take || skip == take)
+        if (skip > take)
         {
-            throw new Exception("ainda n sei oq colocar");
+            return await AllContactsAsync(take, skip);
         }
         else if (orderByDate.HasValue)
         {
@@ -239,10 +239,11 @@ public class AdminRepository : IAdminRepository
 
         var dbContacts = await _dbContext.Contacts.Skip(skip).Take(take).ToListAsync();
 
-        if (dbContacts is null)
+        if (!dbContacts.Any())
         {
-            throw new Exception("sei la");
+            throw new NullReferenceException("Nenhum contato registrado no banco!");
         }
+
         dbContacts.ForEach(p => p.EndedAt = DateTime.Now);
         await _dbContext.SaveChangesAsync();
 
@@ -257,12 +258,9 @@ public class AdminRepository : IAdminRepository
             p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
         );
 
-        var dbContact = await _dbContext.Contacts.FindAsync(id);
-
-        if (dbContact is null)
-        {
-            throw new NullReferenceException("id inexistente");
-        }
+        var dbContact =
+            await _dbContext.Contacts.FindAsync(id)
+            ?? throw new NullReferenceException("id inexistente");
 
         _dbContext.Contacts.Remove(dbContact);
         await _dbContext.SaveChangesAsync();
@@ -276,9 +274,7 @@ public class AdminRepository : IAdminRepository
             p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
         );
 
-        var dbContacts =
-            _dbContext.Contacts.Skip(skip).Take(take).AsNoTracking()
-            ?? throw new Exception("sei la");
+        var dbContacts = _dbContext.Contacts.Skip(skip).Take(take).AsNoTracking();
 
         _dbContext.Contacts.RemoveRange(dbContacts);
         await _dbContext.SaveChangesAsync();

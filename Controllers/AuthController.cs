@@ -57,8 +57,11 @@ public class AuthController : ControllerBase
     {
         try
         {
-            await _authRepository.RegisterAsync(request);
-            return NoContent();
+            return Ok(
+                new JwtSecurityTokenHandler().WriteToken(
+                    await _authRepository.RegisterAsync(request)
+                )
+            );
         }
         catch (FormatException e)
         {
