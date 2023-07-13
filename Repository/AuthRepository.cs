@@ -90,41 +90,54 @@ public class AuthRepository : IAuthRepository
         throw new FormatException(validate.ToString());
     }
 
-    public async Task CreateChangePasswordAsync(string email)
+    public async Task CreateChangePasswordAsync(CreateChangePwdRequest request)
     {
-        await _dbContext.Users.FirstAsync(p => p.Email == email);
+        await _dbContext.Users.FirstAsync(p => p.Email == request.Email);
 
-        int code = new Random().Next(100000, 999999);
+        var createChangePwdRequest = new CreateChangePwdValidator();
+        var validate = await createChangePwdRequest.ValidateAsync(request);
 
-        await _emailService.SendEmail(
-            email,
-            "PEDIDO DE MUDANÇA DE SENHA",
-            $"aqui está o codigo para mudança de senha: {code}"
-        );
+        if (validate.IsValid)
+        {
+            int code = new Random().Next(100000, 999999);
 
-        await _dbContext.ChangePassword.AddAsync(
-            new ChangePasswordModel() { Email = email, Code = code }
-        );
-        await _dbContext.SaveChangesAsync();
+            await _emailService.SendEmail(
+                request.Email,
+                "PEDIDO DE MUDANÇA DE SENHA",
+                $"aqui está o codigo para mudança de senha: {code}"
+            );
+
+            await _dbContext.ChangePassword.AddAsync(
+                new ChangePasswordModel() { Email = request.Email, Code = code }
+            );
+            await _dbContext.SaveChangesAsync();
+            return;
+        }
+
+        throw new FormatException("Formato de email inválido!");
     }
 
-    public async Task UpdatePasswordAsync(ChangePasswordRequest request)
+    public async Task<JwtSecurityToken> UpdatePasswordAsync(ChangePasswordRequest request)
     {
         var dbChangePwd = await _dbContext.ChangePassword.FirstAsync(
             p => p.Email == request.Email && p.Code == request.Code
         );
 
-        var dbUser = await _dbContext.Users.FirstAsync(p => p.Email == request.Email);
-        dbUser.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
-        dbChangePwd.IsFinished = true;
-        await _dbContext.SaveChangesAsync();
+        if (!dbChangePwd.IsFinished && dbChangePwd.IsValid > DateTime.Now)
+        {
+            var dbUser = await _dbContext.Users.FirstAsync(p => p.Email == request.Email);
 
-        await _emailService.SendEmail(
-            request.Email,
-            "SENHA ALTERADA - KAZARIOBRANCO",
-            $"Sua senha acaba de ser alterada!"
-        );
-        return;
+            dbUser.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            dbChangePwd.IsFinished = true;
+            await _dbContext.SaveChangesAsync();
+
+            await _emailService.SendEmail(
+                request.Email,
+                "SENHA ALTERADA - KAZARIOBRANCO",
+                $"Sua senha acaba de ser alterada!"
+            );
+            return await LoginAsync(_mapper.Map<LoginRequest>(request));
+        }
 
         throw new InvalidDataException(
             "O código enviado não é mais válido ou a senha já foi alterada!"

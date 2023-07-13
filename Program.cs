@@ -60,7 +60,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddDbContext<MyDbContext>(
     options =>
         options.UseSqlServer(
-            builder.Configuration.GetConnectionString("connectionString")
+            builder.Configuration.GetConnectionString("ConnectionString")
         )
 );
 

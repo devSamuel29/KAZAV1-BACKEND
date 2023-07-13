@@ -79,16 +79,22 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("change-password")]
-    public async Task<IActionResult> CreateChangePassword([FromBody] string email)
+    public async Task<IActionResult> CreateChangePassword(
+        [FromBody] CreateChangePwdRequest request
+    )
     {
         try
         {
-            await _authRepository.CreateChangePasswordAsync(email);
+            await _authRepository.CreateChangePasswordAsync(request);
             return NoContent();
         }
         catch (InvalidOperationException)
         {
             return NotFound("Nenhum conta vinculada ao email fornecido!");
+        }
+        catch (FormatException e)
+        {
+            return BadRequest(e.Message);
         }
         catch (Exception e)
         {
@@ -104,8 +110,11 @@ public class AuthController : ControllerBase
     {
         try
         {
-            await _authRepository.UpdatePasswordAsync(request);
-            return NoContent();
+            return Ok(
+                new JwtSecurityTokenHandler().WriteToken(
+                    await _authRepository.UpdatePasswordAsync(request)
+                )
+            );
         }
         catch (InvalidOperationException)
         {

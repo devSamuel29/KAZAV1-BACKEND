@@ -9,7 +9,7 @@ public interface IAuthRepository
 
     Task<JwtSecurityToken> RegisterAsync(RegisterRequest request);
 
-    Task CreateChangePasswordAsync(string email);
+    Task CreateChangePasswordAsync(CreateChangePwdRequest request);
     
-    Task UpdatePasswordAsync(ChangePasswordRequest request);
+    Task<JwtSecurityToken> UpdatePasswordAsync(ChangePasswordRequest request);
 }

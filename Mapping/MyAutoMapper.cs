@@ -13,8 +13,12 @@ public class MyAutoMapper : Profile
     public MyAutoMapper()
     {
         CreateMap<RegisterRequest, LoginRequest>();
-            // .ForMember(p => p.Email, options => options.MapFrom(p => p.Email))
-            // .ForMember(p => p.Password, options => options.MapFrom(p => p.Password));
+        CreateMap<ChangePasswordRequest, LoginRequest>()
+            .ForMember(
+                p => p.Password,
+                options =>
+                    options.MapFrom(p => BCrypt.Net.BCrypt.HashPassword(p.NewPassword))
+            );
 
         CreateMap<RegisterRequest, UserModel>()
             .ForMember(

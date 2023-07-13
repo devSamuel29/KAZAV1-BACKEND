@@ -33,7 +33,8 @@ public class AdminRepository : IAdminRepository
         );
 
         var dbUser =
-            await _dbContext.Users.FindAsync(id) ?? throw new NullReferenceException();
+            await _dbContext.Users.FindAsync(id)
+            ?? throw new NullReferenceException("Usuário não encontrado!");
 
         return _mapper.Map<UserResponse>(dbUser);
     }
@@ -50,13 +51,17 @@ public class AdminRepository : IAdminRepository
             p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
         );
 
-        var dbUsers =
-            await _dbContext.Users
-                .Skip(skip)
-                .Take(take)
-                .Where(p => p.Role != IdentityData.AdminClaimName)
-                .AsNoTracking()
-                .ToListAsync() ?? throw new NullReferenceException();
+        var dbUsers = await _dbContext.Users
+            .Skip(skip)
+            .Take(take)
+            .Where(p => p.Role != IdentityData.AdminClaimName)
+            .AsNoTracking()
+            .ToListAsync();
+
+        if (!dbUsers.Any())
+        {
+            throw new NullReferenceException("Nenhum usuário registrado no banco!");
+        }
 
         return _mapper.Map<IList<UserResponse>>(dbUsers);
     }
@@ -71,7 +76,7 @@ public class AdminRepository : IAdminRepository
 
         var dbUser =
             await _dbContext.Users.FindAsync(id)
-            ?? throw new NullReferenceException("asddsa");
+            ?? throw new NullReferenceException("Usuário não encontrado");
 
         _dbContext.Users.Remove(dbUser);
         await _dbContext.SaveChangesAsync();
@@ -85,9 +90,12 @@ public class AdminRepository : IAdminRepository
             p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
         );
 
-        var dbUsers =
-            _dbContext.Users.Skip(skip).Take(take).AsNoTracking()
-            ?? throw new Exception("sei la");
+        var dbUsers = _dbContext.Users.Skip(skip).Take(take).AsNoTracking();
+
+        if (!dbUsers.Any())
+        {
+            throw new NullReferenceException("Nenhum usuário registrado no banco!");
+        }
 
         _dbContext.Users.RemoveRange(dbUsers);
         await _dbContext.SaveChangesAsync();
@@ -103,12 +111,9 @@ public class AdminRepository : IAdminRepository
             p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
         );
 
-        var dbContact = await _dbContext.Contacts.FindAsync(id);
-
-        if (dbContact is null)
-        {
-            throw new NullReferenceException("id inexistente");
-        }
+        var dbContact =
+            await _dbContext.Contacts.FindAsync(id)
+            ?? throw new NullReferenceException("Usuário não encontrado!");
 
         return _mapper.Map<ContactResponse>(dbContact);
     }
@@ -131,6 +136,11 @@ public class AdminRepository : IAdminRepository
             .AsNoTracking()
             .ToListAsync();
 
+        if (!dbContacts.Any())
+        {
+            throw new NullReferenceException("Nenhum contato registrado no banco!");
+        }
+
         return _mapper.Map<IList<ContactResponse>>(dbContacts);
     }
 
@@ -152,6 +162,11 @@ public class AdminRepository : IAdminRepository
             .AsNoTracking()
             .ToListAsync();
 
+        if (!dbContacts.Any())
+        {
+            throw new NullReferenceException("Nenhum contato registrado no banco!");
+        }
+
         return _mapper.Map<IList<ContactResponse>>(dbContacts);
     }
 
@@ -172,6 +187,11 @@ public class AdminRepository : IAdminRepository
             .Reverse()
             .AsNoTracking()
             .ToListAsync();
+
+        if (!dbContacts.Any())
+        {
+            throw new NullReferenceException("Nenhum contato registrado no banco!");
+        }
 
         return _mapper.Map<IList<ContactResponse>>(dbContacts);
     }
@@ -212,11 +232,13 @@ public class AdminRepository : IAdminRepository
             p => p.Id == adminJwt.Id && p.Role == adminJwt.Role
         );
 
-        var dbContact = await _dbContext.Contacts.FindAsync(id);
+        var dbContact =
+            await _dbContext.Contacts.FindAsync(id)
+            ?? throw new NullReferenceException("Usuário não encontrado!");
 
-        if (dbContact is null)
+        if (dbContact.EndedAt != DateTime.MinValue)
         {
-            throw new Exception("sei la");
+            throw new InvalidOperationException("Contato já finalizado!");
         }
 
         dbContact.EndedAt = DateTime.Now;
@@ -260,7 +282,7 @@ public class AdminRepository : IAdminRepository
 
         var dbContact =
             await _dbContext.Contacts.FindAsync(id)
-            ?? throw new NullReferenceException("id inexistente");
+            ?? throw new NullReferenceException("Usuário não encontrado!");
 
         _dbContext.Contacts.Remove(dbContact);
         await _dbContext.SaveChangesAsync();
@@ -276,6 +298,11 @@ public class AdminRepository : IAdminRepository
 
         var dbContacts = _dbContext.Contacts.Skip(skip).Take(take).AsNoTracking();
 
+        if (!dbContacts.Any())
+        {
+            throw new NullReferenceException("Nenhum contato registrado no banco!");
+        }
+
         _dbContext.Contacts.RemoveRange(dbContacts);
         await _dbContext.SaveChangesAsync();
     }
@@ -288,11 +315,16 @@ public class AdminRepository : IAdminRepository
             .AsNoTracking()
             .ToListAsync();
 
+        if (!dbContacts.Any())
+        {
+            throw new NullReferenceException("Nenhum contato registrado no banco!");
+        }
+
         var mappedContacts = _mapper.Map<IList<ContactResponse>>(dbContacts);
 
         var response = new ReadAllContactsResponse()
         {
-            Size = _dbContext.Contacts.Count(),
+            Size = await _dbContext.Contacts.CountAsync(),
             From = skip,
             To = take,
             Quantity = dbContacts.Count,
@@ -318,11 +350,16 @@ public class AdminRepository : IAdminRepository
                 .AsNoTracking()
                 .ToListAsync();
 
+            if (!dbContacts.Any())
+            {
+                throw new NullReferenceException("Nenhum contato registrado no banco!");
+            }
+
             var mappedContacts = _mapper.Map<IList<ContactResponse>>(dbContacts);
 
             var response = new ReadAllContactsResponse()
             {
-                Size = _dbContext.Contacts.Count(),
+                Size = await _dbContext.Contacts.CountAsync(),
                 From = skip,
                 To = take,
                 Quantity = dbContacts.Count,

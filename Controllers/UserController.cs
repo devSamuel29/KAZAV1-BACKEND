@@ -16,13 +16,17 @@ public class UserController : ControllerBase
 
     private readonly IAdminRepository _adminRepository;
 
+    private readonly ILogger<UserController> _logger;
+
     public UserController(
         IUserRepository userRepository,
-        IAdminRepository adminRepository
+        IAdminRepository adminRepository,
+        ILogger<UserController> logger
     )
     {
         _userRepository = userRepository;
         _adminRepository = adminRepository;
+        _logger = logger;
     }
 
     [Authorize(Policy = IdentityData.UserPolicyName)]
@@ -37,9 +41,14 @@ public class UserController : ControllerBase
             await _userRepository.CreateAddressAsync(headerValue!, request);
             return NoContent();
         }
-        catch (Exception e)
+        catch (InvalidOperationException e)
         {
             return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR SUPORTE");
         }
     }
 
@@ -62,7 +71,8 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.ToString());
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR SUPORTE");
         }
     }
 
@@ -78,7 +88,8 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR SUPORTE");
         }
     }
 
@@ -93,7 +104,8 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR SUPORTE");
         }
     }
 
@@ -108,23 +120,10 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR SUPORTE");
         }
     }
-
-    // [Authorize(Policy = IdentityData.UserPolicyName)]
-    // [HttpPost("cart-add-products")]
-    // public async Task<IActionResult> AddProductsCart()
-    // {
-    //     try
-    //     {
-    //         Request.Headers.TryGetValue("Authorization", out StringValues headerValue);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
 
     [Authorize(Policy = IdentityData.UserPolicyName)]
     [HttpDelete("delete-my-addresses")]
@@ -138,7 +137,8 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR SUPORTE");
         }
     }
 
@@ -154,7 +154,8 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR SUPORTE");
         }
     }
 
@@ -170,7 +171,8 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR SUPORTE");
         }
     }
 
@@ -189,7 +191,8 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            _logger.LogError(e.Message);
+            return StatusCode(500, "CHAMAR SUPORTE");
         }
     }
 }

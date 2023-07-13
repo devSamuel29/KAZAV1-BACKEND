@@ -44,7 +44,7 @@ public class UserRepository : IUserRepository
 
         if (dbUser.Addresses.Count > 2)
         {
-            throw new Exception("opa nao pode mais");
+            throw new InvalidOperationException("Limite de até 3 endereços por conta!");
         }
         else if (dbUser.Email == claims.Email)
         {
@@ -52,6 +52,8 @@ public class UserRepository : IUserRepository
             await _dbContext.SaveChangesAsync();
             return;
         }
+
+        throw new UnauthorizedAccessException();
     }
 
     public async Task<IList<AddressResponse>> ReadMyAddressesAsync(string token)
@@ -69,10 +71,11 @@ public class UserRepository : IUserRepository
 
         if (!response.Any())
         {
-            throw new Exception(
-                $"Não há endereços cadastrados para o usuário {dbUser.Firstname} {dbUser.Lastname}!"
+            throw new NullReferenceException(
+                "Não há endereços cadastrados para o usuário!"
             );
         }
+
         return _mapper.Map<IList<AddressResponse>>(dbUser.Addresses.ToList());
     }
 
@@ -103,9 +106,16 @@ public class UserRepository : IUserRepository
     {
         Claims claims = await GetClaims(token);
 
-        var dbUserAddresses =
-            await _dbContext.Addresses.Where(p => p.UserId == claims.Id).ToListAsync()
-            ?? throw new NullReferenceException("asddsa");
+        var dbUserAddresses = await _dbContext.Addresses
+            .Where(p => p.UserId == claims.Id)
+            .ToListAsync();
+
+        if (!dbUserAddresses.Any())
+        {
+            throw new NullReferenceException(
+                "Não há endereços cadastrados para o usuário!"
+            );
+        }
 
         _dbContext.Addresses.RemoveRange(dbUserAddresses);
         await _dbContext.SaveChangesAsync();
@@ -117,7 +127,7 @@ public class UserRepository : IUserRepository
 
         var dbUser =
             await _dbContext.Users.FindAsync(claims.Id)
-            ?? throw new NullReferenceException("asddsa");
+            ?? throw new NullReferenceException("Usuário não encontrado!");
 
         _dbContext.Users.Remove(dbUser);
         await _dbContext.SaveChangesAsync();
